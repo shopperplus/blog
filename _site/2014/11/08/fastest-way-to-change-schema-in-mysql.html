@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Shopper+ Team Blog</title>
+    <title>Fastest Way To Change Schema In MySQL</title>
     <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 ">
     <script>
@@ -20,7 +20,7 @@
     </script>
 
     <link rel="stylesheet" href="/blog/css/main.css">
-    <link rel="canonical" href="http://shopperplus.github.io/blog/">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-change-schema-in-mysql.html">
 </head>
 
 
@@ -63,63 +63,67 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">Fastest Way To Change Schema In MySQL</h1>
+    <p class="post-meta">Nov 8, 2014 • Hooopo</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+  <article class="post-content">
+    <p>在默认情况，Rails的migration会为每个语句单独生成一条SQL来修改表结构。这对新建的表来说是无所谓的，一个create table 或 alter table都是瞬间完成。但是，对于已经存在大量数据的表来说，这样效率极低。刚开始没有注意这样的问题，order表的写法：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">rename_column :orders, &quot;shipping_first_name&quot;, &quot;origin_shipping_first_name&quot;
+rename_column :orders, &quot;shipping_last_name&quot;, &quot;origin_shipping_last_name&quot;
+remove_column :orders, &quot;coupon_value&quot;
+...
+</code></pre></div>
+<p>结果就是，每一个rename<em>column和remove</em>column执行时间大约4分钟，一共20多个这样的语句，migrate总计执行了近两个小时。因为alter table时mysql需要把整个order表copy to tmp table，而order表是非常庞大的。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/you-do-not-know-newrelic.html">You do not know NewRelic</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>解决办法是把上面的所有修改order的migration合并成一个，并且设置bulk 选项。</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">class RenameOldOrderAddressRelatedColumn &lt; ActiveRecord::Migration
+  def up
+    change_table(:orders, :bulk =&gt; true) do |t|
+      t.remove :coupon_code
+      t.remove :coupon_value
+      t.remove :order_promotion_id
+      t.rename :order_status_code_id, :state
+      t.remove :in_process
+      [:first_name,
+       :last_name,
+       :phone,
+       :street_address,
+       :city,
+       :zip,
+       :company,
+       :street_address_2,
+       :country,
+       :state].each do |column|
+        t.rename &quot;shipping_#{column}&quot;, &quot;origin_shipping_#{column}&quot;
+        t.rename &quot;billing_#{column}&quot;, &quot;origin_billing_#{column}&quot;
+      end
+    end
+  end
+end
+</code></pre></div>
+<p>这样，上面的migration只生成一条SQL语句：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">ALTER TABLE `orders` DROP `coupon_code`, DROP `coupon_value`, DROP `order_promotion_id`, CHANGE `shipping_first_name` `origin_shipping_first_name` varchar(50) DEFAULT NULL, CHANGE `billing_first_name` `origin_billing_first_name` varchar(50) DEFAULT NULL, CHANGE `shipping_last_name` `origin_shipping_last_name` varchar(50) DEFAULT NULL, CHANGE `billing_last_name` `origin_billing_last_name` varchar(50) DEFAULT NULL, CHANGE `shipping_phone` `origin_shipping_phone` varchar(20) DEFAULT NULL, CHANGE `billing_phone` `origin_billing_phone` varchar(20) DEFAULT NULL, CHANGE `shipping_street_address` `origin_shipping_street_address` varchar(255) DEFAULT NULL, CHANGE `billing_street_address` `origin_billing_street_address` varchar(255) DEFAULT NULL, CHANGE `shipping_city` `origin_shipping_city` varchar(255) DEFAULT NULL, CHANGE `billing_city` `origin_billing_city` varchar(255) DEFAULT NULL, CHANGE `shipping_zip` `origin_shipping_zip` varchar(20) DEFAULT NULL, CHANGE `billing_zip` `origin_billing_zip` varchar(20) DEFAULT NULL, CHANGE `shipping_company` `origin_shipping_company` varchar(255) DEFAULT NULL, CHANGE `billing_company` `origin_billing_company` varchar(255) DEFAULT NULL, CHANGE `shipping_street_address_2` `origin_shipping_street_address_2` varchar(255) DEFAULT NULL, CHANGE `billing_street_address_2` `origin_billing_street_address_2` varchar(255) DEFAULT NULL, CHANGE `shipping_country` `origin_shipping_country` varchar(255) DEFAULT NULL, CHANGE `billing_country` `origin_billing_country` varchar(255) DEFAULT NULL, CHANGE `shipping_state` `origin_shipping_state` varchar(255) DEFAULT NULL, CHANGE `billing_state` `origin_billing_state` varchar(255) DEFAULT NULL
+</code></pre></div>
+<p>通过上面修改，整个migration执行时间降到了十分钟以内。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/tree/2014/11/08/the-title-of-the-new-post.html">Chorisia tree</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html">Fastest Way To Load Data In MySQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
-
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/fastest-way-to-change-schema-in-mysql.html">Fastest Way To Change Schema In MySQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
-
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/advanced-bitmask-attributes-for-sql.html">Advanced Bitmask Attributes for SQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 6, 2014</span>
-
-        <h2>
-          <a class="post-link" href="/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/blog/feed.xml">via RSS</a></p>
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
 </div>
 
