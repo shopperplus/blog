@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 08 Nov 2014 06:14:58 +0800</pubDate>
-    <lastBuildDate>Sat, 08 Nov 2014 06:14:58 +0800</lastBuildDate>
+    <pubDate>Sat, 08 Nov 2014 06:23:00 +0800</pubDate>
+    <lastBuildDate>Sat, 08 Nov 2014 06:23:00 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -113,6 +113,57 @@ after &amp;quot;deploy:updated&amp;quot;, &amp;quot;newrelic:notice_deployment&a
         
         
         <category>tree</category>
+        
+      </item>
+    
+      <item>
+        <title>Fastest Way To Load Data In MySQL</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://www.runrares.ro/_imgArticol/viteza.jpg&quot; alt=&quot;fast&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.coffeepowered.net/2009/01/23/mass-inserting-data-in-rails-without-killing-your-performance/&quot;&gt;Mass inserting data in Rails without killing your performance&lt;/a&gt; 这篇文章里提到Rails快速批量插入数据的几种方式：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Use transactions&lt;/li&gt;
+&lt;li&gt;Get down and dirty with the raw SQL&lt;/li&gt;
+&lt;li&gt;A single mass insert&lt;/li&gt;
+&lt;li&gt;Use INSERT statements with multiple VALUES lists with &lt;a href=&quot;https://github.com/zdennis/ar-extensions&quot;&gt;ar-extensions&lt;/a&gt; OR &lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第四种方式是AR方式的70倍左右，已经很快了，还有更快的吗？&lt;/p&gt;
+
+&lt;p&gt;From MySQL Doc:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;When loading a table from a text file, use LOAD DATA INFILE. This is usually 20 times faster than using INSERT statements&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;SQL语句：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(15955.1ms)  LOAD DATA LOCAL INFILE &amp;#39;/Users/hooopo/data/out/product_sales_facts.txt&amp;#39;
+REPLACE INTO TABLE product_sale_facts FIELDS TERMINATED BY &amp;#39;,&amp;#39; (`id`,`date_id`,`order_id`,`product_id`,`address_id`,`unit_price`,`purchase_price`,`gross_profit`,`quantity`,`channel_id`,`gift`)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;插入行数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;wc -l &amp;lt; /Users/hooopo/data/out/product_sales_facts.txt
+ 1271413
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;大概130w数据用时16秒，平均每秒插入8w条记录左右。如果想用Gem，可以试试 adapter&lt;em&gt;extensions 和 load&lt;/em&gt;data_infile：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;https://github.com/activewarehouse/adapter_extensions&lt;/li&gt;
+&lt;li&gt;https://github.com/EmmanuelOga/load&lt;em&gt;data&lt;/em&gt;infile&lt;/li&gt;
+&lt;li&gt;https://github.com/jsuchal/activerecord-fast-import&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;MySQL Doc里关于LOAD INFILE的详细介绍：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;http://dev.mysql.com/doc/refman/5.5/en/load-data.html&lt;/li&gt;
+&lt;li&gt;http://dev.mysql.com/doc/refman/5.5/en/insert-speed.html&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html</guid>
+        
         
       </item>
     
