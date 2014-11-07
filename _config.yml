@@ -11,4 +11,5 @@ twitter_username: shopperplus
 github_username:  shopperplus
 
 # Build settings
-markdown: kramdown
+markdown: redcarpet 
+highlighter: true

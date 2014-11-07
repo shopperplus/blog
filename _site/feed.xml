@@ -6,13 +6,106 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 08 Nov 2014 05:09:27 +0800</pubDate>
-    <lastBuildDate>Sat, 08 Nov 2014 05:09:27 +0800</lastBuildDate>
+    <pubDate>Sat, 08 Nov 2014 05:45:59 +0800</pubDate>
+    <lastBuildDate>Sat, 08 Nov 2014 05:45:59 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
+        <title>You do not know NewRelic</title>
+        <description>&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/0443c9ac79a6492aad4810c472308b97.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;Enabling garbage collection instrumentation&lt;/h2&gt;
+
+&lt;p&gt;默认情况，Newrelic的Transactions response time overview 页面是没有统计GC信息的。如果想要开启只需要在&lt;code&gt;config/initializers/new_relic_unicorn.rb&lt;/code&gt;添加如下代码(如果不是unicorn只需要最后一句)：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;# -*- encoding : utf-8 -*-
+# Ensure the agent is started using Unicorn.
+# This is needed when using Unicorn and preload_app is not set to true.
+# See https://docs.newrelic.com/docs/ruby/no-data-with-unicorn
+if defined? Unicorn
+  ::NewRelic::Agent.manual_start()
+  ::NewRelic::Agent.after_fork(:force_reconnect =&amp;gt; true)
+end
+
+GC::Profiler.enable
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Recording deployments&lt;/h2&gt;
+
+&lt;p&gt;New Relic 支持自定义Event，结合 Capistrano 可以把每次发布的时间点划到图表上，题图上到三条粉丝细线就是deployment时刻。
+同时，还可以把changelog信息一并记录下来，便于追踪各个版本差异产生的原因，如下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/7ffc389aed2e1443bbcd5ddf2f74d32c.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;实现这样酷的功能只需要两行代码，在&lt;code&gt;deploy.rb&lt;/code&gt;里：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;require &amp;#39;new_relic/recipes&amp;#39;
+
+after &amp;quot;deploy:updated&amp;quot;, &amp;quot;newrelic:notice_deployment&amp;quot;`
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你不需要发布就可以测试这个功能是否设置正确：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;cap newrelic:notice_deployment -Snewrelic_desc=&amp;quot;Deploying beta Krakatau release&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Availability monitoring&lt;/h2&gt;
+
+&lt;p&gt;默认情况下，Newrelic会在网站响应速度低到一定阀值邮件通知，也可以手动设置 &lt;code&gt;Availability monitoring&lt;/code&gt;，
+需要提供某个页面到URL，如果这个URL一分钟内ping不通就会收到网站 downtime 邮件。&lt;/p&gt;
+
+&lt;h2&gt;Instrumentation Redis&lt;/h2&gt;
+
+&lt;p&gt;只需Gemfile里添加 &lt;code&gt;newrelic-redis&lt;/code&gt; 这个gem，前提是你用了 &lt;code&gt;redis-rb&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;一定有同学会问，Redis都那么快了还需要监控？&lt;/p&gt;
+
+&lt;p&gt;原因很简单：&lt;/p&gt;
+
+&lt;p&gt;默认情况下Newrelic会把请求时间算在Ruby／View里，这样你发现一个很慢的页面渲染，你无法定位到具体是什么东西那么慢。
+加上 &lt;code&gt;newrelic-redis&lt;/code&gt;之后这部分时间被清晰到记录在Database catalog，并且可以和view其他部分区分开, 细致到每个redis指令执行到时间：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/9532c2a296f8e30b1107f6d93eb1e2fe.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;Instrumentation Rack Middleware&lt;/h2&gt;
+
+&lt;p&gt;只需要升级 &lt;code&gt;newrelic_rpm&lt;/code&gt; 到 3.9.0 或以上。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/22bdbf838583e4d6578ccf01c458aad0.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/f9e38c001dd51e040f68223e41ff399c.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;JS Error Notification&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/a171111fbe6cf8d6275c5f2d83ca8db9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;就是ExceptionNotify的JS云端版本。当然，这个功能已经有很多人在做了，并不是newrelic首创。但集成到newrelic里却是非常自然，监控异常的同时还可以监控JS错误，何乐而不为呢..&lt;/p&gt;
+
+&lt;h2&gt;NewRelic Insights&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/74dab3fcea4ddc6d836c4b04c238ab86.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;这是一个beta项目，NewRelic把自己收集的数据再开放给你。通过自定义的NRQL，让你可以按照自己关心的方式自定义Dashboard。有了API，你可以再把这些数据倒回自己倒应用，和自己已有的数据做进一步分析。&lt;/p&gt;
+
+&lt;h2&gt;Custom Variable&lt;/h2&gt;
+
+&lt;p&gt;Google Analytics 很早就有了，有了这个东西可玩性就提高了一个层次。能做什么就由开发者自己来想像了。&lt;/p&gt;
+
+&lt;h2&gt;NewRelic 和 Twitter的吞吐量相当，数据库使用的是 MySQL（Percona）&lt;/h2&gt;
+
+&lt;p&gt;Renferer: http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;相关文档
+* https://docs.newrelic.com/docs/ruby/garbage-collection
+* https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent
+* http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares&lt;/p&gt;
+</description>
+        <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2014/11/08/you-do-not-know-newrelic.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/you-do-not-know-newrelic.html</guid>
+        
+        
+      </item>
+    
+      <item>
         <title>Chorisia tree</title>
-        <description>&lt;p&gt;&lt;img src=&quot;https://gp1.wac.edgecastcdn.net/806614/photos/photos.500px.net/34845288/a093afe9d576137dfdf9537724f27f043685a1a0/5.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+        <description>&lt;p&gt;&lt;img src=&quot;https://gp1.wac.edgecastcdn.net/806614/photos/photos.500px.net/34845288/a093afe9d576137dfdf9537724f27f043685a1a0/5.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 </description>
         <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/tree/2014/11/08/the-title-of-the-new-post.html</link>
@@ -31,14 +124,13 @@
 
 &lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Tom&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints &amp;#39;Hi, Tom&amp;#39; to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;def print_hi(name)
+  puts &amp;quot;Hi, #{name}&amp;quot;
+end
+print_hi(&amp;#39;Tom&amp;#39;)
+#=&amp;gt; prints &amp;#39;Hi, Tom&amp;#39; to STDOUT.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://github.com/jekyll/jekyll-help&quot;&gt;Jekyll’s dedicated Help repository&lt;/a&gt;.&lt;/p&gt;
-
 </description>
         <pubDate>Thu, 06 Nov 2014 02:08:09 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html</link>

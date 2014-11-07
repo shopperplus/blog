@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Welcome to Jekyll!</title>
+    <title>You do not know NewRelic</title>
     <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 ">
 
     <link rel="stylesheet" href="/blog/css/main.css">
-    <link rel="canonical" href="http://shopperplus.github.io/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2014/11/08/you-do-not-know-newrelic.html">
 </head>
 
 
@@ -57,24 +57,94 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Welcome to Jekyll!</h1>
-    <p class="post-meta">Nov 6, 2014</p>
+    <h1 class="post-title">You do not know NewRelic</h1>
+    <p class="post-meta">Nov 8, 2014 • Hooopo</p>
   </header>
 
   <article class="post-content">
-    <p>You’ll find this post in your <code>_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code>jekyll serve --watch</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
+    <p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/0443c9ac79a6492aad4810c472308b97.png" alt=""></p>
 
-<p>To add new posts, simply add a file in the <code>_posts</code> directory that follows the convention <code>YYYY-MM-DD-name-of-post.ext</code> and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.</p>
+<h2>Enabling garbage collection instrumentation</h2>
 
-<p>Jekyll also offers powerful support for code snippets:</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">def print_hi(name)
-  puts &quot;Hi, #{name}&quot;
+<p>默认情况，Newrelic的Transactions response time overview 页面是没有统计GC信息的。如果想要开启只需要在<code>config/initializers/new_relic_unicorn.rb</code>添加如下代码(如果不是unicorn只需要最后一句)：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"># -*- encoding : utf-8 -*-
+# Ensure the agent is started using Unicorn.
+# This is needed when using Unicorn and preload_app is not set to true.
+# See https://docs.newrelic.com/docs/ruby/no-data-with-unicorn
+if defined? Unicorn
+  ::NewRelic::Agent.manual_start()
+  ::NewRelic::Agent.after_fork(:force_reconnect =&gt; true)
 end
-print_hi(&#39;Tom&#39;)
-#=&gt; prints &#39;Hi, Tom&#39; to STDOUT.</code></pre></div>
 
-<p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://github.com/jekyll/jekyll-help">Jekyll’s dedicated Help repository</a>.</p>
+GC::Profiler.enable
+</code></pre></div>
+<h2>Recording deployments</h2>
+
+<p>New Relic 支持自定义Event，结合 Capistrano 可以把每次发布的时间点划到图表上，题图上到三条粉丝细线就是deployment时刻。
+同时，还可以把changelog信息一并记录下来，便于追踪各个版本差异产生的原因，如下图：</p>
+
+<p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/7ffc389aed2e1443bbcd5ddf2f74d32c.png" alt=""></p>
+
+<p>实现这样酷的功能只需要两行代码，在<code>deploy.rb</code>里：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">require &#39;new_relic/recipes&#39;
+
+after &quot;deploy:updated&quot;, &quot;newrelic:notice_deployment&quot;`
+</code></pre></div>
+<p>你不需要发布就可以测试这个功能是否设置正确：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">cap newrelic:notice_deployment -Snewrelic_desc=&quot;Deploying beta Krakatau release&quot;
+</code></pre></div>
+<h2>Availability monitoring</h2>
+
+<p>默认情况下，Newrelic会在网站响应速度低到一定阀值邮件通知，也可以手动设置 <code>Availability monitoring</code>，
+需要提供某个页面到URL，如果这个URL一分钟内ping不通就会收到网站 downtime 邮件。</p>
+
+<h2>Instrumentation Redis</h2>
+
+<p>只需Gemfile里添加 <code>newrelic-redis</code> 这个gem，前提是你用了 <code>redis-rb</code>。</p>
+
+<p>一定有同学会问，Redis都那么快了还需要监控？</p>
+
+<p>原因很简单：</p>
+
+<p>默认情况下Newrelic会把请求时间算在Ruby／View里，这样你发现一个很慢的页面渲染，你无法定位到具体是什么东西那么慢。
+加上 <code>newrelic-redis</code>之后这部分时间被清晰到记录在Database catalog，并且可以和view其他部分区分开, 细致到每个redis指令执行到时间：</p>
+
+<p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/9532c2a296f8e30b1107f6d93eb1e2fe.png" alt=""></p>
+
+<h2>Instrumentation Rack Middleware</h2>
+
+<p>只需要升级 <code>newrelic_rpm</code> 到 3.9.0 或以上。</p>
+
+<p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/22bdbf838583e4d6578ccf01c458aad0.png" alt=""></p>
+
+<p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/f9e38c001dd51e040f68223e41ff399c.png" alt=""></p>
+
+<h2>JS Error Notification</h2>
+
+<p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/a171111fbe6cf8d6275c5f2d83ca8db9.png" alt=""></p>
+
+<p>就是ExceptionNotify的JS云端版本。当然，这个功能已经有很多人在做了，并不是newrelic首创。但集成到newrelic里却是非常自然，监控异常的同时还可以监控JS错误，何乐而不为呢..</p>
+
+<h2>NewRelic Insights</h2>
+
+<p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/74dab3fcea4ddc6d836c4b04c238ab86.png" alt=""></p>
+
+<p>这是一个beta项目，NewRelic把自己收集的数据再开放给你。通过自定义的NRQL，让你可以按照自己关心的方式自定义Dashboard。有了API，你可以再把这些数据倒回自己倒应用，和自己已有的数据做进一步分析。</p>
+
+<h2>Custom Variable</h2>
+
+<p>Google Analytics 很早就有了，有了这个东西可玩性就提高了一个层次。能做什么就由开发者自己来想像了。</p>
+
+<h2>NewRelic 和 Twitter的吞吐量相当，数据库使用的是 MySQL（Percona）</h2>
+
+<p>Renferer: http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers</p>
+
+<hr>
+
+<p>相关文档
+* https://docs.newrelic.com/docs/ruby/garbage-collection
+* https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent
+* http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares</p>
 
   </article>
 
