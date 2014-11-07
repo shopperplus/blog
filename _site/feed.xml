@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Your awesome title</title>
+    <title>Shopper+ Team Blog</title>
     <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </description>
-    <link>http://yourdomain.com/</link>
-    <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 05 Nov 2014 18:09:38 +0800</pubDate>
-    <lastBuildDate>Wed, 05 Nov 2014 18:09:38 +0800</lastBuildDate>
+    <link>http://shopperplus.github.io/blog/</link>
+    <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sat, 08 Nov 2014 05:09:27 +0800</pubDate>
+    <lastBuildDate>Sat, 08 Nov 2014 05:09:27 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Chorisia tree</title>
+        <description>&lt;p&gt;&lt;img src=&quot;https://gp1.wac.edgecastcdn.net/806614/photos/photos.500px.net/34845288/a093afe9d576137dfdf9537724f27f043685a1a0/5.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/tree/2014/11/08/the-title-of-the-new-post.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/tree/2014/11/08/the-title-of-the-new-post.html</guid>
+        
+        
+        <category>tree</category>
+        
+      </item>
     
       <item>
         <title>Welcome to Jekyll!</title>
@@ -28,8 +41,8 @@
 
 </description>
         <pubDate>Thu, 06 Nov 2014 02:08:09 +0800</pubDate>
-        <link>http://yourdomain.com/jekyll/update/2014/11/06/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://yourdomain.com/jekyll/update/2014/11/06/welcome-to-jekyll.html</guid>
+        <link>http://shopperplus.github.io/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html</guid>
         
         
         <category>jekyll</category>
