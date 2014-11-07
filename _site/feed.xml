@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 08 Nov 2014 06:23:00 +0800</pubDate>
-    <lastBuildDate>Sat, 08 Nov 2014 06:23:00 +0800</lastBuildDate>
+    <pubDate>Sat, 08 Nov 2014 06:26:05 +0800</pubDate>
+    <lastBuildDate>Sat, 08 Nov 2014 06:26:05 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -163,6 +163,101 @@ REPLACE INTO TABLE product_sale_facts FIELDS TERMINATED BY &amp;#39;,&amp;#39; (
         <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Advanced Bitmask Attributes for SQL</title>
+        <description>&lt;h1&gt;Advanced Bitmask Attributes for SQL&lt;/h1&gt;
+
+&lt;h2&gt;Use Case&lt;/h2&gt;
+
+&lt;p&gt;假设你正在为一个电商网站开发这样一种功能，商品可以在后台分配到不同的频道里显示（当然，一个商品可以在多个频道显示）。
+另外有一个前提是，频道数目不多（10个以内）。&lt;/p&gt;
+
+&lt;h2&gt;Bitmask&lt;/h2&gt;
+
+&lt;p&gt;最常规的做法是加两张表，一个频道表，另一个是频道和商品中间表，标记频道和商品对应关系。这种做法的缺点是查询的时候需要JOIN两张表。再加上对商品本身的属性进行过滤和排序，查询会非常慢。&lt;/p&gt;
+
+&lt;p&gt;一个简化的办法就是使用Bitmask Attributes。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;class Product &amp;lt; AR
+  Channel1 = 1 &amp;lt;&amp;lt; 0 # 1
+  Channel2 = 1 &amp;lt;&amp;lt; 1 # 2
+  Channel3 = 1 &amp;lt;&amp;lt; 2 # 4
+  Channel4 = 1 &amp;lt;&amp;lt; 3 # 8
+end
+
+# == Schema Information
+#
+# Table name: products
+#
+#  id                        :integer          not null, primary key
+#  channels                  :integer
+#  retail_price              :decimal(8, 2)    default(0.0), not null
+#  purchase_price            :decimal(8, 2)    default(0.0), not null
+#  image                     :string(255)
+#  weight                    :integer
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;存储&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果一个商品能在Channel1和Channel2里显示： channels =&amp;gt; 1 + 2 = 3&lt;/li&gt;
+&lt;li&gt;如果一个商品能在Channel2和Channel2和Channel3显示： channels =&amp;gt; 1 + 2 + 4 = 7&lt;/li&gt;
+&lt;li&gt;以此类推&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;查询&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;查询能在Channel1显示的商品: &lt;code&gt;Product.where(&amp;quot;channels &amp;amp; 1 = 1&amp;quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查询能在Channel1和Channel2显示的商品：&lt;code&gt;Product.where(&amp;quot;channels &amp;amp; 3 = 3&amp;quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查询不能在Channel3显示的商品：&lt;code&gt;Product.where(&amp;quot;channels &amp;amp; 4 = 0&amp;quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;优缺点&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;优点：更少的字段、更少的表解决了问题&lt;/li&gt;
+&lt;li&gt;缺点：所有需要过滤channels字段的查询都为全表扫描，无法利用索引&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Advanced Bitmask Attributes&lt;/h3&gt;
+
+&lt;p&gt;继续使用Bitmask的思路，但是把查询转化成IN查询，有效利用索引。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;查询能在Channel1显示的商品:
+&lt;code&gt;ruby
+Product.where(:channels =&amp;gt; (1...(1 &amp;lt;&amp;lt; 4)).select{|x| x &amp;amp; 1 == 1})
+# 产生SQL
+SELECT `products`.* FROM `products`  WHERE `products`.`channels` IN (1, 3, 5, 7, 9, 11, 13, 15)&amp;quot;
+&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查询能在Channel1和Channel2显示的商品：
+&lt;code&gt;ruby
+Product.where(:channels =&amp;gt; (1...(1 &amp;lt;&amp;lt; 4)).select{|x| x &amp;amp; 3 == 3})
+# 产生SQL
+SELECT `products`.* FROM `products`  WHERE `products`.`channels` IN (3, 7, 11, 15)
+&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查询不能在Channel3显示的商品：
+&lt;code&gt;ruby
+Product.where(:channels =&amp;gt; (1...(1 &amp;lt;&amp;lt; 4)).select{|x| x &amp;amp; 4 == 0})
+# 产生SQL
+SELECT `products`.* FROM `products`  WHERE `products`.`channels` IN (1, 2, 3, 8, 9, 10, 11)
+&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;结论&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;中间表方案：需要额外的JOIN Table&lt;/li&gt;
+&lt;li&gt;Bitmask Attributes：需要Full Table Scan&lt;/li&gt;
+&lt;li&gt;Advanced Bitmask Attributes：No JOIN,No Full Table Scan.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2014/11/08/advanced-bitmask-attributes-for-sql.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/advanced-bitmask-attributes-for-sql.html</guid>
         
         
       </item>
