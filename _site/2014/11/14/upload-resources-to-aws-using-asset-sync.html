@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Shopper+ Team Blog</title>
+    <title>Upload resources to AWS using asset sync </title>
     <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 ">
     <script>
@@ -20,7 +20,7 @@
     </script>
 
     <link rel="stylesheet" href="/blog/css/main.css">
-    <link rel="canonical" href="http://shopperplus.github.io/blog/">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2014/11/14/upload-resources-to-aws-using-asset-sync.html">
 </head>
 
 
@@ -63,71 +63,58 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">Upload resources to AWS using asset sync </h1>
+    <p class="post-meta">Nov 14, 2014 • benko</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Nov 14, 2014</span>
+  <article class="post-content">
+    <h3>目的</h3>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/14/upload-resources-to-aws-using-asset-sync.html">Upload resources to AWS using asset sync </a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>网站的规模逐渐变大，响应的速度也逐渐变慢，其中图片的时间是主要的问题。选择把js css 图片这些文件放到aws有一下几个原因：
+1、减少本服务器的负载
+2、我们网站拥有多个域名，即使是同一个产品，在不同子站显示，图片都要重新加载一遍。一旦统一使用aws，不同子站都是请求同一图片地址，浏览器可以做缓存。
+3、避免重复繁琐的图片上传管理操作，直接通过代码管理</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/you-do-not-know-newrelic.html">You do not know NewRelic</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<h3>使用asset sync</h3>
 
-        <h2>
-          <a class="post-link" href="/blog/tree/2014/11/08/the-title-of-the-new-post.html">Chorisia tree</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p><a href="https://github.com/rumblelabs/asset_sync">asset sync</a></p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html">Fastest Way To Load Data In MySQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>使用的时候进行简单的配置即可，其中遇到一个问题，插件在dev &amp; staging都可以正确的运行，在production的时候提示</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">[2014-11-12T04:17:44.818010 #788] ERROR -- : uninitialized constant AssetSync (NameError)
+</code></pre></div>
+<p>大致的原因：
+由于js css 与图片是能够正确上传到s3的，所以说明插件在 precomplice之后有正确的运行，但是启动unicorn的时候报错，可能是启动的时候已经不需要到这个变量，所以没有初始化，但是代码中却没有对这个进行判断。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/fastest-way-to-change-schema-in-mysql.html">Fastest Way To Change Schema In MySQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>修改如下：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">if defined?(AssetSync)
+...
+end
+</code></pre></div>
+<h3>使用后发现的问题最终放弃</h3>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/advanced-bitmask-attributes-for-sql.html">Advanced Bitmask Attributes for SQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 6, 2014</span>
+<p>1、无法使用gzip。使用的s3服务器中没有cloudfront，导致无法识别HTTP HEAD中Content-Encoding:gzip的请求，导致使用只能请求到非gz后的 js 与 css 文件，网站整体的pagespeed反而下降了。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-  </ul>
+<p>2、工作流程导致无法运用。前端工程师不使用rails server进行代码的编写，例如图片的url需要写成asset<em>host:XXXX,导致使用asset</em>host指向s3后，他们无法在本地进行开发工作。</p>
 
-  <p class="rss-subscribe">subscribe <a href="/blog/feed.xml">via RSS</a></p>
+<p>3、代码中历史遗留的问题。旧代码中保留了不少直接使用public的图片，而public的图片不能被上传到s3中，不能直接使用asset sync，需要进行大量的修改。</p>
+
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
 </div>
 
