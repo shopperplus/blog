@@ -93,7 +93,7 @@
 ...
 end
 </code></pre></div>
-<h3>使用后发现的问题最终放弃</h3>
+<h3>使用后发现的问题，暂时放弃</h3>
 
 <p>1、无法使用gzip。使用的s3服务器中没有cloudfront，导致无法识别HTTP HEAD中Content-Encoding:gzip的请求，导致使用只能请求到非gz后的 js 与 css 文件，网站整体的pagespeed反而下降了。</p>
 

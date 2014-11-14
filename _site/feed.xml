@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 14 Nov 2014 16:22:50 +0800</pubDate>
-    <lastBuildDate>Fri, 14 Nov 2014 16:22:50 +0800</lastBuildDate>
+    <pubDate>Fri, 14 Nov 2014 16:28:06 +0800</pubDate>
+    <lastBuildDate>Fri, 14 Nov 2014 16:28:06 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -34,7 +34,7 @@
 ...
 end
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;使用后发现的问题最终放弃&lt;/h3&gt;
+&lt;h3&gt;使用后发现的问题，暂时放弃&lt;/h3&gt;
 
 &lt;p&gt;1、无法使用gzip。使用的s3服务器中没有cloudfront，导致无法识别HTTP HEAD中Content-Encoding:gzip的请求，导致使用只能请求到非gz后的 js 与 css 文件，网站整体的pagespeed反而下降了。&lt;/p&gt;
 
