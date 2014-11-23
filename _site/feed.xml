@@ -6,9 +6,86 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 14 Nov 2014 17:01:46 +0800</pubDate>
-    <lastBuildDate>Fri, 14 Nov 2014 17:01:46 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Nov 2014 12:58:01 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Nov 2014 12:58:01 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Trie 树的应用之敏感词过滤</title>
+        <description>&lt;p&gt;&lt;img src=&quot;https://gp1.wac.edgecastcdn.net/806614/photos/photos.500px.net/65000163/55dcc47e193e5540faaa5d97a70f06206f12cbbc/5.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;Trie&lt;/h2&gt;
+
+&lt;p&gt;trie，又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Trie_example.svg/320px-Trie_example.svg.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;上面的介绍和例子来自维基百科，描述一个保存了8个键的trie结构，&amp;quot;A&amp;quot;, &amp;quot;to&amp;quot;, &amp;quot;tea&amp;quot;, &amp;quot;ted&amp;quot;, &amp;quot;ten&amp;quot;, &amp;quot;i&amp;quot;, &amp;quot;in&amp;quot;, and &amp;quot;inn&amp;quot;. 图示中标注出完整的单词，只是为了演示trie的原理。&lt;/p&gt;
+
+&lt;h2&gt;敏感词过滤&lt;/h2&gt;
+
+&lt;p&gt;敏感词过滤或关键词提取是Trie树的一个典型应用。拿待过滤词ABCDEF举例，&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ABCDEF&lt;/li&gt;
+&lt;li&gt;BCDEF&lt;/li&gt;
+&lt;li&gt;CDEF&lt;/li&gt;
+&lt;li&gt;DEF&lt;/li&gt;
+&lt;li&gt;EF&lt;/li&gt;
+&lt;li&gt;F&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;依次用上面的子串在Trie里walk，看能否walk到叶子节点，如果能，说明包含关键词，并提取出来。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;require &amp;#39;triez&amp;#39;
+
+words = %w[大叶榕 细叶榕 高山榕 木棉 洋紫荆 樟树 芒果 蝴蝶果 人面子]
+
+trie = Triez.new
+
+words.each { |word| trie[word] = 1 }
+
+post_text = &amp;quot;行道树芒果引市民争相采摘。&amp;quot;
+
+results = Hash.new(0)
+
+(0..post_text.size - 1).each do |i|
+  trie.walk(post_text[i..-1]).each do |word_in_trie, _|
+    results[word_in_trie] = results[word_in_trie] + 1
+  end
+end
+
+puts results #=&amp;gt; {&amp;quot;芒果&amp;quot; =&amp;gt; 1}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;去噪&lt;/h2&gt;
+
+&lt;p&gt;用户可以通过在输入内容中加入空格、特殊符号来干扰敏感词过滤工作。比如芒果可以写成 &lt;code&gt;芒 果&lt;/code&gt;、&lt;code&gt;芒**果&lt;/code&gt;、&lt;code&gt;芒%果&lt;/code&gt;。
+解决办法是在过滤之前去噪。还是上面的代码，加上去噪处理：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;require &amp;#39;triez&amp;#39;
+
+words = %w[大叶榕 细叶榕 高山榕 木棉 洋紫荆 樟树 芒果 蝴蝶果 人面子]
+
+trie = Triez.new
+
+words.each { |word| trie[word] = 1 }
+
+post_text = &amp;quot;行道树芒&amp;amp;&amp;amp;果引市民争相采摘。&amp;quot;
+
+results = Hash.new(0)
+
+post_text = post_text.gsub(/[\s&amp;amp;%$@*]+/, &amp;quot;&amp;quot;)
+
+(0..post_text.size - 1).each do |i|
+  trie.walk(post_text[i..-1]).each do |word_in_trie, _|
+    results[word_in_trie] = results[word_in_trie] + 1
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        <pubDate>Sun, 23 Nov 2014 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2014/11/23/trie-shu-de-ying-yong.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/23/trie-shu-de-ying-yong.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>Upload resources to AWS using asset sync </title>
