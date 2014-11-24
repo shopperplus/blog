@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Nov 2014 12:58:01 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Nov 2014 12:58:01 +0800</lastBuildDate>
+    <pubDate>Mon, 24 Nov 2014 09:18:03 +0800</pubDate>
+    <lastBuildDate>Mon, 24 Nov 2014 09:18:03 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -79,7 +79,14 @@ post_text = post_text.gsub(/[\s&amp;amp;%$@*]+/, &amp;quot;&amp;quot;)
     results[word_in_trie] = results[word_in_trie] + 1
   end
 end
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Related Links&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;https://github.com/luikore/triez&lt;/li&gt;
+&lt;li&gt;http://zh.wikipedia.org/wiki/Trie&lt;/li&gt;
+&lt;/ul&gt;
+</description>
         <pubDate>Sun, 23 Nov 2014 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2014/11/23/trie-shu-de-ying-yong.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/23/trie-shu-de-ying-yong.html</guid>

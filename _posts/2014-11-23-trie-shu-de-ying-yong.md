@@ -75,3 +75,8 @@ post_text = post_text.gsub(/[\s&%$@*]+/, "")
   end
 end
 ```
+
+## Related Links
+
+* https://github.com/luikore/triez
+* http://zh.wikipedia.org/wiki/Trie
