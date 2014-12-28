@@ -6,9 +6,147 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 24 Nov 2014 09:18:03 +0800</pubDate>
-    <lastBuildDate>Mon, 24 Nov 2014 09:18:03 +0800</lastBuildDate>
+    <pubDate>Sun, 28 Dec 2014 19:46:37 +0800</pubDate>
+    <lastBuildDate>Sun, 28 Dec 2014 19:46:37 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>How search and index works?</title>
+        <description>&lt;p&gt;这篇文章主要目的是简单介绍搜索引擎的检索过程，并通过简单的Ruby代码实现。当然，由于本人能力有限，对搜索也是一知半解，注定话题不会太深，也不会太广...这不是 Solr 配置详解这种过于务实的话题，也不是某个搜索排序算法的深入研究的高深话题。&lt;/p&gt;
+
+&lt;h2&gt;Tokenize (分词)&lt;/h2&gt;
+
+&lt;p&gt;Tokenize 的过程是把Query或待索引的文本拆成最小的单元，也就是分词。包括以下过程：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Preprocess text
+
+&lt;ul&gt;
+&lt;li&gt;Synonym substitution&lt;/li&gt;
+&lt;li&gt;Remove illegal expressions&lt;/li&gt;
+&lt;li&gt;Remove stopwords.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Splitting and preparations for tokenizing
+
+&lt;ul&gt;
+&lt;li&gt;Split the text into words.&lt;/li&gt;
+&lt;li&gt;Truncate the amount of tokens.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Creating tokens / strings
+
+&lt;ul&gt;
+&lt;li&gt;Downcase each token.&lt;/li&gt;
+&lt;li&gt;Stemming each token.
+*&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Synonym Rings&lt;/strong&gt; (同义词环)
+同义词环（如图），把一组定义为等价关系的词汇连接起来，以提供搜索之用。事实上，这些词通常不是真正的同义词。例如，你在检查搜索日志，并和用户对话之后，你将发现不同的人在寻找同样的东西时，会输入不同的术语。某人要找 food processor（食物搅拌机），可能输入 &lt;code&gt;blender&lt;/code&gt; (搅拌机)，或下图中任何一个术语（或者常见的错误拼法）。不同类型网站，有着各自领域的同义词。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://seanconnolly.ca/web/0596527349/images/info3_0902.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Stopwords&lt;/strong&gt; （停词）正如字面意思，停词。有些高频词，例如“a”，对用户查询的意义不大，同时在索引中又占据比较多的资源，最重要的是这些词还会影响匹配文档的相关度，所以，干脆在分词的时候就把它去掉。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Automatic Stemming&lt;/strong&gt; (自动词干)功能，是搜索引擎的一个实用功能，把一个术语扩展，包含其他共享相同词干的术语。如果词干搜索机制很强，可能会把 &lt;code&gt;computer&lt;/code&gt; 这个搜索术语视为和 &lt;code&gt;computers&lt;/code&gt;、&lt;code&gt;computation&lt;/code&gt;、&lt;code&gt;computing&lt;/code&gt; 甚至 &lt;code&gt;comput&lt;/code&gt; 这些术语共享相同的词干 &lt;code&gt;comput&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/4e33f7f06e36361d59382ba60eb926564396b81d/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f617765736f6d655f73637265656e73686f742f363839303733343f4157534163636573734b657949643d305237464d57374158525643594d41505450523226457870697265733d31343139373632303333265369676e61747572653d7547716759664e66736a636f6d396e4e69465766787174394c3130253344&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;其他过程很容易理解了，整个Tokenize用Ruby代码的简单表示：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;def tokenize(text)
+  text.gsub(/&amp;amp;/, &amp;quot;and&amp;quot;).                      # Synonym substitution
+       gsub(/[^\w\s]+/, &amp;quot;&amp;quot;).                  # Remove illegal expressions
+       gsub(/\b(a|an|is)\b/i, &amp;quot;&amp;quot;).            # Remove stopwords
+       split(/\s+/).map do |token|            # Split the text into words
+         token.downcase.sub(/(.*?)s\Z/, &amp;#39;\1&amp;#39;) # Downcase each token
+       end
+end
+
+tokenize(&amp;quot;How search &amp;amp; index works?&amp;quot;) #=&amp;gt; [&amp;quot;how&amp;quot;, &amp;quot;search&amp;quot;, &amp;quot;and&amp;quot;, &amp;quot;index&amp;quot;, &amp;quot;work&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;其中Stemming过程过于简陋，但相关算法其实已经非常成熟了，比如Porter、Hunspell等算法。其中Ruby实现有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html&lt;/li&gt;
+&lt;li&gt;https://github.com/aurelian/ruby-stemmer&lt;/li&gt;
+&lt;li&gt;https://github.com/romanbsd/fast-stemmer&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Inverted Index (倒排索引)&lt;/h2&gt;
+
+&lt;p&gt;倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。&lt;/p&gt;
+
+&lt;p&gt;以英文为例，下面是要被索引的文本：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;T_0=&amp;quot;it is what it is&amp;quot;
+T_1=&amp;quot;what is it&amp;quot;
+T_2=&amp;quot;it is a banana&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;正向索引&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;docs = {
+  1 =&amp;gt; &amp;quot;it is what it is&amp;quot;,
+  2 =&amp;gt; &amp;quot;what is it&amp;quot;,
+  3 =&amp;gt; &amp;quot;it is a banana&amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;倒排索引&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt; &amp;quot;a&amp;quot;:      {2}
+ &amp;quot;banana&amp;quot;: {2}
+ &amp;quot;is&amp;quot;:     {0, 1, 2}
+ &amp;quot;it&amp;quot;:     {0, 1, 2}
+ &amp;quot;what&amp;quot;:   {0, 1}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;检索的条件&amp;quot;what&amp;quot;, &amp;quot;is&amp;quot; 和 &amp;quot;it&amp;quot; 将对应这个集合：&lt;code&gt;{0,1}&lt;/code&gt; &amp;amp; &lt;code&gt;{0,1,2}&lt;/code&gt; &amp;amp; &lt;code&gt;{0,1,2}&lt;/code&gt; = &lt;code&gt;{0,1}&lt;/code&gt;。即：0号和1号文档包含 what is it这三个关键词。&lt;/p&gt;
+
+&lt;p&gt;接着上面的Tokenize，用Ruby简单实现倒排索引过程， 其中对Query 分词和对文档分词使用的是同一方式（有时候两者会有微小差异）：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;require &amp;#39;set&amp;#39;
+require &amp;#39;pry&amp;#39;
+
+docs = {
+  1 =&amp;gt; &amp;quot;it is what it is&amp;quot;,
+  2 =&amp;gt; &amp;quot;what is it&amp;quot;,
+  3 =&amp;gt; &amp;quot;it is a banana&amp;quot;
+}
+
+def tokenize(text)
+  text.gsub(/&amp;amp;/, &amp;quot;and&amp;quot;).
+       gsub(/[^\w\s]+/, &amp;quot;&amp;quot;).
+       gsub(/\b(a|an|is)\b/i, &amp;quot;&amp;quot;).
+       split(/\s+/).map do |token|
+         token.downcase.sub(/(.*?)s\Z/, &amp;#39;\1&amp;#39;)
+       end
+end
+
+index = {}
+
+docs.each do |id, doc|
+  tokenize(doc).each do |word|
+    if index.has_key?(word)
+      index[word] &amp;lt;&amp;lt; id
+    else
+      index[word] = Set.new([id])
+    end
+  end
+end
+
+def search(text, index)
+  tokenize(text).map{ |word| index[word] || Set.new }.reduce(:&amp;amp;)
+end
+
+index_store = init_index_store(Docs)   =&amp;gt; {&amp;quot;it&amp;quot;=&amp;gt;#&amp;lt;Set: {1, 2, 3}&amp;gt;, &amp;quot;what&amp;quot;=&amp;gt;#&amp;lt;Set: {1, 2}&amp;gt;, &amp;quot;banana&amp;quot;=&amp;gt;#&amp;lt;Set: {3}&amp;gt;}
+search(&amp;quot;what is it?&amp;quot;, index_store)     =&amp;gt; #&amp;lt;Set: {1, 2}&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;至此，一个最简单是search engine就实现了，当然，我们还没涉及到排序，搜索过程使用的是最简单的 集合布尔模型。下面会涉及 &lt;code&gt;TF-IDF&lt;/code&gt; 相关度排序内容。&lt;/p&gt;
+
+&lt;h2&gt;Sort By  Relevance (按相关度排序)&lt;/h2&gt;
+
+&lt;p&gt;TODO&lt;/p&gt;
+</description>
+        <pubDate>Sun, 28 Dec 2014 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2014/12/28/how-search-and-index-works.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/12/28/how-search-and-index-works.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>Trie 树的应用之敏感词过滤</title>

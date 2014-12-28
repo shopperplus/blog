@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>How search and index works?</title>
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56538535-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <link rel="stylesheet" href="/blog/css/main.css">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2014/12/28/how-search-and-index-works.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Shopper+ Team Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">How search and index works?</h1>
+    <p class="post-meta">Dec 28, 2014 • Hooopo</p>
+  </header>
+
+  <article class="post-content">
+    <p>这篇文章主要目的是简单介绍搜索引擎的检索过程，并通过简单的Ruby代码实现。当然，由于本人能力有限，对搜索也是一知半解，注定话题不会太深，也不会太广...这不是 Solr 配置详解这种过于务实的话题，也不是某个搜索排序算法的深入研究的高深话题。</p>
+
+<h2>Tokenize (分词)</h2>
+
+<p>Tokenize 的过程是把Query或待索引的文本拆成最小的单元，也就是分词。包括以下过程：</p>
+
+<ul>
+<li>Preprocess text
+
+<ul>
+<li>Synonym substitution</li>
+<li>Remove illegal expressions</li>
+<li>Remove stopwords.</li>
+</ul></li>
+<li>Splitting and preparations for tokenizing
+
+<ul>
+<li>Split the text into words.</li>
+<li>Truncate the amount of tokens.</li>
+</ul></li>
+<li>Creating tokens / strings
+
+<ul>
+<li>Downcase each token.</li>
+<li>Stemming each token.
+*</li>
+</ul></li>
+</ul>
+
+<p><strong>Synonym Rings</strong> (同义词环)
+同义词环（如图），把一组定义为等价关系的词汇连接起来，以提供搜索之用。事实上，这些词通常不是真正的同义词。例如，你在检查搜索日志，并和用户对话之后，你将发现不同的人在寻找同样的东西时，会输入不同的术语。某人要找 food processor（食物搅拌机），可能输入 <code>blender</code> (搅拌机)，或下图中任何一个术语（或者常见的错误拼法）。不同类型网站，有着各自领域的同义词。</p>
+
+<p><img src="http://seanconnolly.ca/web/0596527349/images/info3_0902.jpg" alt=""></p>
+
+<p><strong>Stopwords</strong> （停词）正如字面意思，停词。有些高频词，例如“a”，对用户查询的意义不大，同时在索引中又占据比较多的资源，最重要的是这些词还会影响匹配文档的相关度，所以，干脆在分词的时候就把它去掉。</p>
+
+<p><strong>Automatic Stemming</strong> (自动词干)功能，是搜索引擎的一个实用功能，把一个术语扩展，包含其他共享相同词干的术语。如果词干搜索机制很强，可能会把 <code>computer</code> 这个搜索术语视为和 <code>computers</code>、<code>computation</code>、<code>computing</code> 甚至 <code>comput</code> 这些术语共享相同的词干 <code>comput</code>。</p>
+
+<p><img src="https://camo.githubusercontent.com/4e33f7f06e36361d59382ba60eb926564396b81d/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f617765736f6d655f73637265656e73686f742f363839303733343f4157534163636573734b657949643d305237464d57374158525643594d41505450523226457870697265733d31343139373632303333265369676e61747572653d7547716759664e66736a636f6d396e4e69465766787174394c3130253344" alt=""></p>
+
+<p>其他过程很容易理解了，整个Tokenize用Ruby代码的简单表示：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">def tokenize(text)
+  text.gsub(/&amp;/, &quot;and&quot;).                      # Synonym substitution
+       gsub(/[^\w\s]+/, &quot;&quot;).                  # Remove illegal expressions
+       gsub(/\b(a|an|is)\b/i, &quot;&quot;).            # Remove stopwords
+       split(/\s+/).map do |token|            # Split the text into words
+         token.downcase.sub(/(.*?)s\Z/, &#39;\1&#39;) # Downcase each token
+       end
+end
+
+tokenize(&quot;How search &amp; index works?&quot;) #=&gt; [&quot;how&quot;, &quot;search&quot;, &quot;and&quot;, &quot;index&quot;, &quot;work&quot;]
+</code></pre></div>
+<p>其中Stemming过程过于简陋，但相关算法其实已经非常成熟了，比如Porter、Hunspell等算法。其中Ruby实现有：</p>
+
+<ul>
+<li>http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html</li>
+<li>https://github.com/aurelian/ruby-stemmer</li>
+<li>https://github.com/romanbsd/fast-stemmer</li>
+</ul>
+
+<h2>Inverted Index (倒排索引)</h2>
+
+<p>倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。</p>
+
+<p>以英文为例，下面是要被索引的文本：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">T_0=&quot;it is what it is&quot;
+T_1=&quot;what is it&quot;
+T_2=&quot;it is a banana&quot;
+</code></pre></div>
+<p><strong>正向索引</strong>：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">docs = {
+  1 =&gt; &quot;it is what it is&quot;,
+  2 =&gt; &quot;what is it&quot;,
+  3 =&gt; &quot;it is a banana&quot;
+}
+</code></pre></div>
+<p><strong>倒排索引</strong>：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"> &quot;a&quot;:      {2}
+ &quot;banana&quot;: {2}
+ &quot;is&quot;:     {0, 1, 2}
+ &quot;it&quot;:     {0, 1, 2}
+ &quot;what&quot;:   {0, 1}
+</code></pre></div>
+<p>检索的条件&quot;what&quot;, &quot;is&quot; 和 &quot;it&quot; 将对应这个集合：<code>{0,1}</code> &amp; <code>{0,1,2}</code> &amp; <code>{0,1,2}</code> = <code>{0,1}</code>。即：0号和1号文档包含 what is it这三个关键词。</p>
+
+<p>接着上面的Tokenize，用Ruby简单实现倒排索引过程， 其中对Query 分词和对文档分词使用的是同一方式（有时候两者会有微小差异）：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">require &#39;set&#39;
+require &#39;pry&#39;
+
+docs = {
+  1 =&gt; &quot;it is what it is&quot;,
+  2 =&gt; &quot;what is it&quot;,
+  3 =&gt; &quot;it is a banana&quot;
+}
+
+def tokenize(text)
+  text.gsub(/&amp;/, &quot;and&quot;).
+       gsub(/[^\w\s]+/, &quot;&quot;).
+       gsub(/\b(a|an|is)\b/i, &quot;&quot;).
+       split(/\s+/).map do |token|
+         token.downcase.sub(/(.*?)s\Z/, &#39;\1&#39;)
+       end
+end
+
+index = {}
+
+docs.each do |id, doc|
+  tokenize(doc).each do |word|
+    if index.has_key?(word)
+      index[word] &lt;&lt; id
+    else
+      index[word] = Set.new([id])
+    end
+  end
+end
+
+def search(text, index)
+  tokenize(text).map{ |word| index[word] || Set.new }.reduce(:&amp;)
+end
+
+index_store = init_index_store(Docs)   =&gt; {&quot;it&quot;=&gt;#&lt;Set: {1, 2, 3}&gt;, &quot;what&quot;=&gt;#&lt;Set: {1, 2}&gt;, &quot;banana&quot;=&gt;#&lt;Set: {3}&gt;}
+search(&quot;what is it?&quot;, index_store)     =&gt; #&lt;Set: {1, 2}&gt;
+</code></pre></div>
+<p>至此，一个最简单是search engine就实现了，当然，我们还没涉及到排序，搜索过程使用的是最简单的 集合布尔模型。下面会涉及 <code>TF-IDF</code> 相关度排序内容。</p>
+
+<h2>Sort By  Relevance (按相关度排序)</h2>
+
+<p>TODO</p>
+
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shopper+ Team Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Shopper+ Team Blog</li>
+          <li><a href="mailto:tech@3cps.ca">tech@3cps.ca</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/shopperplus">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/shopperplus">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
