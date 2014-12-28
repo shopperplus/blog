@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 28 Dec 2014 19:46:37 +0800</pubDate>
-    <lastBuildDate>Sun, 28 Dec 2014 19:46:37 +0800</lastBuildDate>
+    <pubDate>Sun, 28 Dec 2014 20:03:36 +0800</pubDate>
+    <lastBuildDate>Sun, 28 Dec 2014 20:03:36 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -44,7 +44,7 @@
 &lt;p&gt;&lt;strong&gt;Synonym Rings&lt;/strong&gt; (同义词环)
 同义词环（如图），把一组定义为等价关系的词汇连接起来，以提供搜索之用。事实上，这些词通常不是真正的同义词。例如，你在检查搜索日志，并和用户对话之后，你将发现不同的人在寻找同样的东西时，会输入不同的术语。某人要找 food processor（食物搅拌机），可能输入 &lt;code&gt;blender&lt;/code&gt; (搅拌机)，或下图中任何一个术语（或者常见的错误拼法）。不同类型网站，有着各自领域的同义词。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://seanconnolly.ca/web/0596527349/images/info3_0902.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/fd218a73442258bb08528d3f02e7e47c0e57c110/687474703a2f2f7365616e636f6e6e6f6c6c792e63612f7765622f303539363532373334392f696d616765732f696e666f335f303930322e6a7067&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Stopwords&lt;/strong&gt; （停词）正如字面意思，停词。有些高频词，例如“a”，对用户查询的意义不大，同时在索引中又占据比较多的资源，最重要的是这些词还会影响匹配文档的相关度，所以，干脆在分词的时候就把它去掉。&lt;/p&gt;
 
