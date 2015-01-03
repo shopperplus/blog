@@ -6,9 +6,133 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 28 Dec 2014 20:03:36 +0800</pubDate>
-    <lastBuildDate>Sun, 28 Dec 2014 20:03:36 +0800</lastBuildDate>
+    <pubDate>Sun, 04 Jan 2015 02:00:32 +0800</pubDate>
+    <lastBuildDate>Sun, 04 Jan 2015 02:00:32 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>ActiveRecord Object Instantiate and Clone</title>
+        <description>&lt;h2&gt;initialize&lt;/h2&gt;
+
+&lt;p&gt;最常用的就是使用&lt;code&gt;new&lt;/code&gt;方法初始化一个&lt;code&gt;AR&lt;/code&gt;对象，比如 &lt;code&gt;User.new(:name =&amp;gt; &amp;quot;user name&amp;quot;)&lt;/code&gt;. &lt;code&gt;new&lt;/code&gt; 方法通过 &lt;code&gt;initialize&lt;/code&gt; 方法构造出一个新对象。大家几乎天天在用这个方法，不多说了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;# https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L276-L297
+
+def initialize(attributes = nil, options = {})
+  @attributes = self.class._default_attributes.dup
+
+  init_internals
+  initialize_internals_callback
+
+  self.class.define_attribute_methods
+  # +options+ argument is only needed to make protected_attributes gem easier to hook.
+  # Remove it when we drop support to this gem.
+  init_attributes(attributes, options) if attributes
+
+  yield self if block_given?
+  _run_initialize_callbacks
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;allocate + init_with&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;new&lt;/code&gt; 方法构造出来的对象在你未save之前都是 &lt;code&gt;new_record&lt;/code&gt;，即：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;user.new_record? #=&amp;gt; true
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在一些场景，我们已经有了对象&lt;code&gt;id&lt;/code&gt;和Raw Attributes，我们想要初始化一个AR对象。最经典的场景就是从缓存读出Raw Attributes之后。这时，使用 &lt;code&gt;new&lt;/code&gt; 方法就不合适。还好，Rails 给我们提供了一个后门：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;# https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L309-L322
+user = User.allocate
+user.init_with(&amp;quot;attributes&amp;quot; =&amp;gt; attributes, &amp;quot;new_record&amp;quot; =&amp;gt; false)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;我们知道，一个对象由类定义和属性组成，已知类定义之后，我们只要把属性填充给实例对象就完成了初始化过程。其实，这也绕过了使用&lt;code&gt;new&lt;/code&gt;方法来构造对象所需的内部复杂工序。&lt;/p&gt;
+
+&lt;h2&gt;instancate&lt;/h2&gt;
+
+&lt;p&gt;除此之外，如果你的attributes数据是从&lt;code&gt;DB&lt;/code&gt;获取来的，你可以使用更高级的&lt;code&gt;instancate&lt;/code&gt;方法，它对来源数据进行一次类型转换，然后再调用上述的 &lt;code&gt;allocate&lt;/code&gt; + &lt;code&gt;init_with&lt;/code&gt;。&lt;code&gt;find_by_sql&lt;/code&gt; 和&lt;code&gt;STI&lt;/code&gt;就是直接依赖 &lt;code&gt;instancate&lt;/code&gt; 来初始化AR 对象。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;# https://github.com/rails/rails/blob/298ec6de55e3adb7d012ba6a9db8b4dd5fd95779/activerecord/lib/active_record/persistence.rb#L56-L70
+
+def instantiate(attributes, column_types = {})
+  klass = discriminate_class_for_record(attributes)
+  attributes = klass.attributes_builder.build_from_database(attributes, column_types)
+  klass.allocate.init_with(&amp;#39;attributes&amp;#39; =&amp;gt; attributes, &amp;#39;new_record&amp;#39; =&amp;gt; false)
+end
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;initialize_dup&lt;/h2&gt;
+
+&lt;p&gt;如果我们已经有了一个存在的AR记录，想再初始化一个的话，使用&lt;code&gt;clone&lt;/code&gt;或&lt;code&gt;dup&lt;/code&gt;也是可行的。关于&lt;code&gt;clone&lt;/code&gt;和&lt;code&gt;dup&lt;/code&gt;区别，我觉得下面这段代码描述是最清晰的：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;class Object
+  def clone
+    clone = self.class.allocate
+
+    clone.copy_instance_variables(self)
+    clone.copy_singleton_class(self)
+
+    clone.initialize_clone(self)
+    clone.freeze if frozen?
+
+    clone
+  end
+
+  def dup
+    dup = self.class.allocate
+    dup.copy_instance_variables(self)
+    dup.initialize_dup(self)
+    dup
+  end
+
+  def initialize_clone(other)
+    initialize_copy(other)
+  end
+
+  def initialize_dup(other)
+    initialize_copy(other)
+  end
+
+  def initialize_copy(other)
+    # some internal stuff (don&amp;#39;t worry)
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;当然，&lt;code&gt;clone&lt;/code&gt;和&lt;code&gt;dup&lt;/code&gt;的区别这里不是重点，想说一下 &lt;code&gt;initialize_dup&lt;/code&gt; 钩子。 &lt;code&gt;initialize_dup&lt;/code&gt; 是AR内置的，我们在调用 &lt;code&gt;user.dup&lt;/code&gt; 时，底层调用的其实是它。注意，&lt;code&gt;user.dup&lt;/code&gt; 放回对象把id重置为空了，就是说这是一个 shallow copy.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;# https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L325-L364
+
+def initialize_dup(other) # :nodoc:
+  @attributes = @attributes.dup
+  @attributes.reset(self.class.primary_key)
+
+  _run_initialize_callbacks
+
+  @aggregation_cache = {}
+  @association_cache = {}
+
+  @new_record  = true
+  @destroyed   = false
+
+  super
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Question&lt;/h2&gt;
+
+&lt;p&gt;那么问题来了:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;为什么AR要自己实现一个 &lt;code&gt;initialize_dup&lt;/code&gt;，直接dup不行么？&lt;/li&gt;
+&lt;li&gt;我们在缓存的时候是直接把 AR 对象塞进去（即：&lt;code&gt;Rails.cache.write user.id, user&lt;/code&gt;），还是自己序列化反序列化？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Links&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;http://thekaiway.com/2013/07/26/assemble-ar-object/&lt;/li&gt;
+&lt;li&gt;http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/&lt;/li&gt;
+&lt;li&gt;http://www.jonathanleighton.com/articles/2011/initialize&lt;em&gt;clone-initialize&lt;/em&gt;dup-and-initialize_copy-in-ruby/&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 01 Jan 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/01/01/activerecord-object-instantiate-and-clone.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/01/01/activerecord-object-instantiate-and-clone.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>How search and index works?</title>
