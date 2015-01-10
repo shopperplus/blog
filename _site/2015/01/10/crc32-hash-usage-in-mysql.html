@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Shopper+ Team Blog</title>
+    <title>CRC32 Usage In MySQL</title>
     <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 ">
     <script>
@@ -20,7 +20,7 @@
     </script>
 
     <link rel="stylesheet" href="/blog/css/main.css">
-    <link rel="canonical" href="http://shopperplus.github.io/blog/">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2015/01/10/crc32-hash-usage-in-mysql.html">
 </head>
 
 
@@ -63,103 +63,81 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">CRC32 Usage In MySQL</h1>
+    <p class="post-meta">Jan 10, 2015 • Hooopo</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Jan 10, 2015</span>
+  <article class="post-content">
+    <p>CRC全称为Cyclic Redundancy Check，又叫循环冗余校验。CRC32是CRC算法的一种，常用于校验网络上传输的文件。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2015/01/10/crc32-hash-usage-in-mysql.html">CRC32 Usage In MySQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jan 1, 2015</span>
+<h2>How to Use CRC32 In MySQL &amp; Ruby</h2>
+<div class="highlight"><pre><code class="language-text" data-lang="text">mysql&gt; SELECT CRC32(&#39;hello&#39;);
++----------------+
+| CRC32(&#39;hello&#39;) |
++----------------+
+|      907060870 |
++----------------+
+</code></pre></div><div class="highlight"><pre><code class="language-ruby" data-lang="ruby">require &#39;zlib&#39;
+Zlib::crc32(&#39;hello&#39;) # =&gt; 907060870
+</code></pre></div>
+<h2>CRC32 Vs MD5</h2>
 
-        <h2>
-          <a class="post-link" href="/blog/2015/01/01/activerecord-object-instantiate-and-clone.html">ActiveRecord Object Instantiate and Clone</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Dec 28, 2014</span>
+<p>这里我们不谈校验，只说MySQL里如何利用CRC32来加快查询。首先我们得知道CRC32的基本特征：</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/12/28/how-search-and-index-works.html">How search and index works?</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 23, 2014</span>
+<ol>
+<li>CRC32函数返回值的范围是0-4294967296（2的32次方减1)</li>
+<li>相比MD5，CRC32函数很容易碰撞</li>
+</ol>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/23/trie-shu-de-ying-yong.html">Trie 树的应用之敏感词过滤</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 14, 2014</span>
+<h2>CRC32的使用场景</h2>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/14/upload-resources-to-aws-using-asset-sync.html">Upload resources to AWS using asset sync </a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>由上述两个基本特性可知，CRC32在MySQL里只需要用bigint存储，而MD5需要varchar来存储。但是CRC32很容易碰撞，这适合做索引么？</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/you-do-not-know-newrelic.html">You do not know NewRelic</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>场景：我们在做一个爬虫，对于一个URL，先去数据库里查询是否存在，如果不存在，插入到数据库中。大家都知道这种类型应用表会增长非常迅速，如果简单的</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">SELECT * FROM urls WHERE url = &#39;http://wwww.shopperplus.com&#39;;`
+</code></pre></div>
+<p>会每次全表扫描，效率非常低。如果在url列上面加索引会快一些，但由于url是varchar类型，字段本身的存储空间和索引占用的存储空间都比较大。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/tree/2014/11/08/the-title-of-the-new-post.html">Chorisia tree</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>如果加一个crc32_url列，并且只在这个列上加索引，索引空间就会小很多。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">SELECT * FROM urls WHERE crc_url = 907060870;
+</code></pre></div>
+<p>上面这种做法一定不可以，因为前面已经提到crc32函数会产生碰撞，也就是说值为907060870的不止有<code>hello</code>。一个小技巧是只使用crc32列来过滤：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">SELECT * FROM urls WHERE crc_url = 907060870 AND url = &#39;hello&#39;;
+</code></pre></div>
+<p>来看一下有碰撞时，索引利用情况：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">explain SELECT * FROM urls WHERE crc32_url = 907060870 AND url = &#39;hello&#39;\G;
+*************************** 1. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: urls
+         type: ref
+          key: index_urls_on_crc32_url
+      key_len: 4
+          ref: const
+         rows: 2
+        Extra: Using where
+</code></pre></div>
+<p>这样一来，大部分查询还是只需要扫描一行就获得结果。对于少部分碰撞的记录，只需要多扫描几行也可以正确获得结果。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html">Fastest Way To Load Data In MySQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+<p>url的场景从varchar到bigint的优化其实效果不是特别明显。另一个例子是文本，假如我们有一个text类型的字段（文章内容、评论、微博之类），每次插入之前要判断一下这个内容是否在数据库里存在了。如果使用crc32的技巧，改善的空间还是蛮大的。</p>
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/fastest-way-to-change-schema-in-mysql.html">Fastest Way To Change Schema In MySQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 8, 2014</span>
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
 
-        <h2>
-          <a class="post-link" href="/blog/2014/11/08/advanced-bitmask-attributes-for-sql.html">Advanced Bitmask Attributes for SQL</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 6, 2014</span>
-
-        <h2>
-          <a class="post-link" href="/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/blog/feed.xml">via RSS</a></p>
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
 </div>
 

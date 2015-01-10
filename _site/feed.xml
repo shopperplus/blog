@@ -6,9 +6,71 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 04 Jan 2015 02:00:32 +0800</pubDate>
-    <lastBuildDate>Sun, 04 Jan 2015 02:00:32 +0800</lastBuildDate>
+    <pubDate>Sat, 10 Jan 2015 14:59:29 +0800</pubDate>
+    <lastBuildDate>Sat, 10 Jan 2015 14:59:29 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>CRC32 Usage In MySQL</title>
+        <description>&lt;p&gt;CRC全称为Cyclic Redundancy Check，又叫循环冗余校验。CRC32是CRC算法的一种，常用于校验网络上传输的文件。&lt;/p&gt;
+
+&lt;h2&gt;How to Use CRC32 In MySQL &amp;amp; Ruby&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mysql&amp;gt; SELECT CRC32(&amp;#39;hello&amp;#39;);
++----------------+
+| CRC32(&amp;#39;hello&amp;#39;) |
++----------------+
+|      907060870 |
++----------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;require &amp;#39;zlib&amp;#39;
+Zlib::crc32(&amp;#39;hello&amp;#39;) # =&amp;gt; 907060870
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;CRC32 Vs MD5&lt;/h2&gt;
+
+&lt;p&gt;这里我们不谈校验，只说MySQL里如何利用CRC32来加快查询。首先我们得知道CRC32的基本特征：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;CRC32函数返回值的范围是0-4294967296（2的32次方减1)&lt;/li&gt;
+&lt;li&gt;相比MD5，CRC32函数很容易碰撞&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2&gt;CRC32的使用场景&lt;/h2&gt;
+
+&lt;p&gt;由上述两个基本特性可知，CRC32在MySQL里只需要用bigint存储，而MD5需要varchar来存储。但是CRC32很容易碰撞，这适合做索引么？&lt;/p&gt;
+
+&lt;p&gt;场景：我们在做一个爬虫，对于一个URL，先去数据库里查询是否存在，如果不存在，插入到数据库中。大家都知道这种类型应用表会增长非常迅速，如果简单的&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;SELECT * FROM urls WHERE url = &amp;#39;http://wwww.shopperplus.com&amp;#39;;`
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;会每次全表扫描，效率非常低。如果在url列上面加索引会快一些，但由于url是varchar类型，字段本身的存储空间和索引占用的存储空间都比较大。&lt;/p&gt;
+
+&lt;p&gt;如果加一个crc32_url列，并且只在这个列上加索引，索引空间就会小很多。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;SELECT * FROM urls WHERE crc_url = 907060870;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面这种做法一定不可以，因为前面已经提到crc32函数会产生碰撞，也就是说值为907060870的不止有&lt;code&gt;hello&lt;/code&gt;。一个小技巧是只使用crc32列来过滤：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;SELECT * FROM urls WHERE crc_url = 907060870 AND url = &amp;#39;hello&amp;#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;来看一下有碰撞时，索引利用情况：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;explain SELECT * FROM urls WHERE crc32_url = 907060870 AND url = &amp;#39;hello&amp;#39;\G;
+*************************** 1. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: urls
+         type: ref
+          key: index_urls_on_crc32_url
+      key_len: 4
+          ref: const
+         rows: 2
+        Extra: Using where
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这样一来，大部分查询还是只需要扫描一行就获得结果。对于少部分碰撞的记录，只需要多扫描几行也可以正确获得结果。&lt;/p&gt;
+
+&lt;p&gt;url的场景从varchar到bigint的优化其实效果不是特别明显。另一个例子是文本，假如我们有一个text类型的字段（文章内容、评论、微博之类），每次插入之前要判断一下这个内容是否在数据库里存在了。如果使用crc32的技巧，改善的空间还是蛮大的。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 10 Jan 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/01/10/crc32-hash-usage-in-mysql.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/01/10/crc32-hash-usage-in-mysql.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>ActiveRecord Object Instantiate and Clone</title>
@@ -694,33 +756,6 @@ SELECT `products`.* FROM `products`  WHERE `products`.`channels` IN (1, 2, 3, 8,
         <link>http://shopperplus.github.io/blog/2014/11/08/advanced-bitmask-attributes-for-sql.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/advanced-bitmask-attributes-for-sql.html</guid>
         
-        
-      </item>
-    
-      <item>
-        <title>Welcome to Jekyll!</title>
-        <description>&lt;p&gt;You’ll find this post in your &lt;code&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code&gt;jekyll serve --watch&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
-
-&lt;p&gt;To add new posts, simply add a file in the &lt;code&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
-
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;def print_hi(name)
-  puts &amp;quot;Hi, #{name}&amp;quot;
-end
-print_hi(&amp;#39;Tom&amp;#39;)
-#=&amp;gt; prints &amp;#39;Hi, Tom&amp;#39; to STDOUT.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://github.com/jekyll/jekyll-help&quot;&gt;Jekyll’s dedicated Help repository&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Thu, 06 Nov 2014 02:08:09 +0800</pubDate>
-        <link>http://shopperplus.github.io/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://shopperplus.github.io/blog/jekyll/update/2014/11/06/welcome-to-jekyll.html</guid>
-        
-        
-        <category>jekyll</category>
-        
-        <category>update</category>
         
       </item>
     
