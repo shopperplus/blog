@@ -20,7 +20,7 @@ end
 Event.update_all(:status => Event::STATUS[:close], "created_at > '2011-1-1'") # => update status to null
 Event.update_all(:status => Event::STATUS.fetch(:close), "created_at > '2011-1-1'") # => raise KeyError: key not found: :close
 ```
-上面例子由于错误拼写，把`closed`拼成 `close`，造成了一个`Silent failure`，而才有`fetch`方法就会在拼错时直接抛出异常，避免了之后的错误。
+上面例子由于错误拼写，把`closed`拼成 `close`，造成了一个`Silent failure`，而使用`fetch`方法就会在拼错时直接抛出异常，避免了之后的错误。
 
 ## 使用常量
 
