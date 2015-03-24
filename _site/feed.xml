@@ -6,9 +6,211 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 24 Jan 2015 16:01:32 +0800</pubDate>
-    <lastBuildDate>Sat, 24 Jan 2015 16:01:32 +0800</lastBuildDate>
+    <pubDate>Tue, 24 Mar 2015 21:47:51 +0800</pubDate>
+    <lastBuildDate>Tue, 24 Mar 2015 21:47:51 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Service Object: What Why and How?</title>
+        <description>&lt;p&gt;首先想说的是，Service Object 是在Rails里实践SRP的一种手段和模式，不仅仅是一个文件夹。&lt;/p&gt;
+
+&lt;h2&gt;Controller是交互入口&lt;/h2&gt;
+
+&lt;p&gt;像c/c++里，每个应用都会有一个入口，像下面这样：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;#include &amp;lt;iostream&amp;gt;
+// Many includes...
+
+int main(int argc, char *argv[]) {
+  // Fetch your data.
+  // Ex. Input data = Input.readFromUser(argc, argv);
+
+  Application app = Application(data);
+  app.start();
+
+  // Cleanup logic...
+  return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果运行上面的应用，main函数被调用，所有参数都被传递到&lt;code&gt;argv&lt;/code&gt;变量。&lt;/p&gt;
+
+&lt;p&gt;随着c/c++程序代码量增长，没有人会把逻辑放到main函数里面，main函数里只初始化一些常驻对象，然后调用start之类的方法去调用我们的业务逻辑。&lt;/p&gt;
+
+&lt;p&gt;Rails的每个Action其实就相当于c/c++里的main函数。&lt;/p&gt;
+
+&lt;p&gt;Rails里，每个Action和main函数一样都是与外部交互的入口。Controller和Action虽然表现为类和方法，但是不同Action相互之间是没有交互的。
+另外，Controller已经承担很多职责：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;解析用户输入 -&amp;gt; params&lt;/li&gt;
+&lt;li&gt;渲染view -&amp;gt; render&lt;/li&gt;
+&lt;li&gt;logging -&amp;gt; log&lt;/li&gt;
+&lt;li&gt;routing -&amp;gt; redirect&lt;/li&gt;
+&lt;li&gt;输出提示 -&amp;gt; flash&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Servies Object&lt;/h2&gt;
+
+&lt;p&gt;Service Object 封装了每一个业务流程。它负责组织应用领域模型（Model）之间的交互，并且不依赖于框架（Controller层）。你可以想象怎样的代码从Sinatra程序改成Rails会更容易，当然你不一定要这么做，我只是想解释一下什么是 &lt;code&gt;不依赖框架层&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;引人Service Object之后，可以带来很多好处：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Controller更容易测试。&lt;/li&gt;
+&lt;li&gt;业务逻辑从Controller中剥离，更容易独立测试。&lt;/li&gt;
+&lt;li&gt;业务与框架低耦合。&lt;/li&gt;
+&lt;li&gt;让Controller更slim。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Example 1&lt;/h2&gt;
+
+&lt;p&gt;重构之前的charge more controller：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;class OrdersController
+  def charge_execute
+    @order = Order.find(params[:id])
+    @order.total = params[:order][:total].to_f
+
+    redirect_to :action =&amp;gt; &amp;#39;charge_more&amp;#39;, :id =&amp;gt; @order and return unless @order.total &amp;gt; 0
+
+    # 1. init beanstream payment gateway
+    gateway = ActiveMerchant::Billing::BeanstreamGateway.new(
+            :login    =&amp;gt; $BEAN_STREAM_ID,
+            :user     =&amp;gt; $BEAN_STREAM_LOGIN,
+            :password =&amp;gt; $BEAN_STREAM_PASSWD
+    )
+
+    # 2. init creditcard, options or pair values
+    options = {
+      :order_id =&amp;gt; @order.id,
+      :billing_address =&amp;gt; {
+        :name     =&amp;gt; &amp;quot;#{@order.billing_first_name} #{@order.billing_last_name}&amp;quot;,
+        :phone    =&amp;gt; @order.billing_phone,
+        :address1 =&amp;gt; @order.billing_street_address,
+        :address2 =&amp;gt; @order.billing_street_address_2,
+        :city     =&amp;gt; @order.billing_city,
+        :state    =&amp;gt; @order.get_state_code,
+        :country  =&amp;gt; @order.get_country_code,
+        :zip      =&amp;gt; @order.billing_zip
+      },
+      :email  =&amp;gt; @order.email,
+      :ref1   =&amp;gt; &amp;quot;#{$DOMAIN_NAME} Order&amp;quot;
+    }
+
+    # 3. send payment info to gateway and deal with response
+    response = gateway.purchase(@order.total_in_cents, @order.get_creditcard, options)
+
+    if response.success?
+      credit_card = @order.credit_card
+      credit_card.transaction_id = credit_card.transaction_id + &amp;#39;,&amp;#39; + response.authorization
+      credit_card.save
+      flash[:notice] = &amp;quot;Extra money #{@order.total} has been charged&amp;quot;
+    else
+      flash[:notice] = &amp;quot;Error of processing charge: #{response.message}.&amp;quot;
+    end
+    redirect_to :action =&amp;gt; &amp;#39;show&amp;#39;, :id =&amp;gt; @order and return
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;重构之后：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;class OrdersController
+  def charge_execute
+    @order = Order.find(params[:id])
+    @amount = params[:order][:total].to_f
+    redirect_to :action =&amp;gt; &amp;#39;charge_more&amp;#39;, :id =&amp;gt; @order and return unless @amount &amp;gt; 0
+    charge_logic = OrderChargeLogic.new(@order, @amount * 100)
+    charge_logic.execute
+
+    if charge_logic.success?
+      flash[:notice] = &amp;quot;Extra money #{@amount} has been charged&amp;quot;
+    else
+      flash[:notice] = &amp;quot;Error of processing charge: #{charge_logic.message}.&amp;quot;
+    end
+    redirect_to :action =&amp;gt; &amp;#39;show&amp;#39;, :id =&amp;gt; @order and return
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Servies:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;class OrderChargeLogic
+  attr_reader :order, :amount, :gateway, :response, :creditcard_options, :credit_card
+
+  def initialize(order, amount)
+    @order, @amount = order, amount
+    @credit_card = @order.credit_card
+  end
+
+  def success?
+    response.success?
+  end
+
+  def message
+    response.message
+  end
+
+  def execute
+    init_beanstream_payment_gateway
+    init_creditcard_options
+    send_payment_info_to_gateway
+  end
+
+  private
+
+  def init_beanstream_payment_gateway
+    @gateway = ActiveMerchant::Billing::BeanstreamGateway.new(
+            :login    =&amp;gt; $BEAN_STREAM_ID,
+            :user     =&amp;gt; $BEAN_STREAM_LOGIN,
+            :password =&amp;gt; $BEAN_STREAM_PASSWD
+          )
+  end
+
+  def init_creditcard_options
+    @creditcard_options = {
+      :order_id =&amp;gt; order.id,
+      :billing_address =&amp;gt; {
+        :name     =&amp;gt; &amp;quot;#{@order.billing_first_name} #{@order.billing_last_name}&amp;quot;,
+        :phone    =&amp;gt; order.billing_phone,
+        :address1 =&amp;gt; order.billing_street_address,
+        :address2 =&amp;gt; order.billing_street_address_2,
+        :city     =&amp;gt; order.billing_city,
+        :state    =&amp;gt; order.get_state_code,
+        :country  =&amp;gt; order.get_country_code,
+        :zip      =&amp;gt; order.billing_zip
+      },
+      :email  =&amp;gt; order.email,
+      :ref1   =&amp;gt; &amp;quot;#{$DOMAIN_NAME} Order&amp;quot;
+    }
+  end
+
+  def send_payment_info_to_gateway
+    @response = gateway.purchase(amount, order.get_creditcard, creditcard_options)
+    if @response.success?
+      log_credit_card_transaction
+    end
+  end
+
+  def log_credit_card_transaction
+    credit_card.transaction_id = credit_card.transaction_id + &amp;#39;,&amp;#39; + @response.authorization
+    credit_card.save
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Example 2&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://gist.github.com/hooopo/f6a031dac417323dfec6&quot;&gt;https://gist.github.com/hooopo/f6a031dac417323dfec6&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;引人OrderChargeLogic之后，收款这一个业务逻辑脱离了Controller，可以在任何地方（Rake
+Task，Model，Background Task等）复用。Controller只负责调用OrderChargeLogic，根据OrderChargeLogic返回的状态去设置提示信息并且渲染。&lt;/p&gt;
+
+&lt;p&gt;也就是说，当你的项目越来越复杂，Model和Database Table不会完全一一对应了，同时也会有多个Model之间衍生出的业务逻辑，Service Object就是用来处理这部分内容。这部分逻辑不属于Controller，也不属于某一个Model。&lt;/p&gt;
+
+&lt;p&gt;如果你想让复杂Rails项目也能SRP，那么Service Object是一个值得尝试的手段。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ruby-china.org/topics/24780&quot;&gt;More Discuss&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 24 Mar 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/03/24/service-object-what-why-and-how.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/03/24/service-object-what-why-and-how.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>容错和速错</title>
@@ -26,7 +228,7 @@ end
 Event.update_all(:status =&amp;gt; Event::STATUS[:close], &amp;quot;created_at &amp;gt; &amp;#39;2011-1-1&amp;#39;&amp;quot;) # =&amp;gt; update status to null
 Event.update_all(:status =&amp;gt; Event::STATUS.fetch(:close), &amp;quot;created_at &amp;gt; &amp;#39;2011-1-1&amp;#39;&amp;quot;) # =&amp;gt; raise KeyError: key not found: :close
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面例子由于错误拼写，把&lt;code&gt;closed&lt;/code&gt;拼成 &lt;code&gt;close&lt;/code&gt;，造成了一个&lt;code&gt;Silent failure&lt;/code&gt;，而才有&lt;code&gt;fetch&lt;/code&gt;方法就会在拼错时直接抛出异常，避免了之后的错误。&lt;/p&gt;
+&lt;p&gt;上面例子由于错误拼写，把&lt;code&gt;closed&lt;/code&gt;拼成 &lt;code&gt;close&lt;/code&gt;，造成了一个&lt;code&gt;Silent failure&lt;/code&gt;，而使用&lt;code&gt;fetch&lt;/code&gt;方法就会在拼错时直接抛出异常，避免了之后的错误。&lt;/p&gt;
 
 &lt;h2&gt;使用常量&lt;/h2&gt;
 
@@ -685,54 +887,6 @@ REPLACE INTO TABLE product_sale_facts FIELDS TERMINATED BY &amp;#39;,&amp;#39; (
         <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Fastest Way To Change Schema In MySQL</title>
-        <description>&lt;p&gt;在默认情况，Rails的migration会为每个语句单独生成一条SQL来修改表结构。这对新建的表来说是无所谓的，一个create table 或 alter table都是瞬间完成。但是，对于已经存在大量数据的表来说，这样效率极低。刚开始没有注意这样的问题，order表的写法：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;rename_column :orders, &amp;quot;shipping_first_name&amp;quot;, &amp;quot;origin_shipping_first_name&amp;quot;
-rename_column :orders, &amp;quot;shipping_last_name&amp;quot;, &amp;quot;origin_shipping_last_name&amp;quot;
-remove_column :orders, &amp;quot;coupon_value&amp;quot;
-...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;结果就是，每一个rename&lt;em&gt;column和remove&lt;/em&gt;column执行时间大约4分钟，一共20多个这样的语句，migrate总计执行了近两个小时。因为alter table时mysql需要把整个order表copy to tmp table，而order表是非常庞大的。&lt;/p&gt;
-
-&lt;p&gt;解决办法是把上面的所有修改order的migration合并成一个，并且设置bulk 选项。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;class RenameOldOrderAddressRelatedColumn &amp;lt; ActiveRecord::Migration
-  def up
-    change_table(:orders, :bulk =&amp;gt; true) do |t|
-      t.remove :coupon_code
-      t.remove :coupon_value
-      t.remove :order_promotion_id
-      t.rename :order_status_code_id, :state
-      t.remove :in_process
-      [:first_name,
-       :last_name,
-       :phone,
-       :street_address,
-       :city,
-       :zip,
-       :company,
-       :street_address_2,
-       :country,
-       :state].each do |column|
-        t.rename &amp;quot;shipping_#{column}&amp;quot;, &amp;quot;origin_shipping_#{column}&amp;quot;
-        t.rename &amp;quot;billing_#{column}&amp;quot;, &amp;quot;origin_billing_#{column}&amp;quot;
-      end
-    end
-  end
-end
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这样，上面的migration只生成一条SQL语句：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ALTER TABLE `orders` DROP `coupon_code`, DROP `coupon_value`, DROP `order_promotion_id`, CHANGE `shipping_first_name` `origin_shipping_first_name` varchar(50) DEFAULT NULL, CHANGE `billing_first_name` `origin_billing_first_name` varchar(50) DEFAULT NULL, CHANGE `shipping_last_name` `origin_shipping_last_name` varchar(50) DEFAULT NULL, CHANGE `billing_last_name` `origin_billing_last_name` varchar(50) DEFAULT NULL, CHANGE `shipping_phone` `origin_shipping_phone` varchar(20) DEFAULT NULL, CHANGE `billing_phone` `origin_billing_phone` varchar(20) DEFAULT NULL, CHANGE `shipping_street_address` `origin_shipping_street_address` varchar(255) DEFAULT NULL, CHANGE `billing_street_address` `origin_billing_street_address` varchar(255) DEFAULT NULL, CHANGE `shipping_city` `origin_shipping_city` varchar(255) DEFAULT NULL, CHANGE `billing_city` `origin_billing_city` varchar(255) DEFAULT NULL, CHANGE `shipping_zip` `origin_shipping_zip` varchar(20) DEFAULT NULL, CHANGE `billing_zip` `origin_billing_zip` varchar(20) DEFAULT NULL, CHANGE `shipping_company` `origin_shipping_company` varchar(255) DEFAULT NULL, CHANGE `billing_company` `origin_billing_company` varchar(255) DEFAULT NULL, CHANGE `shipping_street_address_2` `origin_shipping_street_address_2` varchar(255) DEFAULT NULL, CHANGE `billing_street_address_2` `origin_billing_street_address_2` varchar(255) DEFAULT NULL, CHANGE `shipping_country` `origin_shipping_country` varchar(255) DEFAULT NULL, CHANGE `billing_country` `origin_billing_country` varchar(255) DEFAULT NULL, CHANGE `shipping_state` `origin_shipping_state` varchar(255) DEFAULT NULL, CHANGE `billing_state` `origin_billing_state` varchar(255) DEFAULT NULL
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;通过上面修改，整个migration执行时间降到了十分钟以内。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
-        <link>http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-change-schema-in-mysql.html</link>
-        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-change-schema-in-mysql.html</guid>
         
         
       </item>

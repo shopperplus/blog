@@ -85,7 +85,7 @@ end
 Event.update_all(:status =&gt; Event::STATUS[:close], &quot;created_at &gt; &#39;2011-1-1&#39;&quot;) # =&gt; update status to null
 Event.update_all(:status =&gt; Event::STATUS.fetch(:close), &quot;created_at &gt; &#39;2011-1-1&#39;&quot;) # =&gt; raise KeyError: key not found: :close
 </code></pre></div>
-<p>上面例子由于错误拼写，把<code>closed</code>拼成 <code>close</code>，造成了一个<code>Silent failure</code>，而才有<code>fetch</code>方法就会在拼错时直接抛出异常，避免了之后的错误。</p>
+<p>上面例子由于错误拼写，把<code>closed</code>拼成 <code>close</code>，造成了一个<code>Silent failure</code>，而使用<code>fetch</code>方法就会在拼错时直接抛出异常，避免了之后的错误。</p>
 
 <h2>使用常量</h2>
 
