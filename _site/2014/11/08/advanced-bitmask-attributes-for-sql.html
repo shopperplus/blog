@@ -83,23 +83,23 @@
 <p>最常规的做法是加两张表，一个频道表，另一个是频道和商品中间表，标记频道和商品对应关系。这种做法的缺点是查询的时候需要JOIN两张表。再加上对商品本身的属性进行过滤和排序，查询会非常慢。</p>
 
 <p>一个简化的办法就是使用Bitmask Attributes。</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">class Product &lt; AR
-  Channel1 = 1 &lt;&lt; 0 # 1
-  Channel2 = 1 &lt;&lt; 1 # 2
-  Channel3 = 1 &lt;&lt; 2 # 4
-  Channel4 = 1 &lt;&lt; 3 # 8
-end
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">AR</span>
+  <span class="no">Channel1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span> <span class="c1"># 1</span>
+  <span class="no">Channel2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="c1"># 2</span>
+  <span class="no">Channel3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span> <span class="c1"># 4</span>
+  <span class="no">Channel4</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span> <span class="c1"># 8</span>
+<span class="k">end</span>
 
-# == Schema Information
-#
-# Table name: products
-#
-#  id                        :integer          not null, primary key
-#  channels                  :integer
-#  retail_price              :decimal(8, 2)    default(0.0), not null
-#  purchase_price            :decimal(8, 2)    default(0.0), not null
-#  image                     :string(255)
-#  weight                    :integer
+<span class="c1"># == Schema Information</span>
+<span class="c1">#</span>
+<span class="c1"># Table name: products</span>
+<span class="c1">#</span>
+<span class="c1">#  id                        :integer          not null, primary key</span>
+<span class="c1">#  channels                  :integer</span>
+<span class="c1">#  retail_price              :decimal(8, 2)    default(0.0), not null</span>
+<span class="c1">#  purchase_price            :decimal(8, 2)    default(0.0), not null</span>
+<span class="c1">#  image                     :string(255)</span>
+<span class="c1">#  weight                    :integer</span>
 </code></pre></div>
 <h3>存储</h3>
 

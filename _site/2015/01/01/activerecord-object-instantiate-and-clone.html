@@ -74,100 +74,99 @@
     <h2>initialize</h2>
 
 <p>最常用的就是使用<code>new</code>方法初始化一个<code>AR</code>对象，比如 <code>User.new(:name =&gt; &quot;user name&quot;)</code>. <code>new</code> 方法通过 <code>initialize</code> 方法构造出一个新对象。大家几乎天天在用这个方法，不多说了。</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"># https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L276-L297
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L276-L297</span>
 
-def initialize(attributes = nil, options = {})
-  @attributes = self.class._default_attributes.dup
+<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attributes</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+  <span class="vi">@attributes</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">_default_attributes</span><span class="o">.</span><span class="n">dup</span>
 
-  init_internals
-  initialize_internals_callback
+  <span class="n">init_internals</span>
+  <span class="n">initialize_internals_callback</span>
 
-  self.class.define_attribute_methods
-  # +options+ argument is only needed to make protected_attributes gem easier to hook.
-  # Remove it when we drop support to this gem.
-  init_attributes(attributes, options) if attributes
+  <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">define_attribute_methods</span>
+  <span class="c1"># +options+ argument is only needed to make protected_attributes gem easier to hook.</span>
+  <span class="c1"># Remove it when we drop support to this gem.</span>
+  <span class="n">init_attributes</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> <span class="k">if</span> <span class="n">attributes</span>
 
-  yield self if block_given?
-  _run_initialize_callbacks
-end
+  <span class="k">yield</span> <span class="nb">self</span> <span class="k">if</span> <span class="nb">block_given?</span>
+  <span class="n">_run_initialize_callbacks</span>
+<span class="k">end</span>
 </code></pre></div>
 <h2>allocate + init_with</h2>
 
 <p><code>new</code> 方法构造出来的对象在你未save之前都是 <code>new_record</code>，即：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">user.new_record? #=&gt; true
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span><span class="o">.</span><span class="n">new_record?</span> <span class="c1">#=&gt; true</span>
 </code></pre></div>
 <p>在一些场景，我们已经有了对象<code>id</code>和Raw Attributes，我们想要初始化一个AR对象。最经典的场景就是从缓存读出Raw Attributes之后。这时，使用 <code>new</code> 方法就不合适。还好，Rails 给我们提供了一个后门：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"># https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L309-L322
-user = User.allocate
-user.init_with(&quot;attributes&quot; =&gt; attributes, &quot;new_record&quot; =&gt; false)
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L309-L322</span>
+<span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">allocate</span>
+<span class="n">user</span><span class="o">.</span><span class="n">init_with</span><span class="p">(</span><span class="s2">&quot;attributes&quot;</span> <span class="o">=&gt;</span> <span class="n">attributes</span><span class="p">,</span> <span class="s2">&quot;new_record&quot;</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">)</span>
 </code></pre></div>
 <p>我们知道，一个对象由类定义和属性组成，已知类定义之后，我们只要把属性填充给实例对象就完成了初始化过程。其实，这也绕过了使用<code>new</code>方法来构造对象所需的内部复杂工序。</p>
 
 <h2>instancate</h2>
 
 <p>除此之外，如果你的attributes数据是从<code>DB</code>获取来的，你可以使用更高级的<code>instancate</code>方法，它对来源数据进行一次类型转换，然后再调用上述的 <code>allocate</code> + <code>init_with</code>。<code>find_by_sql</code> 和<code>STI</code>就是直接依赖 <code>instancate</code> 来初始化AR 对象。</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"># https://github.com/rails/rails/blob/298ec6de55e3adb7d012ba6a9db8b4dd5fd95779/activerecord/lib/active_record/persistence.rb#L56-L70
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># https://github.com/rails/rails/blob/298ec6de55e3adb7d012ba6a9db8b4dd5fd95779/activerecord/lib/active_record/persistence.rb#L56-L70</span>
 
-def instantiate(attributes, column_types = {})
-  klass = discriminate_class_for_record(attributes)
-  attributes = klass.attributes_builder.build_from_database(attributes, column_types)
-  klass.allocate.init_with(&#39;attributes&#39; =&gt; attributes, &#39;new_record&#39; =&gt; false)
-end
-
+<span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">column_types</span> <span class="o">=</span> <span class="p">{})</span>
+  <span class="n">klass</span> <span class="o">=</span> <span class="n">discriminate_class_for_record</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+  <span class="n">attributes</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">attributes_builder</span><span class="o">.</span><span class="n">build_from_database</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">column_types</span><span class="p">)</span>
+  <span class="n">klass</span><span class="o">.</span><span class="n">allocate</span><span class="o">.</span><span class="n">init_with</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span> <span class="o">=&gt;</span> <span class="n">attributes</span><span class="p">,</span> <span class="s1">&#39;new_record&#39;</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">)</span>
+<span class="k">end</span>
 </code></pre></div>
 <h2>initialize_dup</h2>
 
 <p>如果我们已经有了一个存在的AR记录，想再初始化一个的话，使用<code>clone</code>或<code>dup</code>也是可行的。关于<code>clone</code>和<code>dup</code>区别，我觉得下面这段代码描述是最清晰的：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">class Object
-  def clone
-    clone = self.class.allocate
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Object</span>
+  <span class="k">def</span> <span class="nf">clone</span>
+    <span class="nb">clone</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">allocate</span>
 
-    clone.copy_instance_variables(self)
-    clone.copy_singleton_class(self)
+    <span class="nb">clone</span><span class="o">.</span><span class="n">copy_instance_variables</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="nb">clone</span><span class="o">.</span><span class="n">copy_singleton_class</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
 
-    clone.initialize_clone(self)
-    clone.freeze if frozen?
+    <span class="nb">clone</span><span class="o">.</span><span class="n">initialize_clone</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="nb">clone</span><span class="o">.</span><span class="n">freeze</span> <span class="k">if</span> <span class="nb">frozen?</span>
 
-    clone
-  end
+    <span class="nb">clone</span>
+  <span class="k">end</span>
 
-  def dup
-    dup = self.class.allocate
-    dup.copy_instance_variables(self)
-    dup.initialize_dup(self)
-    dup
-  end
+  <span class="k">def</span> <span class="nf">dup</span>
+    <span class="nb">dup</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">allocate</span>
+    <span class="nb">dup</span><span class="o">.</span><span class="n">copy_instance_variables</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="nb">dup</span><span class="o">.</span><span class="n">initialize_dup</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="nb">dup</span>
+  <span class="k">end</span>
 
-  def initialize_clone(other)
-    initialize_copy(other)
-  end
+  <span class="k">def</span> <span class="nf">initialize_clone</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+    <span class="n">initialize_copy</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+  <span class="k">end</span>
 
-  def initialize_dup(other)
-    initialize_copy(other)
-  end
+  <span class="k">def</span> <span class="nf">initialize_dup</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+    <span class="n">initialize_copy</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+  <span class="k">end</span>
 
-  def initialize_copy(other)
-    # some internal stuff (don&#39;t worry)
-  end
-end
+  <span class="k">def</span> <span class="nf">initialize_copy</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+    <span class="c1"># some internal stuff (don&#39;t worry)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre></div>
 <p>当然，<code>clone</code>和<code>dup</code>的区别这里不是重点，想说一下 <code>initialize_dup</code> 钩子。 <code>initialize_dup</code> 是AR内置的，我们在调用 <code>user.dup</code> 时，底层调用的其实是它。注意，<code>user.dup</code> 放回对象把id重置为空了，就是说这是一个 shallow copy.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"># https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L325-L364
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L325-L364</span>
 
-def initialize_dup(other) # :nodoc:
-  @attributes = @attributes.dup
-  @attributes.reset(self.class.primary_key)
+<span class="k">def</span> <span class="nf">initialize_dup</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="c1"># :nodoc:</span>
+  <span class="vi">@attributes</span> <span class="o">=</span> <span class="vi">@attributes</span><span class="o">.</span><span class="n">dup</span>
+  <span class="vi">@attributes</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">primary_key</span><span class="p">)</span>
 
-  _run_initialize_callbacks
+  <span class="n">_run_initialize_callbacks</span>
 
-  @aggregation_cache = {}
-  @association_cache = {}
+  <span class="vi">@aggregation_cache</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="vi">@association_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
-  @new_record  = true
-  @destroyed   = false
+  <span class="vi">@new_record</span>  <span class="o">=</span> <span class="kp">true</span>
+  <span class="vi">@destroyed</span>   <span class="o">=</span> <span class="kp">false</span>
 
-  super
-end
+  <span class="k">super</span>
+<span class="k">end</span>
 </code></pre></div>
 <h2>Question</h2>
 

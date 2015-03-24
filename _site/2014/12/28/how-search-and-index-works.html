@@ -112,16 +112,16 @@
 <p><img src="https://camo.githubusercontent.com/4e33f7f06e36361d59382ba60eb926564396b81d/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f617765736f6d655f73637265656e73686f742f363839303733343f4157534163636573734b657949643d305237464d57374158525643594d41505450523226457870697265733d31343139373632303333265369676e61747572653d7547716759664e66736a636f6d396e4e69465766787174394c3130253344" alt=""></p>
 
 <p>其他过程很容易理解了，整个Tokenize用Ruby代码的简单表示：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">def tokenize(text)
-  text.gsub(/&amp;/, &quot;and&quot;).                      # Synonym substitution
-       gsub(/[^\w\s]+/, &quot;&quot;).                  # Remove illegal expressions
-       gsub(/\b(a|an|is)\b/i, &quot;&quot;).            # Remove stopwords
-       split(/\s+/).map do |token|            # Split the text into words
-         token.downcase.sub(/(.*?)s\Z/, &#39;\1&#39;) # Downcase each token
-       end
-end
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="n">text</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/&amp;/</span><span class="p">,</span> <span class="s2">&quot;and&quot;</span><span class="p">)</span><span class="o">.</span>                      <span class="c1"># Synonym substitution</span>
+       <span class="nb">gsub</span><span class="p">(</span><span class="sr">/[^\w\s]+/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span>                  <span class="c1"># Remove illegal expressions</span>
+       <span class="nb">gsub</span><span class="p">(</span><span class="sr">/\b(a|an|is)\b/i</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span>            <span class="c1"># Remove stopwords</span>
+       <span class="nb">split</span><span class="p">(</span><span class="sr">/\s+/</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">token</span><span class="o">|</span>            <span class="c1"># Split the text into words</span>
+         <span class="n">token</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sr">/(.*?)s\Z/</span><span class="p">,</span> <span class="s1">&#39;\1&#39;</span><span class="p">)</span> <span class="c1"># Downcase each token</span>
+       <span class="k">end</span>
+<span class="k">end</span>
 
-tokenize(&quot;How search &amp; index works?&quot;) #=&gt; [&quot;how&quot;, &quot;search&quot;, &quot;and&quot;, &quot;index&quot;, &quot;work&quot;]
+<span class="n">tokenize</span><span class="p">(</span><span class="s2">&quot;How search &amp; index works?&quot;</span><span class="p">)</span> <span class="c1">#=&gt; [&quot;how&quot;, &quot;search&quot;, &quot;and&quot;, &quot;index&quot;, &quot;work&quot;]</span>
 </code></pre></div>
 <p>其中Stemming过程过于简陋，但相关算法其实已经非常成熟了，比如Porter、Hunspell等算法。其中Ruby实现有：</p>
 
@@ -141,11 +141,11 @@ T_1=&quot;what is it&quot;
 T_2=&quot;it is a banana&quot;
 </code></pre></div>
 <p><strong>正向索引</strong>：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">docs = {
-  1 =&gt; &quot;it is what it is&quot;,
-  2 =&gt; &quot;what is it&quot;,
-  3 =&gt; &quot;it is a banana&quot;
-}
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">docs</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="mi">1</span> <span class="o">=&gt;</span> <span class="s2">&quot;it is what it is&quot;</span><span class="p">,</span>
+  <span class="mi">2</span> <span class="o">=&gt;</span> <span class="s2">&quot;what is it&quot;</span><span class="p">,</span>
+  <span class="mi">3</span> <span class="o">=&gt;</span> <span class="s2">&quot;it is a banana&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>倒排索引</strong>：</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text"> &quot;a&quot;:      {2}
@@ -157,42 +157,42 @@ T_2=&quot;it is a banana&quot;
 <p>检索的条件&quot;what&quot;, &quot;is&quot; 和 &quot;it&quot; 将对应这个集合：<code>{0,1}</code> &amp; <code>{0,1,2}</code> &amp; <code>{0,1,2}</code> = <code>{0,1}</code>。即：0号和1号文档包含 what is it这三个关键词。</p>
 
 <p>接着上面的Tokenize，用Ruby简单实现倒排索引过程， 其中对Query 分词和对文档分词使用的是同一方式（有时候两者会有微小差异）：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">require &#39;set&#39;
-require &#39;pry&#39;
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;set&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;pry&#39;</span>
 
-docs = {
-  1 =&gt; &quot;it is what it is&quot;,
-  2 =&gt; &quot;what is it&quot;,
-  3 =&gt; &quot;it is a banana&quot;
-}
+<span class="n">docs</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="mi">1</span> <span class="o">=&gt;</span> <span class="s2">&quot;it is what it is&quot;</span><span class="p">,</span>
+  <span class="mi">2</span> <span class="o">=&gt;</span> <span class="s2">&quot;what is it&quot;</span><span class="p">,</span>
+  <span class="mi">3</span> <span class="o">=&gt;</span> <span class="s2">&quot;it is a banana&quot;</span>
+<span class="p">}</span>
 
-def tokenize(text)
-  text.gsub(/&amp;/, &quot;and&quot;).
-       gsub(/[^\w\s]+/, &quot;&quot;).
-       gsub(/\b(a|an|is)\b/i, &quot;&quot;).
-       split(/\s+/).map do |token|
-         token.downcase.sub(/(.*?)s\Z/, &#39;\1&#39;)
-       end
-end
+<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="n">text</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/&amp;/</span><span class="p">,</span> <span class="s2">&quot;and&quot;</span><span class="p">)</span><span class="o">.</span>
+       <span class="nb">gsub</span><span class="p">(</span><span class="sr">/[^\w\s]+/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span>
+       <span class="nb">gsub</span><span class="p">(</span><span class="sr">/\b(a|an|is)\b/i</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span>
+       <span class="nb">split</span><span class="p">(</span><span class="sr">/\s+/</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">token</span><span class="o">|</span>
+         <span class="n">token</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sr">/(.*?)s\Z/</span><span class="p">,</span> <span class="s1">&#39;\1&#39;</span><span class="p">)</span>
+       <span class="k">end</span>
+<span class="k">end</span>
 
-index = {}
+<span class="n">index</span> <span class="o">=</span> <span class="p">{}</span>
 
-docs.each do |id, doc|
-  tokenize(doc).each do |word|
-    if index.has_key?(word)
-      index[word] &lt;&lt; id
-    else
-      index[word] = Set.new([id])
-    end
-  end
-end
+<span class="n">docs</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">id</span><span class="p">,</span> <span class="n">doc</span><span class="o">|</span>
+  <span class="n">tokenize</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">word</span><span class="o">|</span>
+    <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">has_key?</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+      <span class="n">index</span><span class="o">[</span><span class="n">word</span><span class="o">]</span> <span class="o">&lt;&lt;</span> <span class="nb">id</span>
+    <span class="k">else</span>
+      <span class="n">index</span><span class="o">[</span><span class="n">word</span><span class="o">]</span> <span class="o">=</span> <span class="no">Set</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="nb">id</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-def search(text, index)
-  tokenize(text).map{ |word| index[word] || Set.new }.reduce(:&amp;)
-end
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+  <span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">{</span> <span class="o">|</span><span class="n">word</span><span class="o">|</span> <span class="n">index</span><span class="o">[</span><span class="n">word</span><span class="o">]</span> <span class="o">||</span> <span class="no">Set</span><span class="o">.</span><span class="n">new</span> <span class="p">}</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="ss">:&amp;</span><span class="p">)</span>
+<span class="k">end</span>
 
-index_store = init_index_store(Docs)   =&gt; {&quot;it&quot;=&gt;#&lt;Set: {1, 2, 3}&gt;, &quot;what&quot;=&gt;#&lt;Set: {1, 2}&gt;, &quot;banana&quot;=&gt;#&lt;Set: {3}&gt;}
-search(&quot;what is it?&quot;, index_store)     =&gt; #&lt;Set: {1, 2}&gt;
+<span class="n">index_store</span> <span class="o">=</span> <span class="n">init_index_store</span><span class="p">(</span><span class="no">Docs</span><span class="p">)</span>   <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">&quot;it&quot;</span><span class="o">=&gt;</span><span class="c1">#&lt;Set: {1, 2, 3}&gt;, &quot;what&quot;=&gt;#&lt;Set: {1, 2}&gt;, &quot;banana&quot;=&gt;#&lt;Set: {3}&gt;}</span>
+<span class="n">search</span><span class="p">(</span><span class="s2">&quot;what is it?&quot;</span><span class="p">,</span> <span class="n">index_store</span><span class="p">)</span>     <span class="o">=&gt;</span> <span class="c1">#&lt;Set: {1, 2}&gt;</span>
 </code></pre></div>
 <p>至此，一个最简单是search engine就实现了，当然，我们还没涉及到排序，搜索过程使用的是最简单的 集合布尔模型。下面会涉及 <code>TF-IDF</code> 相关度排序内容。</p>
 

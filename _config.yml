@@ -12,4 +12,4 @@ github_username:  shopperplus
 
 # Build settings
 markdown: redcarpet 
-highlighter: true
+highlighter: pygments

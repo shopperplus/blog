@@ -76,19 +76,19 @@
 <h2>Controller是交互入口</h2>
 
 <p>像c/c++里，每个应用都会有一个入口，像下面这样：</p>
-<div class="highlight"><pre><code class="language-c" data-lang="c">#include &lt;iostream&gt;
-// Many includes...
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &lt;iostream&gt;</span>
+<span class="c1">// Many includes...</span>
 
-int main(int argc, char *argv[]) {
-  // Fetch your data.
-  // Ex. Input data = Input.readFromUser(argc, argv);
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="c1">// Fetch your data.</span>
+  <span class="c1">// Ex. Input data = Input.readFromUser(argc, argv);</span>
 
-  Application app = Application(data);
-  app.start();
+  <span class="n">Application</span> <span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">app</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
 
-  // Cleanup logic...
-  return 0;
-}
+  <span class="c1">// Cleanup logic...</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>如果运行上面的应用，main函数被调用，所有参数都被传递到<code>argv</code>变量。</p>
 
@@ -123,133 +123,133 @@ int main(int argc, char *argv[]) {
 <h2>Example 1</h2>
 
 <p>重构之前的charge more controller：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">class OrdersController
-  def charge_execute
-    @order = Order.find(params[:id])
-    @order.total = params[:order][:total].to_f
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">OrdersController</span>
+  <span class="k">def</span> <span class="nf">charge_execute</span>
+    <span class="vi">@order</span> <span class="o">=</span> <span class="no">Order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@order</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:order</span><span class="o">][</span><span class="ss">:total</span><span class="o">].</span><span class="n">to_f</span>
 
-    redirect_to :action =&gt; &#39;charge_more&#39;, :id =&gt; @order and return unless @order.total &gt; 0
+    <span class="n">redirect_to</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s1">&#39;charge_more&#39;</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="vi">@order</span> <span class="ow">and</span> <span class="k">return</span> <span class="k">unless</span> <span class="vi">@order</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
-    # 1. init beanstream payment gateway
-    gateway = ActiveMerchant::Billing::BeanstreamGateway.new(
-            :login    =&gt; $BEAN_STREAM_ID,
-            :user     =&gt; $BEAN_STREAM_LOGIN,
-            :password =&gt; $BEAN_STREAM_PASSWD
-    )
+    <span class="c1"># 1. init beanstream payment gateway</span>
+    <span class="n">gateway</span> <span class="o">=</span> <span class="no">ActiveMerchant</span><span class="o">::</span><span class="no">Billing</span><span class="o">::</span><span class="no">BeanstreamGateway</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+            <span class="ss">:login</span>    <span class="o">=&gt;</span> <span class="vg">$BEAN_STREAM_ID</span><span class="p">,</span>
+            <span class="ss">:user</span>     <span class="o">=&gt;</span> <span class="vg">$BEAN_STREAM_LOGIN</span><span class="p">,</span>
+            <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="vg">$BEAN_STREAM_PASSWD</span>
+    <span class="p">)</span>
 
-    # 2. init creditcard, options or pair values
-    options = {
-      :order_id =&gt; @order.id,
-      :billing_address =&gt; {
-        :name     =&gt; &quot;#{@order.billing_first_name} #{@order.billing_last_name}&quot;,
-        :phone    =&gt; @order.billing_phone,
-        :address1 =&gt; @order.billing_street_address,
-        :address2 =&gt; @order.billing_street_address_2,
-        :city     =&gt; @order.billing_city,
-        :state    =&gt; @order.get_state_code,
-        :country  =&gt; @order.get_country_code,
-        :zip      =&gt; @order.billing_zip
-      },
-      :email  =&gt; @order.email,
-      :ref1   =&gt; &quot;#{$DOMAIN_NAME} Order&quot;
-    }
+    <span class="c1"># 2. init creditcard, options or pair values</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">:order_id</span> <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+      <span class="ss">:billing_address</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">:name</span>     <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vi">@order</span><span class="o">.</span><span class="n">billing_first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="vi">@order</span><span class="o">.</span><span class="n">billing_last_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="ss">:phone</span>    <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">billing_phone</span><span class="p">,</span>
+        <span class="ss">:address1</span> <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">billing_street_address</span><span class="p">,</span>
+        <span class="ss">:address2</span> <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">billing_street_address_2</span><span class="p">,</span>
+        <span class="ss">:city</span>     <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">billing_city</span><span class="p">,</span>
+        <span class="ss">:state</span>    <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">get_state_code</span><span class="p">,</span>
+        <span class="ss">:country</span>  <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">get_country_code</span><span class="p">,</span>
+        <span class="ss">:zip</span>      <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">billing_zip</span>
+      <span class="p">},</span>
+      <span class="ss">:email</span>  <span class="o">=&gt;</span> <span class="vi">@order</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
+      <span class="ss">:ref1</span>   <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$DOMAIN_NAME</span><span class="si">}</span><span class="s2"> Order&quot;</span>
+    <span class="p">}</span>
 
-    # 3. send payment info to gateway and deal with response
-    response = gateway.purchase(@order.total_in_cents, @order.get_creditcard, options)
+    <span class="c1"># 3. send payment info to gateway and deal with response</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">gateway</span><span class="o">.</span><span class="n">purchase</span><span class="p">(</span><span class="vi">@order</span><span class="o">.</span><span class="n">total_in_cents</span><span class="p">,</span> <span class="vi">@order</span><span class="o">.</span><span class="n">get_creditcard</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
 
-    if response.success?
-      credit_card = @order.credit_card
-      credit_card.transaction_id = credit_card.transaction_id + &#39;,&#39; + response.authorization
-      credit_card.save
-      flash[:notice] = &quot;Extra money #{@order.total} has been charged&quot;
-    else
-      flash[:notice] = &quot;Error of processing charge: #{response.message}.&quot;
-    end
-    redirect_to :action =&gt; &#39;show&#39;, :id =&gt; @order and return
-  end
-end
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">success?</span>
+      <span class="n">credit_card</span> <span class="o">=</span> <span class="vi">@order</span><span class="o">.</span><span class="n">credit_card</span>
+      <span class="n">credit_card</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="n">credit_card</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">response</span><span class="o">.</span><span class="n">authorization</span>
+      <span class="n">credit_card</span><span class="o">.</span><span class="n">save</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Extra money </span><span class="si">#{</span><span class="vi">@order</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2"> has been charged&quot;</span>
+    <span class="k">else</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Error of processing charge: </span><span class="si">#{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="k">end</span>
+    <span class="n">redirect_to</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="vi">@order</span> <span class="ow">and</span> <span class="k">return</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre></div>
 <p>重构之后：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">class OrdersController
-  def charge_execute
-    @order = Order.find(params[:id])
-    @amount = params[:order][:total].to_f
-    redirect_to :action =&gt; &#39;charge_more&#39;, :id =&gt; @order and return unless @amount &gt; 0
-    charge_logic = OrderChargeLogic.new(@order, @amount * 100)
-    charge_logic.execute
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">OrdersController</span>
+  <span class="k">def</span> <span class="nf">charge_execute</span>
+    <span class="vi">@order</span> <span class="o">=</span> <span class="no">Order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@amount</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:order</span><span class="o">][</span><span class="ss">:total</span><span class="o">].</span><span class="n">to_f</span>
+    <span class="n">redirect_to</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s1">&#39;charge_more&#39;</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="vi">@order</span> <span class="ow">and</span> <span class="k">return</span> <span class="k">unless</span> <span class="vi">@amount</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">charge_logic</span> <span class="o">=</span> <span class="no">OrderChargeLogic</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@order</span><span class="p">,</span> <span class="vi">@amount</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">charge_logic</span><span class="o">.</span><span class="n">execute</span>
 
-    if charge_logic.success?
-      flash[:notice] = &quot;Extra money #{@amount} has been charged&quot;
-    else
-      flash[:notice] = &quot;Error of processing charge: #{charge_logic.message}.&quot;
-    end
-    redirect_to :action =&gt; &#39;show&#39;, :id =&gt; @order and return
-  end
-end
+    <span class="k">if</span> <span class="n">charge_logic</span><span class="o">.</span><span class="n">success?</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Extra money </span><span class="si">#{</span><span class="vi">@amount</span><span class="si">}</span><span class="s2"> has been charged&quot;</span>
+    <span class="k">else</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Error of processing charge: </span><span class="si">#{</span><span class="n">charge_logic</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="k">end</span>
+    <span class="n">redirect_to</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="vi">@order</span> <span class="ow">and</span> <span class="k">return</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre></div>
 <p>Servies:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">class OrderChargeLogic
-  attr_reader :order, :amount, :gateway, :response, :creditcard_options, :credit_card
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">OrderChargeLogic</span>
+  <span class="kp">attr_reader</span> <span class="ss">:order</span><span class="p">,</span> <span class="ss">:amount</span><span class="p">,</span> <span class="ss">:gateway</span><span class="p">,</span> <span class="ss">:response</span><span class="p">,</span> <span class="ss">:creditcard_options</span><span class="p">,</span> <span class="ss">:credit_card</span>
 
-  def initialize(order, amount)
-    @order, @amount = order, amount
-    @credit_card = @order.credit_card
-  end
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">amount</span><span class="p">)</span>
+    <span class="vi">@order</span><span class="p">,</span> <span class="vi">@amount</span> <span class="o">=</span> <span class="n">order</span><span class="p">,</span> <span class="n">amount</span>
+    <span class="vi">@credit_card</span> <span class="o">=</span> <span class="vi">@order</span><span class="o">.</span><span class="n">credit_card</span>
+  <span class="k">end</span>
 
-  def success?
-    response.success?
-  end
+  <span class="k">def</span> <span class="nf">success?</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">success?</span>
+  <span class="k">end</span>
 
-  def message
-    response.message
-  end
+  <span class="k">def</span> <span class="nf">message</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">message</span>
+  <span class="k">end</span>
 
-  def execute
-    init_beanstream_payment_gateway
-    init_creditcard_options
-    send_payment_info_to_gateway
-  end
+  <span class="k">def</span> <span class="nf">execute</span>
+    <span class="n">init_beanstream_payment_gateway</span>
+    <span class="n">init_creditcard_options</span>
+    <span class="n">send_payment_info_to_gateway</span>
+  <span class="k">end</span>
 
-  private
+  <span class="kp">private</span>
 
-  def init_beanstream_payment_gateway
-    @gateway = ActiveMerchant::Billing::BeanstreamGateway.new(
-            :login    =&gt; $BEAN_STREAM_ID,
-            :user     =&gt; $BEAN_STREAM_LOGIN,
-            :password =&gt; $BEAN_STREAM_PASSWD
-          )
-  end
+  <span class="k">def</span> <span class="nf">init_beanstream_payment_gateway</span>
+    <span class="vi">@gateway</span> <span class="o">=</span> <span class="no">ActiveMerchant</span><span class="o">::</span><span class="no">Billing</span><span class="o">::</span><span class="no">BeanstreamGateway</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+            <span class="ss">:login</span>    <span class="o">=&gt;</span> <span class="vg">$BEAN_STREAM_ID</span><span class="p">,</span>
+            <span class="ss">:user</span>     <span class="o">=&gt;</span> <span class="vg">$BEAN_STREAM_LOGIN</span><span class="p">,</span>
+            <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="vg">$BEAN_STREAM_PASSWD</span>
+          <span class="p">)</span>
+  <span class="k">end</span>
 
-  def init_creditcard_options
-    @creditcard_options = {
-      :order_id =&gt; order.id,
-      :billing_address =&gt; {
-        :name     =&gt; &quot;#{@order.billing_first_name} #{@order.billing_last_name}&quot;,
-        :phone    =&gt; order.billing_phone,
-        :address1 =&gt; order.billing_street_address,
-        :address2 =&gt; order.billing_street_address_2,
-        :city     =&gt; order.billing_city,
-        :state    =&gt; order.get_state_code,
-        :country  =&gt; order.get_country_code,
-        :zip      =&gt; order.billing_zip
-      },
-      :email  =&gt; order.email,
-      :ref1   =&gt; &quot;#{$DOMAIN_NAME} Order&quot;
-    }
-  end
+  <span class="k">def</span> <span class="nf">init_creditcard_options</span>
+    <span class="vi">@creditcard_options</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">:order_id</span> <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+      <span class="ss">:billing_address</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">:name</span>     <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vi">@order</span><span class="o">.</span><span class="n">billing_first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="vi">@order</span><span class="o">.</span><span class="n">billing_last_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="ss">:phone</span>    <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">billing_phone</span><span class="p">,</span>
+        <span class="ss">:address1</span> <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">billing_street_address</span><span class="p">,</span>
+        <span class="ss">:address2</span> <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">billing_street_address_2</span><span class="p">,</span>
+        <span class="ss">:city</span>     <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">billing_city</span><span class="p">,</span>
+        <span class="ss">:state</span>    <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">get_state_code</span><span class="p">,</span>
+        <span class="ss">:country</span>  <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">get_country_code</span><span class="p">,</span>
+        <span class="ss">:zip</span>      <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">billing_zip</span>
+      <span class="p">},</span>
+      <span class="ss">:email</span>  <span class="o">=&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
+      <span class="ss">:ref1</span>   <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$DOMAIN_NAME</span><span class="si">}</span><span class="s2"> Order&quot;</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
 
-  def send_payment_info_to_gateway
-    @response = gateway.purchase(amount, order.get_creditcard, creditcard_options)
-    if @response.success?
-      log_credit_card_transaction
-    end
-  end
+  <span class="k">def</span> <span class="nf">send_payment_info_to_gateway</span>
+    <span class="vi">@response</span> <span class="o">=</span> <span class="n">gateway</span><span class="o">.</span><span class="n">purchase</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">get_creditcard</span><span class="p">,</span> <span class="n">creditcard_options</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@response</span><span class="o">.</span><span class="n">success?</span>
+      <span class="n">log_credit_card_transaction</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 
-  def log_credit_card_transaction
-    credit_card.transaction_id = credit_card.transaction_id + &#39;,&#39; + @response.authorization
-    credit_card.save
-  end
-end
+  <span class="k">def</span> <span class="nf">log_credit_card_transaction</span>
+    <span class="n">credit_card</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="n">credit_card</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="vi">@response</span><span class="o">.</span><span class="n">authorization</span>
+    <span class="n">credit_card</span><span class="o">.</span><span class="n">save</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre></div>
 <h2>Example 2</h2>
 

@@ -95,49 +95,49 @@
 </ul>
 
 <p>依次用上面的子串在Trie里walk，看能否walk到叶子节点，如果能，说明包含关键词，并提取出来。</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">require &#39;triez&#39;
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;triez&#39;</span>
 
-words = %w[大叶榕 细叶榕 高山榕 木棉 洋紫荆 樟树 芒果 蝴蝶果 人面子]
+<span class="n">words</span> <span class="o">=</span> <span class="sx">%w[大叶榕 细叶榕 高山榕 木棉 洋紫荆 樟树 芒果 蝴蝶果 人面子]</span>
 
-trie = Triez.new
+<span class="n">trie</span> <span class="o">=</span> <span class="no">Triez</span><span class="o">.</span><span class="n">new</span>
 
-words.each { |word| trie[word] = 1 }
+<span class="n">words</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">word</span><span class="o">|</span> <span class="n">trie</span><span class="o">[</span><span class="n">word</span><span class="o">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
 
-post_text = &quot;行道树芒果引市民争相采摘。&quot;
+<span class="n">post_text</span> <span class="o">=</span> <span class="s2">&quot;行道树芒果引市民争相采摘。&quot;</span>
 
-results = Hash.new(0)
+<span class="n">results</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-(0..post_text.size - 1).each do |i|
-  trie.walk(post_text[i..-1]).each do |word_in_trie, _|
-    results[word_in_trie] = results[word_in_trie] + 1
-  end
-end
+<span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.post_text</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+  <span class="n">trie</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">post_text</span><span class="o">[</span><span class="n">i</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">word_in_trie</span><span class="p">,</span> <span class="n">_</span><span class="o">|</span>
+    <span class="n">results</span><span class="o">[</span><span class="n">word_in_trie</span><span class="o">]</span> <span class="o">=</span> <span class="n">results</span><span class="o">[</span><span class="n">word_in_trie</span><span class="o">]</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-puts results #=&gt; {&quot;芒果&quot; =&gt; 1}
+<span class="nb">puts</span> <span class="n">results</span> <span class="c1">#=&gt; {&quot;芒果&quot; =&gt; 1}</span>
 </code></pre></div>
 <h2>去噪</h2>
 
 <p>用户可以通过在输入内容中加入空格、特殊符号来干扰敏感词过滤工作。比如芒果可以写成 <code>芒 果</code>、<code>芒**果</code>、<code>芒%果</code>。
 解决办法是在过滤之前去噪。还是上面的代码，加上去噪处理：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">require &#39;triez&#39;
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;triez&#39;</span>
 
-words = %w[大叶榕 细叶榕 高山榕 木棉 洋紫荆 樟树 芒果 蝴蝶果 人面子]
+<span class="n">words</span> <span class="o">=</span> <span class="sx">%w[大叶榕 细叶榕 高山榕 木棉 洋紫荆 樟树 芒果 蝴蝶果 人面子]</span>
 
-trie = Triez.new
+<span class="n">trie</span> <span class="o">=</span> <span class="no">Triez</span><span class="o">.</span><span class="n">new</span>
 
-words.each { |word| trie[word] = 1 }
+<span class="n">words</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">word</span><span class="o">|</span> <span class="n">trie</span><span class="o">[</span><span class="n">word</span><span class="o">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
 
-post_text = &quot;行道树芒&amp;&amp;果引市民争相采摘。&quot;
+<span class="n">post_text</span> <span class="o">=</span> <span class="s2">&quot;行道树芒&amp;&amp;果引市民争相采摘。&quot;</span>
 
-results = Hash.new(0)
+<span class="n">results</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-post_text = post_text.gsub(/[\s&amp;%$@*]+/, &quot;&quot;)
+<span class="n">post_text</span> <span class="o">=</span> <span class="n">post_text</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/[\s&amp;%$@*]+/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-(0..post_text.size - 1).each do |i|
-  trie.walk(post_text[i..-1]).each do |word_in_trie, _|
-    results[word_in_trie] = results[word_in_trie] + 1
-  end
-end
+<span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.post_text</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+  <span class="n">trie</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">post_text</span><span class="o">[</span><span class="n">i</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">word_in_trie</span><span class="p">,</span> <span class="n">_</span><span class="o">|</span>
+    <span class="n">results</span><span class="o">[</span><span class="n">word_in_trie</span><span class="o">]</span> <span class="o">=</span> <span class="n">results</span><span class="o">[</span><span class="n">word_in_trie</span><span class="o">]</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre></div>
 <h2>Related Links</h2>
 

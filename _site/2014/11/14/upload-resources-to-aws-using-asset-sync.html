@@ -84,16 +84,16 @@
 <h3>使用<a href="https://github.com/rumblelabs/asset_sync">asset sync</a></h3>
 
 <p>使用的时候进行简单的配置即可，其中遇到一个问题，插件在dev &amp; staging都可以正确的运行，在production时遇到错误提示</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">[2014-11-12T04:17:44.818010 #788] ERROR -- : uninitialized constant AssetSync (NameError)
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">12</span><span class="ss">T04</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">44</span><span class="o">.</span><span class="mi">818010</span> <span class="c1">#788] ERROR -- : uninitialized constant AssetSync (NameError)</span>
 </code></pre></div>
 <p>大致的原因：</p>
 
 <p>由于js css 与图片是能够正确上传到s3的，所以说明插件在 precomplice之后有正确的运行，但是启动unicorn的时候报错，可能是启动的时候不会加载 asset group 的插件, initializar 文件夹内的代码还会加载, 导致AssetSync gem 没有初始化，但是代码中却没有对这个进行判断。</p>
 
 <p>修改如下：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">if defined?(AssetSync)
-...
-end
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">AssetSync</span><span class="p">)</span>
+<span class="o">.</span><span class="n">.</span><span class="o">.</span>
+<span class="k">end</span>
 </code></pre></div>
 <h3>使用后发现的问题，暂时搁置</h3>
 

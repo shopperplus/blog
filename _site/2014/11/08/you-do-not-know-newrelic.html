@@ -76,16 +76,16 @@
 <h2>Enabling garbage collection instrumentation</h2>
 
 <p>默认情况，Newrelic的Transactions response time overview 页面是没有统计GC信息的。如果想要开启只需要在<code>config/initializers/new_relic_unicorn.rb</code>添加如下代码(如果不是unicorn只需要最后一句)：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"># -*- encoding : utf-8 -*-
-# Ensure the agent is started using Unicorn.
-# This is needed when using Unicorn and preload_app is not set to true.
-# See https://docs.newrelic.com/docs/ruby/no-data-with-unicorn
-if defined? Unicorn
-  ::NewRelic::Agent.manual_start()
-  ::NewRelic::Agent.after_fork(:force_reconnect =&gt; true)
-end
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># -*- encoding : utf-8 -*-</span>
+<span class="c1"># Ensure the agent is started using Unicorn.</span>
+<span class="c1"># This is needed when using Unicorn and preload_app is not set to true.</span>
+<span class="c1"># See https://docs.newrelic.com/docs/ruby/no-data-with-unicorn</span>
+<span class="k">if</span> <span class="n">defined?</span> <span class="no">Unicorn</span>
+  <span class="o">::</span><span class="no">NewRelic</span><span class="o">::</span><span class="no">Agent</span><span class="o">.</span><span class="n">manual_start</span><span class="p">()</span>
+  <span class="o">::</span><span class="no">NewRelic</span><span class="o">::</span><span class="no">Agent</span><span class="o">.</span><span class="n">after_fork</span><span class="p">(</span><span class="ss">:force_reconnect</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
 
-GC::Profiler.enable
+<span class="no">GC</span><span class="o">::</span><span class="no">Profiler</span><span class="o">.</span><span class="n">enable</span>
 </code></pre></div>
 <h2>Recording deployments</h2>
 
@@ -95,12 +95,12 @@ GC::Profiler.enable
 <p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/7ffc389aed2e1443bbcd5ddf2f74d32c.png" alt=""></p>
 
 <p>实现这样酷的功能只需要两行代码，在<code>deploy.rb</code>里：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">require &#39;new_relic/recipes&#39;
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;new_relic/recipes&#39;</span>
 
-after &quot;deploy:updated&quot;, &quot;newrelic:notice_deployment&quot;`
+<span class="n">after</span> <span class="s2">&quot;deploy:updated&quot;</span><span class="p">,</span> <span class="s2">&quot;newrelic:notice_deployment&quot;</span><span class="sb">`</span>
 </code></pre></div>
 <p>你不需要发布就可以测试这个功能是否设置正确：</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">cap newrelic:notice_deployment -Snewrelic_desc=&quot;Deploying beta Krakatau release&quot;
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">cap</span> <span class="ss">newrelic</span><span class="p">:</span><span class="n">notice_deployment</span> <span class="o">-</span><span class="no">Snewrelic_desc</span><span class="o">=</span><span class="s2">&quot;Deploying beta Krakatau release&quot;</span>
 </code></pre></div>
 <h2>Availability monitoring</h2>
 
