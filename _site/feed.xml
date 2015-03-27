@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 28 Mar 2015 04:45:10 +0800</pubDate>
-    <lastBuildDate>Sat, 28 Mar 2015 04:45:10 +0800</lastBuildDate>
+    <pubDate>Sat, 28 Mar 2015 05:03:35 +0800</pubDate>
+    <lastBuildDate>Sat, 28 Mar 2015 05:03:35 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -15,6 +15,10 @@
         <description>&lt;h2&gt;数据仓库&lt;/h2&gt;
 
 &lt;p&gt;按照 W. H. Inmon,一位数据仓库系统构造方面的大神的说法,“数据仓库是一个面向主题的、集成的、时变的、非易失的数据集合,支持管理决策制定”。数据仓库的目的是构建面向分析的集成化数据环境，为企业提供决策支持。&lt;/p&gt;
+
+&lt;p&gt;除供企业内部使用外，像Google Analytics和淘宝数据魔方等提供继承数据和多维分析的应用也属于数据仓库类型。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://www.google.com/analytics/images/GA_Home_Hero_01_dashboard.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
 &lt;h2&gt;事实和度量&lt;/h2&gt;
 

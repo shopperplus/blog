@@ -8,6 +8,9 @@ author: Hooopo
 
 按照 W. H. Inmon,一位数据仓库系统构造方面的大神的说法,“数据仓库是一个面向主题的、集成的、时变的、非易失的数据集合,支持管理决策制定”。数据仓库的目的是构建面向分析的集成化数据环境，为企业提供决策支持。
 
+除供企业内部使用外，像Google Analytics和淘宝数据魔方等提供继承数据和多维分析的应用也属于数据仓库类型。
+
+![](http://www.google.com/analytics/images/GA_Home_Hero_01_dashboard.png)
 
 ## 事实和度量
 
