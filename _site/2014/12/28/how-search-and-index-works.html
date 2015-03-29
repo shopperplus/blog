@@ -73,7 +73,7 @@
   <article class="post-content">
     <p>这篇文章主要目的是简单介绍搜索引擎的检索过程，并通过简单的Ruby代码实现。当然，由于本人能力有限，对搜索也是一知半解，注定话题不会太深，也不会太广...这不是 Solr 配置详解这种过于务实的话题，也不是某个搜索排序算法的深入研究的高深话题。</p>
 
-<h2>Tokenize (分词)</h2>
+<h2 id="tokenize-(分词)">Tokenize (分词)</h2>
 
 <p>Tokenize 的过程是把Query或待索引的文本拆成最小的单元，也就是分词。包括以下过程：</p>
 
@@ -126,12 +126,12 @@
 <p>其中Stemming过程过于简陋，但相关算法其实已经非常成熟了，比如Porter、Hunspell等算法。其中Ruby实现有：</p>
 
 <ul>
-<li>http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html</li>
-<li>https://github.com/aurelian/ruby-stemmer</li>
-<li>https://github.com/romanbsd/fast-stemmer</li>
+<li><a href="http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html">http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html</a></li>
+<li><a href="https://github.com/aurelian/ruby-stemmer">https://github.com/aurelian/ruby-stemmer</a></li>
+<li><a href="https://github.com/romanbsd/fast-stemmer">https://github.com/romanbsd/fast-stemmer</a></li>
 </ul>
 
-<h2>Inverted Index (倒排索引)</h2>
+<h2 id="inverted-index-(倒排索引)">Inverted Index (倒排索引)</h2>
 
 <p>倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。</p>
 
@@ -196,7 +196,7 @@ T_2=&quot;it is a banana&quot;
 </code></pre></div>
 <p>至此，一个最简单是search engine就实现了，当然，我们还没涉及到排序，搜索过程使用的是最简单的 集合布尔模型。下面会涉及 <code>TF-IDF</code> 相关度排序内容。</p>
 
-<h2>Sort By  Relevance (按相关度排序)</h2>
+<h2 id="sort-by-relevance-(按相关度排序)">Sort By  Relevance (按相关度排序)</h2>
 
 <p>TODO</p>
 

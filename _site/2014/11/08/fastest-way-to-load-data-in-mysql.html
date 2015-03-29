@@ -98,19 +98,19 @@ REPLACE INTO TABLE product_sale_facts FIELDS TERMINATED BY &#39;,&#39; (`id`,`da
 <div class="highlight"><pre><code class="language-text" data-lang="text">wc -l &lt; /Users/hooopo/data/out/product_sales_facts.txt
  1271413
 </code></pre></div>
-<p>大概130w数据用时16秒，平均每秒插入8w条记录左右。如果想用Gem，可以试试 adapter<em>extensions 和 load</em>data_infile：</p>
+<p>大概130w数据用时16秒，平均每秒插入8w条记录左右。如果想用Gem，可以试试 adapter_extensions 和 load_data_infile：</p>
 
 <ul>
-<li>https://github.com/activewarehouse/adapter_extensions</li>
-<li>https://github.com/EmmanuelOga/load<em>data</em>infile</li>
-<li>https://github.com/jsuchal/activerecord-fast-import</li>
+<li><a href="https://github.com/activewarehouse/adapter_extensions">https://github.com/activewarehouse/adapter_extensions</a></li>
+<li><a href="https://github.com/EmmanuelOga/load_data_infile">https://github.com/EmmanuelOga/load_data_infile</a></li>
+<li><a href="https://github.com/jsuchal/activerecord-fast-import">https://github.com/jsuchal/activerecord-fast-import</a></li>
 </ul>
 
 <p>MySQL Doc里关于LOAD INFILE的详细介绍：</p>
 
 <ul>
-<li>http://dev.mysql.com/doc/refman/5.5/en/load-data.html</li>
-<li>http://dev.mysql.com/doc/refman/5.5/en/insert-speed.html</li>
+<li><a href="http://dev.mysql.com/doc/refman/5.5/en/load-data.html">http://dev.mysql.com/doc/refman/5.5/en/load-data.html</a></li>
+<li><a href="http://dev.mysql.com/doc/refman/5.5/en/insert-speed.html">http://dev.mysql.com/doc/refman/5.5/en/insert-speed.html</a></li>
 </ul>
 
   </article>

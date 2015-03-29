@@ -77,7 +77,7 @@
 <span class="n">remove_column</span> <span class="ss">:orders</span><span class="p">,</span> <span class="s2">&quot;coupon_value&quot;</span>
 <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 </code></pre></div>
-<p>结果就是，每一个rename<em>column和remove</em>column执行时间大约4分钟，一共20多个这样的语句，migrate总计执行了近两个小时。因为alter table时mysql需要把整个order表copy to tmp table，而order表是非常庞大的。</p>
+<p>结果就是，每一个rename_column和remove_column执行时间大约4分钟，一共20多个这样的语句，migrate总计执行了近两个小时。因为alter table时mysql需要把整个order表copy to tmp table，而order表是非常庞大的。</p>
 
 <p>解决办法是把上面的所有修改order的migration合并成一个，并且设置bulk 选项。</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">RenameOldOrderAddressRelatedColumn</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>

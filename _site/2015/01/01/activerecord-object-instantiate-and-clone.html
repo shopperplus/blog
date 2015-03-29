@@ -71,7 +71,7 @@
   </header>
 
   <article class="post-content">
-    <h2>initialize</h2>
+    <h2 id="initialize">initialize</h2>
 
 <p>最常用的就是使用<code>new</code>方法初始化一个<code>AR</code>对象，比如 <code>User.new(:name =&gt; &quot;user name&quot;)</code>. <code>new</code> 方法通过 <code>initialize</code> 方法构造出一个新对象。大家几乎天天在用这个方法，不多说了。</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L276-L297</span>
@@ -91,7 +91,7 @@
   <span class="n">_run_initialize_callbacks</span>
 <span class="k">end</span>
 </code></pre></div>
-<h2>allocate + init_with</h2>
+<h2 id="allocate-+-init_with">allocate + init_with</h2>
 
 <p><code>new</code> 方法构造出来的对象在你未save之前都是 <code>new_record</code>，即：</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span><span class="o">.</span><span class="n">new_record?</span> <span class="c1">#=&gt; true</span>
@@ -103,7 +103,7 @@
 </code></pre></div>
 <p>我们知道，一个对象由类定义和属性组成，已知类定义之后，我们只要把属性填充给实例对象就完成了初始化过程。其实，这也绕过了使用<code>new</code>方法来构造对象所需的内部复杂工序。</p>
 
-<h2>instancate</h2>
+<h2 id="instancate">instancate</h2>
 
 <p>除此之外，如果你的attributes数据是从<code>DB</code>获取来的，你可以使用更高级的<code>instancate</code>方法，它对来源数据进行一次类型转换，然后再调用上述的 <code>allocate</code> + <code>init_with</code>。<code>find_by_sql</code> 和<code>STI</code>就是直接依赖 <code>instancate</code> 来初始化AR 对象。</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># https://github.com/rails/rails/blob/298ec6de55e3adb7d012ba6a9db8b4dd5fd95779/activerecord/lib/active_record/persistence.rb#L56-L70</span>
@@ -114,7 +114,7 @@
   <span class="n">klass</span><span class="o">.</span><span class="n">allocate</span><span class="o">.</span><span class="n">init_with</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span> <span class="o">=&gt;</span> <span class="n">attributes</span><span class="p">,</span> <span class="s1">&#39;new_record&#39;</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<h2>initialize_dup</h2>
+<h2 id="initialize_dup">initialize_dup</h2>
 
 <p>如果我们已经有了一个存在的AR记录，想再初始化一个的话，使用<code>clone</code>或<code>dup</code>也是可行的。关于<code>clone</code>和<code>dup</code>区别，我觉得下面这段代码描述是最清晰的：</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Object</span>
@@ -168,7 +168,7 @@
   <span class="k">super</span>
 <span class="k">end</span>
 </code></pre></div>
-<h2>Question</h2>
+<h2 id="question">Question</h2>
 
 <p>那么问题来了:</p>
 
@@ -177,12 +177,12 @@
 <li>我们在缓存的时候是直接把 AR 对象塞进去（即：<code>Rails.cache.write user.id, user</code>），还是自己序列化反序列化？</li>
 </ul>
 
-<h2>Links</h2>
+<h2 id="links">Links</h2>
 
 <ul>
-<li>http://thekaiway.com/2013/07/26/assemble-ar-object/</li>
-<li>http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/</li>
-<li>http://www.jonathanleighton.com/articles/2011/initialize<em>clone-initialize</em>dup-and-initialize_copy-in-ruby/</li>
+<li><a href="http://thekaiway.com/2013/07/26/assemble-ar-object/">http://thekaiway.com/2013/07/26/assemble-ar-object/</a></li>
+<li><a href="http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/">http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/</a></li>
+<li><a href="http://www.jonathanleighton.com/articles/2011/initialize_clone-initialize_dup-and-initialize_copy-in-ruby/">http://www.jonathanleighton.com/articles/2011/initialize_clone-initialize_dup-and-initialize_copy-in-ruby/</a></li>
 </ul>
 
   </article>

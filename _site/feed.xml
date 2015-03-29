@@ -6,13 +6,56 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 28 Mar 2015 05:03:35 +0800</pubDate>
-    <lastBuildDate>Sat, 28 Mar 2015 05:03:35 +0800</lastBuildDate>
+    <pubDate>Sun, 29 Mar 2015 01:21:23 +0800</pubDate>
+    <lastBuildDate>Sun, 29 Mar 2015 01:21:23 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
+        <title>The title of the new post</title>
+        <description>&lt;table&gt;&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;0&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;面向对象&lt;/td&gt;
+&lt;td&gt;业务开发人员&lt;/td&gt;
+&lt;td&gt;分析决策人员&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;功能实现&lt;/td&gt;
+&lt;td&gt;日常事务处理&lt;/td&gt;
+&lt;td&gt;面向分析决策&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;数据模型&lt;/td&gt;
+&lt;td&gt;关系模型&lt;/td&gt;
+&lt;td&gt;多维模型&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;数据量&lt;/td&gt;
+&lt;td&gt;几条或几十条记录&lt;/td&gt;
+&lt;td&gt;百万千万条记录&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;操作类型&lt;/td&gt;
+&lt;td&gt;查询、插入、更新、删除&lt;/td&gt;
+&lt;td&gt;查询为主&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+</description>
+        <pubDate>Sun, 29 Mar 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/03/29/the-title-of-the-new-post.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/03/29/the-title-of-the-new-post.html</guid>
+        
+        
+      </item>
+    
+      <item>
         <title>Data Warehouse Concepts and Overview</title>
-        <description>&lt;h2&gt;数据仓库&lt;/h2&gt;
+        <description>&lt;h2 id=&quot;数据仓库&quot;&gt;数据仓库&lt;/h2&gt;
 
 &lt;p&gt;按照 W. H. Inmon,一位数据仓库系统构造方面的大神的说法,“数据仓库是一个面向主题的、集成的、时变的、非易失的数据集合,支持管理决策制定”。数据仓库的目的是构建面向分析的集成化数据环境，为企业提供决策支持。&lt;/p&gt;
 
@@ -20,7 +63,7 @@
 
 &lt;p&gt;&lt;img src=&quot;http://www.google.com/analytics/images/GA_Home_Hero_01_dashboard.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
-&lt;h2&gt;事实和度量&lt;/h2&gt;
+&lt;h2 id=&quot;事实和度量&quot;&gt;事实和度量&lt;/h2&gt;
 
 &lt;p&gt;事实（Fact）是可以被量化的最详细的业务信息。例如：一次网站的点击；购物网站上一个客户的一次购买行为；Github上一个程序员的一次提交。我们可以量化下面的数据：&lt;/p&gt;
 
@@ -34,7 +77,7 @@
 
 &lt;p&gt;在数据仓库中，我们更关心的是汇总后的度量，例如：网站3月的点击量是多少；05年销售额是多少；本周commit数量是多少。&lt;/p&gt;
 
-&lt;h2&gt;维度&lt;/h2&gt;
+&lt;h2 id=&quot;维度&quot;&gt;维度&lt;/h2&gt;
 
 &lt;p&gt;维度（Dimension）是指分析的各个角度。例如我们希望按照时间,或者按照地区,或者按照产品进行分析,那么这里的时间、地区、产品就是相应的维度。基于不同的维度,我们可以看到各量度的汇总情况,也可以基于所有的维度进行交叉分析。&lt;/p&gt;
 
@@ -48,7 +91,7 @@
 * 2014年有多少订单？
 * 3月份温哥华的销售额是多少？&lt;/p&gt;
 
-&lt;h2&gt;维度层次&lt;/h2&gt;
+&lt;h2 id=&quot;维度层次&quot;&gt;维度层次&lt;/h2&gt;
 
 &lt;p&gt;我们可能已经非常熟悉Web网站的面包屑导航和层级菜单了。当你在某个类目浏览的时候，接下来更可能要去浏览当前类目的子类或回退到你来的位置。与此类似，我们在分析的时候按年聚合之后可能更想要分析按月聚合的数据；分析了国家的数据之后想要分析各个省的数据。也就是说，维度是有层次(Hierarchies)关系的。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;                                           
@@ -57,7 +100,7 @@
  +--------+     +--------+    +----------+ 
                                            
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;下钻（Drill-down）&lt;/h2&gt;
+&lt;h2 id=&quot;下钻（drill-down）&quot;&gt;下钻（Drill-down）&lt;/h2&gt;
 
 &lt;p&gt;在维的不同层次间的变化，从上层降到下一层，或者说是将汇总数据拆分到更细节的数据，比如通过对2010年第二季度的总销售数据进行钻取来查看2010年第二季度4、5、6每个月的消费数据，如下图；当然也可以钻取Quebec省来查看Montreal、Lachine等城市的销售数据。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;^
@@ -84,15 +127,15 @@
 +------+---+----+---+----+---+-------&amp;gt;
         M4       M5        M6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;上卷（Roll-up）&lt;/h2&gt;
+&lt;h2 id=&quot;上卷（roll-up）&quot;&gt;上卷（Roll-up）&lt;/h2&gt;
 
 &lt;p&gt;下钻的逆操作，即从细粒度数据向高层的聚合，如将Montreal、Lachine等的销售数据进行汇总来查看Quebec地区的销售数据。&lt;/p&gt;
 
-&lt;h2&gt;切片（Slice）&lt;/h2&gt;
+&lt;h2 id=&quot;切片（slice）&quot;&gt;切片（Slice）&lt;/h2&gt;
 
 &lt;p&gt;选择维中特定的值进行分析，比如只选择电子产品的销售数据，或者2010年第二季度的数据。&lt;/p&gt;
 
-&lt;h2&gt;切块（Dice）&lt;/h2&gt;
+&lt;h2 id=&quot;切块（dice）&quot;&gt;切块（Dice）&lt;/h2&gt;
 
 &lt;p&gt;选择维度中特定区间的数据或者某批特定值进行分析，比如选择2010年第一季度到2010年第二季度的销售数据，或者是电子产品和日用品的销售数据。&lt;/p&gt;
 
@@ -109,7 +152,7 @@
         <title>Service Object: What Why and How?</title>
         <description>&lt;p&gt;首先想说的是，Service Object 是在Rails里实践SRP的一种手段和模式，不仅仅是一个文件夹。&lt;/p&gt;
 
-&lt;h2&gt;Controller是交互入口&lt;/h2&gt;
+&lt;h2 id=&quot;controller是交互入口&quot;&gt;Controller是交互入口&lt;/h2&gt;
 
 &lt;p&gt;像c/c++里，每个应用都会有一个入口，像下面这样：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;iostream&amp;gt;&lt;/span&gt;
@@ -143,7 +186,7 @@
 &lt;li&gt;输出提示 -&amp;gt; flash&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2&gt;Servies Object&lt;/h2&gt;
+&lt;h2 id=&quot;servies-object&quot;&gt;Servies Object&lt;/h2&gt;
 
 &lt;p&gt;Service Object 封装了每一个业务流程。它负责组织应用领域模型（Model）之间的交互，并且不依赖于框架（Controller层）。你可以想象怎样的代码从Sinatra程序改成Rails会更容易，当然你不一定要这么做，我只是想解释一下什么是 &lt;code&gt;不依赖框架层&lt;/code&gt;。&lt;/p&gt;
 
@@ -156,7 +199,7 @@
 &lt;li&gt;让Controller更slim。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2&gt;Example 1&lt;/h2&gt;
+&lt;h2 id=&quot;example-1&quot;&gt;Example 1&lt;/h2&gt;
 
 &lt;p&gt;重构之前的charge more controller：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrdersController&lt;/span&gt;
@@ -287,7 +330,7 @@
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Example 2&lt;/h2&gt;
+&lt;h2 id=&quot;example-2&quot;&gt;Example 2&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://gist.github.com/hooopo/f6a031dac417323dfec6&quot;&gt;https://gist.github.com/hooopo/f6a031dac417323dfec6&lt;/a&gt;&lt;/p&gt;
 
@@ -311,7 +354,7 @@ Task，Model，Background Task等）复用。Controller只负责调用OrderCharg
         <title>容错和速错</title>
         <description>&lt;p&gt;程序出现异常，不想让用户看到，会给一个友好的提示，这种做法一般称作“容错”。另一方面，我们希望自己的程序能够把隐藏错误尽早暴露出来，及时修复，这种思路称之为“速错”。拼写错误、源数据错误、逻辑错误都需要速错。当然，容错和速错也并不总是对立的，分清何时应用哪种策略非常重要。&lt;/p&gt;
 
-&lt;h2&gt;Hash#fetch over Hash#[]&lt;/h2&gt;
+&lt;h2 id=&quot;hash#fetch-over-hash#[]&quot;&gt;Hash#fetch over Hash#[]&lt;/h2&gt;
 
 &lt;p&gt;当&lt;code&gt;Hash&lt;/code&gt;的key值是已知的情况，比如状态枚举。优先使用&lt;code&gt;fetch&lt;/code&gt;可以避免拼写错误带来的意外。举例：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AR&lt;/span&gt;
@@ -325,7 +368,7 @@ Task，Model，Background Task等）复用。Controller只负责调用OrderCharg
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;上面例子由于错误拼写，把&lt;code&gt;closed&lt;/code&gt;拼成 &lt;code&gt;close&lt;/code&gt;，造成了一个&lt;code&gt;Silent failure&lt;/code&gt;，而使用&lt;code&gt;fetch&lt;/code&gt;方法就会在拼错时直接抛出异常，避免了之后的错误。&lt;/p&gt;
 
-&lt;h2&gt;使用常量&lt;/h2&gt;
+&lt;h2 id=&quot;使用常量&quot;&gt;使用常量&lt;/h2&gt;
 
 &lt;p&gt;除此之外，声明常量也可以带来同样效果，本质是给输入加上了拼写检查。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AR&lt;/span&gt;
@@ -334,7 +377,7 @@ Task，Model，Background Task等）复用。Controller只负责调用OrderCharg
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;no&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;CLOSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;created_at &amp;gt; &amp;#39;2011-1-1&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; raise NameError: uninitialized constant CLOSE&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;善用attr method&lt;/h2&gt;
+&lt;h2 id=&quot;善用attr-method&quot;&gt;善用attr method&lt;/h2&gt;
 
 &lt;p&gt;经常看到有人问，attr method有什么用，直接使用实例变量不好么，这样的问题。&lt;/p&gt;
 
@@ -353,11 +396,11 @@ end
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;如果我们使用attr reader，调用close方法直接就会抛出undefind method异常，让拼写错误尽早现形。&lt;/p&gt;
 
-&lt;h2&gt;save! over save&lt;/h2&gt;
+&lt;h2 id=&quot;save!-over-save&quot;&gt;save! over save&lt;/h2&gt;
 
 &lt;p&gt;经常看到一段事物代码里用&lt;code&gt;save&lt;/code&gt;的情况，&lt;code&gt;save&lt;/code&gt;不会抛异常，这样事物的意义就失去了。显然，这属于不理解事物运作机制的错误用法。在没有事物的代码里，如何选择&lt;code&gt;save&lt;/code&gt;还是&lt;code&gt;save!&lt;/code&gt;也是非常困难的。我个人的习惯是，在不需要错误回显的情况，一律使用&lt;code&gt;save!&lt;/code&gt;和&lt;code&gt;update_attributes!&lt;/code&gt;这样能够&lt;code&gt;Fail Fast&lt;/code&gt; 的方法。&lt;/p&gt;
 
-&lt;h2&gt;不要滥用 rescue&lt;/h2&gt;
+&lt;h2 id=&quot;不要滥用-rescue&quot;&gt;不要滥用 rescue&lt;/h2&gt;
 
 &lt;p&gt;如果你的代码里经常见到&lt;code&gt;begin rescue&lt;/code&gt;,这就是一种&lt;code&gt;bad small&lt;/code&gt;。当然，调用外部接口时，异常一定要捕获，但有一部分新手会在自己写的一堆应用逻辑外面套上&lt;code&gt;begin resuce&lt;/code&gt;,并且不明确捕获的错误类型。当你问他，你要捕获哪种错误的时候，他一定回答不出。对于自己代码里的逻辑错误不应该去捕获错误，而是查出错误的来源，从源头上解决问题。即使要捕获，也应该有一个明确的类型：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;begin&lt;/span&gt;
@@ -367,7 +410,7 @@ end
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;用异常做控制流的做法也不少见，但不是本文讨论的话题..&lt;/p&gt;
 
-&lt;h2&gt;数据源错误&lt;/h2&gt;
+&lt;h2 id=&quot;数据源错误&quot;&gt;数据源错误&lt;/h2&gt;
 
 &lt;p&gt;容错的思想带来的一个问题是总想隐藏问题，不是直接去从源头解决。当一个产品数据被误删导致用户订单页面出错，不应该去容错，到处写&lt;code&gt;order_item.product.try(:name)&lt;/code&gt;，而是应该去恢复被删数据。&lt;/p&gt;
 
@@ -384,7 +427,7 @@ end
         <title>CRC32 Usage In MySQL</title>
         <description>&lt;p&gt;CRC全称为Cyclic Redundancy Check，又叫循环冗余校验。CRC32是CRC算法的一种，常用于校验网络上传输的文件。&lt;/p&gt;
 
-&lt;h2&gt;How to Use CRC32 In MySQL &amp;amp; Ruby&lt;/h2&gt;
+&lt;h2 id=&quot;how-to-use-crc32-in-mysql-&amp;amp;-ruby&quot;&gt;How to Use CRC32 In MySQL &amp;amp; Ruby&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mysql&amp;gt; SELECT CRC32(&amp;#39;hello&amp;#39;);
 +----------------+
 | CRC32(&amp;#39;hello&amp;#39;) |
@@ -394,7 +437,7 @@ end
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;zlib&amp;#39;&lt;/span&gt;
 &lt;span class=&quot;no&quot;&gt;Zlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crc32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;hello&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 907060870&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;CRC32 Vs MD5&lt;/h2&gt;
+&lt;h2 id=&quot;crc32-vs-md5&quot;&gt;CRC32 Vs MD5&lt;/h2&gt;
 
 &lt;p&gt;这里我们不谈校验，只说MySQL里如何利用CRC32来加快查询。首先我们得知道CRC32的基本特征：&lt;/p&gt;
 
@@ -403,7 +446,7 @@ end
 &lt;li&gt;相比MD5，CRC32函数很容易碰撞&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2&gt;CRC32的使用场景&lt;/h2&gt;
+&lt;h2 id=&quot;crc32的使用场景&quot;&gt;CRC32的使用场景&lt;/h2&gt;
 
 &lt;p&gt;由上述两个基本特性可知，CRC32在MySQL里只需要用bigint存储，而MD5需要varchar来存储。但是CRC32很容易碰撞，这适合做索引么？&lt;/p&gt;
 
@@ -444,7 +487,7 @@ end
     
       <item>
         <title>ActiveRecord Object Instantiate and Clone</title>
-        <description>&lt;h2&gt;initialize&lt;/h2&gt;
+        <description>&lt;h2 id=&quot;initialize&quot;&gt;initialize&lt;/h2&gt;
 
 &lt;p&gt;最常用的就是使用&lt;code&gt;new&lt;/code&gt;方法初始化一个&lt;code&gt;AR&lt;/code&gt;对象，比如 &lt;code&gt;User.new(:name =&amp;gt; &amp;quot;user name&amp;quot;)&lt;/code&gt;. &lt;code&gt;new&lt;/code&gt; 方法通过 &lt;code&gt;initialize&lt;/code&gt; 方法构造出一个新对象。大家几乎天天在用这个方法，不多说了。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L276-L297&lt;/span&gt;
@@ -464,7 +507,7 @@ end
   &lt;span class=&quot;n&quot;&gt;_run_initialize_callbacks&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;allocate + init_with&lt;/h2&gt;
+&lt;h2 id=&quot;allocate-+-init_with&quot;&gt;allocate + init_with&lt;/h2&gt;
 
 &lt;p&gt;&lt;code&gt;new&lt;/code&gt; 方法构造出来的对象在你未save之前都是 &lt;code&gt;new_record&lt;/code&gt;，即：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new_record?&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; true&lt;/span&gt;
@@ -476,7 +519,7 @@ end
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;我们知道，一个对象由类定义和属性组成，已知类定义之后，我们只要把属性填充给实例对象就完成了初始化过程。其实，这也绕过了使用&lt;code&gt;new&lt;/code&gt;方法来构造对象所需的内部复杂工序。&lt;/p&gt;
 
-&lt;h2&gt;instancate&lt;/h2&gt;
+&lt;h2 id=&quot;instancate&quot;&gt;instancate&lt;/h2&gt;
 
 &lt;p&gt;除此之外，如果你的attributes数据是从&lt;code&gt;DB&lt;/code&gt;获取来的，你可以使用更高级的&lt;code&gt;instancate&lt;/code&gt;方法，它对来源数据进行一次类型转换，然后再调用上述的 &lt;code&gt;allocate&lt;/code&gt; + &lt;code&gt;init_with&lt;/code&gt;。&lt;code&gt;find_by_sql&lt;/code&gt; 和&lt;code&gt;STI&lt;/code&gt;就是直接依赖 &lt;code&gt;instancate&lt;/code&gt; 来初始化AR 对象。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# https://github.com/rails/rails/blob/298ec6de55e3adb7d012ba6a9db8b4dd5fd95779/activerecord/lib/active_record/persistence.rb#L56-L70&lt;/span&gt;
@@ -487,7 +530,7 @@ end
   &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;allocate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;init_with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;attributes&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;new_record&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;initialize_dup&lt;/h2&gt;
+&lt;h2 id=&quot;initialize_dup&quot;&gt;initialize_dup&lt;/h2&gt;
 
 &lt;p&gt;如果我们已经有了一个存在的AR记录，想再初始化一个的话，使用&lt;code&gt;clone&lt;/code&gt;或&lt;code&gt;dup&lt;/code&gt;也是可行的。关于&lt;code&gt;clone&lt;/code&gt;和&lt;code&gt;dup&lt;/code&gt;区别，我觉得下面这段代码描述是最清晰的：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt;
@@ -541,7 +584,7 @@ end
   &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Question&lt;/h2&gt;
+&lt;h2 id=&quot;question&quot;&gt;Question&lt;/h2&gt;
 
 &lt;p&gt;那么问题来了:&lt;/p&gt;
 
@@ -550,12 +593,12 @@ end
 &lt;li&gt;我们在缓存的时候是直接把 AR 对象塞进去（即：&lt;code&gt;Rails.cache.write user.id, user&lt;/code&gt;），还是自己序列化反序列化？&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2&gt;Links&lt;/h2&gt;
+&lt;h2 id=&quot;links&quot;&gt;Links&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;http://thekaiway.com/2013/07/26/assemble-ar-object/&lt;/li&gt;
-&lt;li&gt;http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/&lt;/li&gt;
-&lt;li&gt;http://www.jonathanleighton.com/articles/2011/initialize&lt;em&gt;clone-initialize&lt;/em&gt;dup-and-initialize_copy-in-ruby/&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://thekaiway.com/2013/07/26/assemble-ar-object/&quot;&gt;http://thekaiway.com/2013/07/26/assemble-ar-object/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/&quot;&gt;http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.jonathanleighton.com/articles/2011/initialize_clone-initialize_dup-and-initialize_copy-in-ruby/&quot;&gt;http://www.jonathanleighton.com/articles/2011/initialize_clone-initialize_dup-and-initialize_copy-in-ruby/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Thu, 01 Jan 2015 00:00:00 +0800</pubDate>
@@ -569,7 +612,7 @@ end
         <title>How search and index works?</title>
         <description>&lt;p&gt;这篇文章主要目的是简单介绍搜索引擎的检索过程，并通过简单的Ruby代码实现。当然，由于本人能力有限，对搜索也是一知半解，注定话题不会太深，也不会太广...这不是 Solr 配置详解这种过于务实的话题，也不是某个搜索排序算法的深入研究的高深话题。&lt;/p&gt;
 
-&lt;h2&gt;Tokenize (分词)&lt;/h2&gt;
+&lt;h2 id=&quot;tokenize-(分词)&quot;&gt;Tokenize (分词)&lt;/h2&gt;
 
 &lt;p&gt;Tokenize 的过程是把Query或待索引的文本拆成最小的单元，也就是分词。包括以下过程：&lt;/p&gt;
 
@@ -622,12 +665,12 @@ end
 &lt;p&gt;其中Stemming过程过于简陋，但相关算法其实已经非常成熟了，比如Porter、Hunspell等算法。其中Ruby实现有：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html&lt;/li&gt;
-&lt;li&gt;https://github.com/aurelian/ruby-stemmer&lt;/li&gt;
-&lt;li&gt;https://github.com/romanbsd/fast-stemmer&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html&quot;&gt;http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/aurelian/ruby-stemmer&quot;&gt;https://github.com/aurelian/ruby-stemmer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/romanbsd/fast-stemmer&quot;&gt;https://github.com/romanbsd/fast-stemmer&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2&gt;Inverted Index (倒排索引)&lt;/h2&gt;
+&lt;h2 id=&quot;inverted-index-(倒排索引)&quot;&gt;Inverted Index (倒排索引)&lt;/h2&gt;
 
 &lt;p&gt;倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。&lt;/p&gt;
 
@@ -692,7 +735,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;至此，一个最简单是search engine就实现了，当然，我们还没涉及到排序，搜索过程使用的是最简单的 集合布尔模型。下面会涉及 &lt;code&gt;TF-IDF&lt;/code&gt; 相关度排序内容。&lt;/p&gt;
 
-&lt;h2&gt;Sort By  Relevance (按相关度排序)&lt;/h2&gt;
+&lt;h2 id=&quot;sort-by-relevance-(按相关度排序)&quot;&gt;Sort By  Relevance (按相关度排序)&lt;/h2&gt;
 
 &lt;p&gt;TODO&lt;/p&gt;
 </description>
@@ -707,7 +750,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
         <title>Trie 树的应用之敏感词过滤</title>
         <description>&lt;p&gt;&lt;img src=&quot;https://gp1.wac.edgecastcdn.net/806614/photos/photos.500px.net/65000163/55dcc47e193e5540faaa5d97a70f06206f12cbbc/5.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
-&lt;h2&gt;Trie&lt;/h2&gt;
+&lt;h2 id=&quot;trie&quot;&gt;Trie&lt;/h2&gt;
 
 &lt;p&gt;trie，又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。&lt;/p&gt;
 
@@ -715,7 +758,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
 
 &lt;p&gt;上面的介绍和例子来自维基百科，描述一个保存了8个键的trie结构，&amp;quot;A&amp;quot;, &amp;quot;to&amp;quot;, &amp;quot;tea&amp;quot;, &amp;quot;ted&amp;quot;, &amp;quot;ten&amp;quot;, &amp;quot;i&amp;quot;, &amp;quot;in&amp;quot;, and &amp;quot;inn&amp;quot;. 图示中标注出完整的单词，只是为了演示trie的原理。&lt;/p&gt;
 
-&lt;h2&gt;敏感词过滤&lt;/h2&gt;
+&lt;h2 id=&quot;敏感词过滤&quot;&gt;敏感词过滤&lt;/h2&gt;
 
 &lt;p&gt;敏感词过滤或关键词提取是Trie树的一个典型应用。拿待过滤词ABCDEF举例，&lt;/p&gt;
 
@@ -749,7 +792,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
 
 &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;results&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; {&amp;quot;芒果&amp;quot; =&amp;gt; 1}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;去噪&lt;/h2&gt;
+&lt;h2 id=&quot;去噪&quot;&gt;去噪&lt;/h2&gt;
 
 &lt;p&gt;用户可以通过在输入内容中加入空格、特殊符号来干扰敏感词过滤工作。比如芒果可以写成 &lt;code&gt;芒 果&lt;/code&gt;、&lt;code&gt;芒**果&lt;/code&gt;、&lt;code&gt;芒%果&lt;/code&gt;。
 解决办法是在过滤之前去噪。还是上面的代码，加上去噪处理：&lt;/p&gt;
@@ -773,11 +816,11 @@ T_2=&amp;quot;it is a banana&amp;quot;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Related Links&lt;/h2&gt;
+&lt;h2 id=&quot;related-links&quot;&gt;Related Links&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;https://github.com/luikore/triez&lt;/li&gt;
-&lt;li&gt;http://zh.wikipedia.org/wiki/Trie&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/luikore/triez&quot;&gt;https://github.com/luikore/triez&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://zh.wikipedia.org/wiki/Trie&quot;&gt;http://zh.wikipedia.org/wiki/Trie&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Sun, 23 Nov 2014 00:00:00 +0800</pubDate>
@@ -789,7 +832,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
     
       <item>
         <title>Upload resources to AWS using asset sync </title>
-        <description>&lt;h3&gt;目的&lt;/h3&gt;
+        <description>&lt;h3 id=&quot;目的&quot;&gt;目的&lt;/h3&gt;
 
 &lt;p&gt;网站的规模逐渐变大，页面加载速度逐渐变慢，其中图片加载的时间是主要的问题。选择把js css 图片这些文件放到aws有一下几个原因：&lt;/p&gt;
 
@@ -799,7 +842,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
 &lt;li&gt;避免重复繁琐的图片上传管理操作，直接通过代码管理.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h3&gt;使用&lt;a href=&quot;https://github.com/rumblelabs/asset_sync&quot;&gt;asset sync&lt;/a&gt;&lt;/h3&gt;
+&lt;h3 id=&quot;使用asset-sync&quot;&gt;使用&lt;a href=&quot;https://github.com/rumblelabs/asset_sync&quot;&gt;asset sync&lt;/a&gt;&lt;/h3&gt;
 
 &lt;p&gt;使用的时候进行简单的配置即可，其中遇到一个问题，插件在dev &amp;amp; staging都可以正确的运行，在production时遇到错误提示&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2014&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;T04&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;17&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;44&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;818010&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#788] ERROR -- : uninitialized constant AssetSync (NameError)&lt;/span&gt;
@@ -813,11 +856,11 @@ T_2=&amp;quot;it is a banana&amp;quot;
 &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;使用后发现的问题，暂时搁置&lt;/h3&gt;
+&lt;h3 id=&quot;使用后发现的问题，暂时搁置&quot;&gt;使用后发现的问题，暂时搁置&lt;/h3&gt;
 
 &lt;p&gt;1、无法使用gzip。使用的s3服务器中没有cloudfront，导致无法识别HTTP HEAD中Content-Encoding:gzip的请求，导致使用只能请求到非gz后的 js 与 css 文件，网站整体的pagespeed反而下降了。&lt;/p&gt;
 
-&lt;p&gt;2、工作流程导致无法运用。前端工程师不使用rails server进行代码的编写，例如图片的url需要写成asset&lt;em&gt;host:XXXX,导致使用asset&lt;/em&gt;host指向s3后，他们无法在本地进行开发工作。&lt;/p&gt;
+&lt;p&gt;2、工作流程导致无法运用。前端工程师不使用rails server进行代码的编写，例如图片的url需要写成asset_host:XXXX,导致使用asset_host指向s3后，他们无法在本地进行开发工作。&lt;/p&gt;
 
 &lt;p&gt;3、代码中历史遗留的问题。旧代码中保留了不少直接使用public的图片，而public的图片不能被上传到s3中，不能直接使用asset sync，需要进行大量的修改。&lt;/p&gt;
 </description>
@@ -832,7 +875,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
         <title>You do not know NewRelic</title>
         <description>&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/0443c9ac79a6492aad4810c472308b97.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
-&lt;h2&gt;Enabling garbage collection instrumentation&lt;/h2&gt;
+&lt;h2 id=&quot;enabling-garbage-collection-instrumentation&quot;&gt;Enabling garbage collection instrumentation&lt;/h2&gt;
 
 &lt;p&gt;默认情况，Newrelic的Transactions response time overview 页面是没有统计GC信息的。如果想要开启只需要在&lt;code&gt;config/initializers/new_relic_unicorn.rb&lt;/code&gt;添加如下代码(如果不是unicorn只需要最后一句)：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# -*- encoding : utf-8 -*-&lt;/span&gt;
@@ -846,7 +889,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
 
 &lt;span class=&quot;no&quot;&gt;GC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Profiler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Recording deployments&lt;/h2&gt;
+&lt;h2 id=&quot;recording-deployments&quot;&gt;Recording deployments&lt;/h2&gt;
 
 &lt;p&gt;New Relic 支持自定义Event，结合 Capistrano 可以把每次发布的时间点划到图表上，题图上到三条粉丝细线就是deployment时刻。
 同时，还可以把changelog信息一并记录下来，便于追踪各个版本差异产生的原因，如下图：&lt;/p&gt;
@@ -861,12 +904,12 @@ T_2=&amp;quot;it is a banana&amp;quot;
 &lt;p&gt;你不需要发布就可以测试这个功能是否设置正确：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;cap&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;newrelic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;notice_deployment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Snewrelic_desc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;Deploying beta Krakatau release&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Availability monitoring&lt;/h2&gt;
+&lt;h2 id=&quot;availability-monitoring&quot;&gt;Availability monitoring&lt;/h2&gt;
 
 &lt;p&gt;默认情况下，Newrelic会在网站响应速度低到一定阀值邮件通知，也可以手动设置 &lt;code&gt;Availability monitoring&lt;/code&gt;，
 需要提供某个页面到URL，如果这个URL一分钟内ping不通就会收到网站 downtime 邮件。&lt;/p&gt;
 
-&lt;h2&gt;Instrumentation Redis&lt;/h2&gt;
+&lt;h2 id=&quot;instrumentation-redis&quot;&gt;Instrumentation Redis&lt;/h2&gt;
 
 &lt;p&gt;只需Gemfile里添加 &lt;code&gt;newrelic-redis&lt;/code&gt; 这个gem，前提是你用了 &lt;code&gt;redis-rb&lt;/code&gt;。&lt;/p&gt;
 
@@ -879,7 +922,7 @@ T_2=&amp;quot;it is a banana&amp;quot;
 
 &lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/9532c2a296f8e30b1107f6d93eb1e2fe.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
-&lt;h2&gt;Instrumentation Rack Middleware&lt;/h2&gt;
+&lt;h2 id=&quot;instrumentation-rack-middleware&quot;&gt;Instrumentation Rack Middleware&lt;/h2&gt;
 
 &lt;p&gt;只需要升级 &lt;code&gt;newrelic_rpm&lt;/code&gt; 到 3.9.0 或以上。&lt;/p&gt;
 
@@ -887,50 +930,37 @@ T_2=&amp;quot;it is a banana&amp;quot;
 
 &lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/f9e38c001dd51e040f68223e41ff399c.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
-&lt;h2&gt;JS Error Notification&lt;/h2&gt;
+&lt;h2 id=&quot;js-error-notification&quot;&gt;JS Error Notification&lt;/h2&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/a171111fbe6cf8d6275c5f2d83ca8db9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;就是ExceptionNotify的JS云端版本。当然，这个功能已经有很多人在做了，并不是newrelic首创。但集成到newrelic里却是非常自然，监控异常的同时还可以监控JS错误，何乐而不为呢..&lt;/p&gt;
 
-&lt;h2&gt;NewRelic Insights&lt;/h2&gt;
+&lt;h2 id=&quot;newrelic-insights&quot;&gt;NewRelic Insights&lt;/h2&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/74dab3fcea4ddc6d836c4b04c238ab86.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;这是一个beta项目，NewRelic把自己收集的数据再开放给你。通过自定义的NRQL，让你可以按照自己关心的方式自定义Dashboard。有了API，你可以再把这些数据倒回自己倒应用，和自己已有的数据做进一步分析。&lt;/p&gt;
 
-&lt;h2&gt;Custom Variable&lt;/h2&gt;
+&lt;h2 id=&quot;custom-variable&quot;&gt;Custom Variable&lt;/h2&gt;
 
 &lt;p&gt;Google Analytics 很早就有了，有了这个东西可玩性就提高了一个层次。能做什么就由开发者自己来想像了。&lt;/p&gt;
 
-&lt;h2&gt;NewRelic 和 Twitter的吞吐量相当，数据库使用的是 MySQL（Percona）&lt;/h2&gt;
+&lt;h2 id=&quot;newrelic-和-twitter的吞吐量相当，数据库使用的是-mysql（percona）&quot;&gt;NewRelic 和 Twitter的吞吐量相当，数据库使用的是 MySQL（Percona）&lt;/h2&gt;
 
-&lt;p&gt;Renferer: http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers&lt;/p&gt;
+&lt;p&gt;Renferer: &lt;a href=&quot;http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers&quot;&gt;http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers&lt;/a&gt;&lt;/p&gt;
 
 &lt;hr&gt;
 
 &lt;p&gt;相关文档
-* https://docs.newrelic.com/docs/ruby/garbage-collection
-* https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent
-* http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares&lt;/p&gt;
+* &lt;a href=&quot;https://docs.newrelic.com/docs/ruby/garbage-collection&quot;&gt;https://docs.newrelic.com/docs/ruby/garbage-collection&lt;/a&gt;
+* &lt;a href=&quot;https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent&quot;&gt;https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent&lt;/a&gt;
+* &lt;a href=&quot;http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares&quot;&gt;http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2014/11/08/you-do-not-know-newrelic.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/you-do-not-know-newrelic.html</guid>
         
-        
-      </item>
-    
-      <item>
-        <title>Chorisia tree</title>
-        <description>&lt;p&gt;&lt;img src=&quot;https://gp1.wac.edgecastcdn.net/806614/photos/photos.500px.net/34845288/a093afe9d576137dfdf9537724f27f043685a1a0/5.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-</description>
-        <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
-        <link>http://shopperplus.github.io/blog/tree/2014/11/08/the-title-of-the-new-post.html</link>
-        <guid isPermaLink="true">http://shopperplus.github.io/blog/tree/2014/11/08/the-title-of-the-new-post.html</guid>
-        
-        
-        <category>tree</category>
         
       </item>
     

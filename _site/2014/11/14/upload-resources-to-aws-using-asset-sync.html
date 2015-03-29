@@ -71,7 +71,7 @@
   </header>
 
   <article class="post-content">
-    <h3>目的</h3>
+    <h3 id="目的">目的</h3>
 
 <p>网站的规模逐渐变大，页面加载速度逐渐变慢，其中图片加载的时间是主要的问题。选择把js css 图片这些文件放到aws有一下几个原因：</p>
 
@@ -81,7 +81,7 @@
 <li>避免重复繁琐的图片上传管理操作，直接通过代码管理.</li>
 </ol>
 
-<h3>使用<a href="https://github.com/rumblelabs/asset_sync">asset sync</a></h3>
+<h3 id="使用asset-sync">使用<a href="https://github.com/rumblelabs/asset_sync">asset sync</a></h3>
 
 <p>使用的时候进行简单的配置即可，其中遇到一个问题，插件在dev &amp; staging都可以正确的运行，在production时遇到错误提示</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">12</span><span class="ss">T04</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">44</span><span class="o">.</span><span class="mi">818010</span> <span class="c1">#788] ERROR -- : uninitialized constant AssetSync (NameError)</span>
@@ -95,11 +95,11 @@
 <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 <span class="k">end</span>
 </code></pre></div>
-<h3>使用后发现的问题，暂时搁置</h3>
+<h3 id="使用后发现的问题，暂时搁置">使用后发现的问题，暂时搁置</h3>
 
 <p>1、无法使用gzip。使用的s3服务器中没有cloudfront，导致无法识别HTTP HEAD中Content-Encoding:gzip的请求，导致使用只能请求到非gz后的 js 与 css 文件，网站整体的pagespeed反而下降了。</p>
 
-<p>2、工作流程导致无法运用。前端工程师不使用rails server进行代码的编写，例如图片的url需要写成asset<em>host:XXXX,导致使用asset</em>host指向s3后，他们无法在本地进行开发工作。</p>
+<p>2、工作流程导致无法运用。前端工程师不使用rails server进行代码的编写，例如图片的url需要写成asset_host:XXXX,导致使用asset_host指向s3后，他们无法在本地进行开发工作。</p>
 
 <p>3、代码中历史遗留的问题。旧代码中保留了不少直接使用public的图片，而public的图片不能被上传到s3中，不能直接使用asset sync，需要进行大量的修改。</p>
 

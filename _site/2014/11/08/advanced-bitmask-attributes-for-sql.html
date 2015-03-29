@@ -71,14 +71,14 @@
   </header>
 
   <article class="post-content">
-    <h1>Advanced Bitmask Attributes for SQL</h1>
+    <h1 id="advanced-bitmask-attributes-for-sql">Advanced Bitmask Attributes for SQL</h1>
 
-<h2>Use Case</h2>
+<h2 id="use-case">Use Case</h2>
 
 <p>假设你正在为一个电商网站开发这样一种功能，商品可以在后台分配到不同的频道里显示（当然，一个商品可以在多个频道显示）。
 另外有一个前提是，频道数目不多（10个以内）。</p>
 
-<h2>Bitmask</h2>
+<h2 id="bitmask">Bitmask</h2>
 
 <p>最常规的做法是加两张表，一个频道表，另一个是频道和商品中间表，标记频道和商品对应关系。这种做法的缺点是查询的时候需要JOIN两张表。再加上对商品本身的属性进行过滤和排序，查询会非常慢。</p>
 
@@ -101,7 +101,7 @@
 <span class="c1">#  image                     :string(255)</span>
 <span class="c1">#  weight                    :integer</span>
 </code></pre></div>
-<h3>存储</h3>
+<h3 id="存储">存储</h3>
 
 <ul>
 <li>如果一个商品能在Channel1和Channel2里显示： channels =&gt; 1 + 2 = 3</li>
@@ -109,7 +109,7 @@
 <li>以此类推</li>
 </ul>
 
-<h3>查询</h3>
+<h3 id="查询">查询</h3>
 
 <ul>
 <li>查询能在Channel1显示的商品: <code>Product.where(&quot;channels &amp; 1 = 1&quot;)</code></li>
@@ -117,14 +117,14 @@
 <li>查询不能在Channel3显示的商品：<code>Product.where(&quot;channels &amp; 4 = 0&quot;)</code></li>
 </ul>
 
-<h3>优缺点</h3>
+<h3 id="优缺点">优缺点</h3>
 
 <ul>
 <li>优点：更少的字段、更少的表解决了问题</li>
 <li>缺点：所有需要过滤channels字段的查询都为全表扫描，无法利用索引</li>
 </ul>
 
-<h3>Advanced Bitmask Attributes</h3>
+<h3 id="advanced-bitmask-attributes">Advanced Bitmask Attributes</h3>
 
 <p>继续使用Bitmask的思路，但是把查询转化成IN查询，有效利用索引。</p>
 
@@ -149,7 +149,7 @@ SELECT `products`.* FROM `products`  WHERE `products`.`channels` IN (1, 2, 3, 8,
 </code></li>
 </ul>
 
-<h2>结论</h2>
+<h2 id="结论">结论</h2>
 
 <ul>
 <li>中间表方案：需要额外的JOIN Table</li>

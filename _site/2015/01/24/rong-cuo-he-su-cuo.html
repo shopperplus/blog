@@ -73,7 +73,7 @@
   <article class="post-content">
     <p>程序出现异常，不想让用户看到，会给一个友好的提示，这种做法一般称作“容错”。另一方面，我们希望自己的程序能够把隐藏错误尽早暴露出来，及时修复，这种思路称之为“速错”。拼写错误、源数据错误、逻辑错误都需要速错。当然，容错和速错也并不总是对立的，分清何时应用哪种策略非常重要。</p>
 
-<h2>Hash#fetch over Hash#[]</h2>
+<h2 id="hash#fetch-over-hash#[]">Hash#fetch over Hash#[]</h2>
 
 <p>当<code>Hash</code>的key值是已知的情况，比如状态枚举。优先使用<code>fetch</code>可以避免拼写错误带来的意外。举例：</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Event</span> <span class="o">&lt;</span> <span class="no">AR</span>
@@ -87,7 +87,7 @@
 </code></pre></div>
 <p>上面例子由于错误拼写，把<code>closed</code>拼成 <code>close</code>，造成了一个<code>Silent failure</code>，而使用<code>fetch</code>方法就会在拼错时直接抛出异常，避免了之后的错误。</p>
 
-<h2>使用常量</h2>
+<h2 id="使用常量">使用常量</h2>
 
 <p>除此之外，声明常量也可以带来同样效果，本质是给输入加上了拼写检查。</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Event</span> <span class="o">&lt;</span> <span class="no">AR</span>
@@ -96,7 +96,7 @@
 <span class="k">end</span>
 <span class="no">Event</span><span class="o">.</span><span class="n">update_all</span><span class="p">(</span><span class="ss">:status</span> <span class="o">=&gt;</span> <span class="no">Event</span><span class="o">::</span><span class="no">CLOSE</span><span class="p">,</span> <span class="s2">&quot;created_at &gt; &#39;2011-1-1&#39;&quot;</span><span class="p">)</span>       <span class="c1"># =&gt; raise NameError: uninitialized constant CLOSE</span>
 </code></pre></div>
-<h2>善用attr method</h2>
+<h2 id="善用attr-method">善用attr method</h2>
 
 <p>经常看到有人问，attr method有什么用，直接使用实例变量不好么，这样的问题。</p>
 
@@ -115,11 +115,11 @@ end
 </code></pre></div>
 <p>如果我们使用attr reader，调用close方法直接就会抛出undefind method异常，让拼写错误尽早现形。</p>
 
-<h2>save! over save</h2>
+<h2 id="save!-over-save">save! over save</h2>
 
 <p>经常看到一段事物代码里用<code>save</code>的情况，<code>save</code>不会抛异常，这样事物的意义就失去了。显然，这属于不理解事物运作机制的错误用法。在没有事物的代码里，如何选择<code>save</code>还是<code>save!</code>也是非常困难的。我个人的习惯是，在不需要错误回显的情况，一律使用<code>save!</code>和<code>update_attributes!</code>这样能够<code>Fail Fast</code> 的方法。</p>
 
-<h2>不要滥用 rescue</h2>
+<h2 id="不要滥用-rescue">不要滥用 rescue</h2>
 
 <p>如果你的代码里经常见到<code>begin rescue</code>,这就是一种<code>bad small</code>。当然，调用外部接口时，异常一定要捕获，但有一部分新手会在自己写的一堆应用逻辑外面套上<code>begin resuce</code>,并且不明确捕获的错误类型。当你问他，你要捕获哪种错误的时候，他一定回答不出。对于自己代码里的逻辑错误不应该去捕获错误，而是查出错误的来源，从源头上解决问题。即使要捕获，也应该有一个明确的类型：</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">begin</span>
@@ -129,7 +129,7 @@ end
 </code></pre></div>
 <p>用异常做控制流的做法也不少见，但不是本文讨论的话题..</p>
 
-<h2>数据源错误</h2>
+<h2 id="数据源错误">数据源错误</h2>
 
 <p>容错的思想带来的一个问题是总想隐藏问题，不是直接去从源头解决。当一个产品数据被误删导致用户订单页面出错，不应该去容错，到处写<code>order_item.product.try(:name)</code>，而是应该去恢复被删数据。</p>
 

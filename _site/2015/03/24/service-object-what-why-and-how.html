@@ -73,7 +73,7 @@
   <article class="post-content">
     <p>首先想说的是，Service Object 是在Rails里实践SRP的一种手段和模式，不仅仅是一个文件夹。</p>
 
-<h2>Controller是交互入口</h2>
+<h2 id="controller是交互入口">Controller是交互入口</h2>
 
 <p>像c/c++里，每个应用都会有一个入口，像下面这样：</p>
 <div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &lt;iostream&gt;</span>
@@ -107,7 +107,7 @@
 <li>输出提示 -&gt; flash</li>
 </ul>
 
-<h2>Servies Object</h2>
+<h2 id="servies-object">Servies Object</h2>
 
 <p>Service Object 封装了每一个业务流程。它负责组织应用领域模型（Model）之间的交互，并且不依赖于框架（Controller层）。你可以想象怎样的代码从Sinatra程序改成Rails会更容易，当然你不一定要这么做，我只是想解释一下什么是 <code>不依赖框架层</code>。</p>
 
@@ -120,7 +120,7 @@
 <li>让Controller更slim。</li>
 </ul>
 
-<h2>Example 1</h2>
+<h2 id="example-1">Example 1</h2>
 
 <p>重构之前的charge more controller：</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">OrdersController</span>
@@ -251,7 +251,7 @@
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<h2>Example 2</h2>
+<h2 id="example-2">Example 2</h2>
 
 <p><a href="https://gist.github.com/hooopo/f6a031dac417323dfec6">https://gist.github.com/hooopo/f6a031dac417323dfec6</a></p>
 

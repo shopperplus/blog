@@ -73,7 +73,7 @@
   <article class="post-content">
     <p>CRC全称为Cyclic Redundancy Check，又叫循环冗余校验。CRC32是CRC算法的一种，常用于校验网络上传输的文件。</p>
 
-<h2>How to Use CRC32 In MySQL &amp; Ruby</h2>
+<h2 id="how-to-use-crc32-in-mysql-&amp;-ruby">How to Use CRC32 In MySQL &amp; Ruby</h2>
 <div class="highlight"><pre><code class="language-text" data-lang="text">mysql&gt; SELECT CRC32(&#39;hello&#39;);
 +----------------+
 | CRC32(&#39;hello&#39;) |
@@ -83,7 +83,7 @@
 </code></pre></div><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;zlib&#39;</span>
 <span class="no">Zlib</span><span class="o">::</span><span class="n">crc32</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span> <span class="c1"># =&gt; 907060870</span>
 </code></pre></div>
-<h2>CRC32 Vs MD5</h2>
+<h2 id="crc32-vs-md5">CRC32 Vs MD5</h2>
 
 <p>这里我们不谈校验，只说MySQL里如何利用CRC32来加快查询。首先我们得知道CRC32的基本特征：</p>
 
@@ -92,7 +92,7 @@
 <li>相比MD5，CRC32函数很容易碰撞</li>
 </ol>
 
-<h2>CRC32的使用场景</h2>
+<h2 id="crc32的使用场景">CRC32的使用场景</h2>
 
 <p>由上述两个基本特性可知，CRC32在MySQL里只需要用bigint存储，而MD5需要varchar来存储。但是CRC32很容易碰撞，这适合做索引么？</p>
 

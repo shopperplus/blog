@@ -73,7 +73,7 @@
   <article class="post-content">
     <p><img src="https://gp1.wac.edgecastcdn.net/806614/photos/photos.500px.net/65000163/55dcc47e193e5540faaa5d97a70f06206f12cbbc/5.jpg" alt=""></p>
 
-<h2>Trie</h2>
+<h2 id="trie">Trie</h2>
 
 <p>trie，又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。</p>
 
@@ -81,7 +81,7 @@
 
 <p>上面的介绍和例子来自维基百科，描述一个保存了8个键的trie结构，&quot;A&quot;, &quot;to&quot;, &quot;tea&quot;, &quot;ted&quot;, &quot;ten&quot;, &quot;i&quot;, &quot;in&quot;, and &quot;inn&quot;. 图示中标注出完整的单词，只是为了演示trie的原理。</p>
 
-<h2>敏感词过滤</h2>
+<h2 id="敏感词过滤">敏感词过滤</h2>
 
 <p>敏感词过滤或关键词提取是Trie树的一个典型应用。拿待过滤词ABCDEF举例，</p>
 
@@ -115,7 +115,7 @@
 
 <span class="nb">puts</span> <span class="n">results</span> <span class="c1">#=&gt; {&quot;芒果&quot; =&gt; 1}</span>
 </code></pre></div>
-<h2>去噪</h2>
+<h2 id="去噪">去噪</h2>
 
 <p>用户可以通过在输入内容中加入空格、特殊符号来干扰敏感词过滤工作。比如芒果可以写成 <code>芒 果</code>、<code>芒**果</code>、<code>芒%果</code>。
 解决办法是在过滤之前去噪。还是上面的代码，加上去噪处理：</p>
@@ -139,11 +139,11 @@
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<h2>Related Links</h2>
+<h2 id="related-links">Related Links</h2>
 
 <ul>
-<li>https://github.com/luikore/triez</li>
-<li>http://zh.wikipedia.org/wiki/Trie</li>
+<li><a href="https://github.com/luikore/triez">https://github.com/luikore/triez</a></li>
+<li><a href="http://zh.wikipedia.org/wiki/Trie">http://zh.wikipedia.org/wiki/Trie</a></li>
 </ul>
 
   </article>

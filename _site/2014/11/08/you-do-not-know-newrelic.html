@@ -73,7 +73,7 @@
   <article class="post-content">
     <p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/0443c9ac79a6492aad4810c472308b97.png" alt=""></p>
 
-<h2>Enabling garbage collection instrumentation</h2>
+<h2 id="enabling-garbage-collection-instrumentation">Enabling garbage collection instrumentation</h2>
 
 <p>默认情况，Newrelic的Transactions response time overview 页面是没有统计GC信息的。如果想要开启只需要在<code>config/initializers/new_relic_unicorn.rb</code>添加如下代码(如果不是unicorn只需要最后一句)：</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># -*- encoding : utf-8 -*-</span>
@@ -87,7 +87,7 @@
 
 <span class="no">GC</span><span class="o">::</span><span class="no">Profiler</span><span class="o">.</span><span class="n">enable</span>
 </code></pre></div>
-<h2>Recording deployments</h2>
+<h2 id="recording-deployments">Recording deployments</h2>
 
 <p>New Relic 支持自定义Event，结合 Capistrano 可以把每次发布的时间点划到图表上，题图上到三条粉丝细线就是deployment时刻。
 同时，还可以把changelog信息一并记录下来，便于追踪各个版本差异产生的原因，如下图：</p>
@@ -102,12 +102,12 @@
 <p>你不需要发布就可以测试这个功能是否设置正确：</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">cap</span> <span class="ss">newrelic</span><span class="p">:</span><span class="n">notice_deployment</span> <span class="o">-</span><span class="no">Snewrelic_desc</span><span class="o">=</span><span class="s2">&quot;Deploying beta Krakatau release&quot;</span>
 </code></pre></div>
-<h2>Availability monitoring</h2>
+<h2 id="availability-monitoring">Availability monitoring</h2>
 
 <p>默认情况下，Newrelic会在网站响应速度低到一定阀值邮件通知，也可以手动设置 <code>Availability monitoring</code>，
 需要提供某个页面到URL，如果这个URL一分钟内ping不通就会收到网站 downtime 邮件。</p>
 
-<h2>Instrumentation Redis</h2>
+<h2 id="instrumentation-redis">Instrumentation Redis</h2>
 
 <p>只需Gemfile里添加 <code>newrelic-redis</code> 这个gem，前提是你用了 <code>redis-rb</code>。</p>
 
@@ -120,7 +120,7 @@
 
 <p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/9532c2a296f8e30b1107f6d93eb1e2fe.png" alt=""></p>
 
-<h2>Instrumentation Rack Middleware</h2>
+<h2 id="instrumentation-rack-middleware">Instrumentation Rack Middleware</h2>
 
 <p>只需要升级 <code>newrelic_rpm</code> 到 3.9.0 或以上。</p>
 
@@ -128,32 +128,32 @@
 
 <p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/f9e38c001dd51e040f68223e41ff399c.png" alt=""></p>
 
-<h2>JS Error Notification</h2>
+<h2 id="js-error-notification">JS Error Notification</h2>
 
 <p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/a171111fbe6cf8d6275c5f2d83ca8db9.png" alt=""></p>
 
 <p>就是ExceptionNotify的JS云端版本。当然，这个功能已经有很多人在做了，并不是newrelic首创。但集成到newrelic里却是非常自然，监控异常的同时还可以监控JS错误，何乐而不为呢..</p>
 
-<h2>NewRelic Insights</h2>
+<h2 id="newrelic-insights">NewRelic Insights</h2>
 
 <p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2014/74dab3fcea4ddc6d836c4b04c238ab86.png" alt=""></p>
 
 <p>这是一个beta项目，NewRelic把自己收集的数据再开放给你。通过自定义的NRQL，让你可以按照自己关心的方式自定义Dashboard。有了API，你可以再把这些数据倒回自己倒应用，和自己已有的数据做进一步分析。</p>
 
-<h2>Custom Variable</h2>
+<h2 id="custom-variable">Custom Variable</h2>
 
 <p>Google Analytics 很早就有了，有了这个东西可玩性就提高了一个层次。能做什么就由开发者自己来想像了。</p>
 
-<h2>NewRelic 和 Twitter的吞吐量相当，数据库使用的是 MySQL（Percona）</h2>
+<h2 id="newrelic-和-twitter的吞吐量相当，数据库使用的是-mysql（percona）">NewRelic 和 Twitter的吞吐量相当，数据库使用的是 MySQL（Percona）</h2>
 
-<p>Renferer: http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers</p>
+<p>Renferer: <a href="http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers">http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers</a></p>
 
 <hr>
 
 <p>相关文档
-* https://docs.newrelic.com/docs/ruby/garbage-collection
-* https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent
-* http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares</p>
+* <a href="https://docs.newrelic.com/docs/ruby/garbage-collection">https://docs.newrelic.com/docs/ruby/garbage-collection</a>
+* <a href="https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent">https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent</a>
+* <a href="http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares">http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares</a></p>
 
   </article>
   <div id="disqus_thread"></div>
