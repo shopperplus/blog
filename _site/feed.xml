@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 12 Apr 2015 04:17:06 +0800</pubDate>
-    <lastBuildDate>Sun, 12 Apr 2015 04:17:06 +0800</lastBuildDate>
+    <pubDate>Sun, 12 Apr 2015 04:21:16 +0800</pubDate>
+    <lastBuildDate>Sun, 12 Apr 2015 04:21:16 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -169,7 +169,7 @@
 
 &lt;h2 id=&quot;星型模式的查询&quot;&gt;星型模式的查询&lt;/h2&gt;
 
-&lt;p&gt;数据库结构已经设计完毕，我们来做一些简单的查询，比如，想知道2013年销量最好的前10个城市是什么？&lt;/p&gt;
+&lt;p&gt;数据库结构已经设计完毕，我们来做一些简单的查询，比如，想知道2013年11月销量最好的前10个城市是什么？&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;address_dimension&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;address_dimension&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;address_dimension&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;city&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SUM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;total&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sum_total&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_dimension&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calendar_year_month&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_facts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;INNER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_dimension&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_dimension&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_facts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;

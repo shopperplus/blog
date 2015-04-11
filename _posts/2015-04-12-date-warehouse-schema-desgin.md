@@ -136,7 +136,7 @@ author: Hooopo
 
 ## 星型模式的查询
 
-数据库结构已经设计完毕，我们来做一些简单的查询，比如，想知道2013年销量最好的前10个城市是什么？
+数据库结构已经设计完毕，我们来做一些简单的查询，比如，想知道2013年11月销量最好的前10个城市是什么？
 
 ```sql
 SELECT address_dimension.country, address_dimension.state, address_dimension.city, SUM(total) as sum_total, date_dimension. calendar_year_month

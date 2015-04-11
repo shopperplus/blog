@@ -228,7 +228,7 @@
 
 <h2 id="星型模式的查询">星型模式的查询</h2>
 
-<p>数据库结构已经设计完毕，我们来做一些简单的查询，比如，想知道2013年销量最好的前10个城市是什么？</p>
+<p>数据库结构已经设计完毕，我们来做一些简单的查询，比如，想知道2013年11月销量最好的前10个城市是什么？</p>
 <div class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="n">address_dimension</span><span class="p">.</span><span class="n">country</span><span class="p">,</span> <span class="n">address_dimension</span><span class="p">.</span><span class="k">state</span><span class="p">,</span> <span class="n">address_dimension</span><span class="p">.</span><span class="n">city</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="n">total</span><span class="p">)</span> <span class="k">as</span> <span class="n">sum_total</span><span class="p">,</span> <span class="n">date_dimension</span><span class="p">.</span> <span class="n">calendar_year_month</span>
 <span class="k">FROM</span> <span class="o">`</span><span class="n">order_facts</span><span class="o">`</span>
 <span class="k">INNER</span> <span class="k">JOIN</span> <span class="o">`</span><span class="n">date_dimension</span><span class="o">`</span> <span class="k">ON</span> <span class="o">`</span><span class="n">date_dimension</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="o">=</span> <span class="o">`</span><span class="n">order_facts</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">date_id</span><span class="o">`</span>
