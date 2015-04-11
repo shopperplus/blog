@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Data Warehouse Schema Desgin</title>
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56538535-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <link rel="stylesheet" href="/blog/css/main.css">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2015/04/12/data-warehouse-schema-desgin.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Shopper+ Team Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Data Warehouse Schema Desgin</h1>
+    <p class="post-meta">Apr 12, 2015 • Hooopo</p>
+  </header>
+
+  <article class="post-content">
+    <p>之前介绍了数据仓库相关的一些基本概念：维度、事实、维度层次、上钻、下钻等。这篇主要来说一下数据仓库系统如何建模。</p>
+
+<h2 id="oltp-vs-olap">OLTP vs OLAP</h2>
+
+<p>分析型系统和操作型系统具有完全不同的目的。操作型系统支持业务的执行过程，而分析型系统支持对业务过程的评价。因此，指导种系统的设计原则也不同。</p>
+
+<p>操作型系统直接支持业务过程的执行。它通过获取业务的事件和细节来构建业务的活动记录。例如，销售系统的订单、发货、支付等；人力系统的雇员雇佣和升迁信息；代码托管系统的commit和pull request信息等。由这些系统记录的活动通常成为事务，而这类系统本身通常成为联机事务处理（OLTP）系统，或简称为事务系统。</p>
+
+<p>操作型系统关注执行过程，因此在事情发生改变时可能需要更新相关数据，并在数据操作有效期结束后清除或归档数据。例如，当一个客户地址发生变动时，地址数据被简单的重写了。</p>
+
+<p>在关系数据库设计领域，广泛被认可的最佳操作型系统模式设计方法是第三范式。</p>
+
+<p>与操作型系统关注业务执行过程不同，分析型系统主要支持对业务过程的评价。</p>
+
+<ul>
+<li>本月订单趋势与上个月相比有何不同？</li>
+<li>与本季度的目标相比，这种趋势说明什么问题？</li>
+<li>某一个营销策略对销售有何影响?</li>
+<li>谁是我们的最佳客户？</li>
+</ul>
+
+<p>这些问题涉及到对整个订单流程的度量，无法从单个订单中获得答案。</p>
+
+<p>在分析系统中，不需要创建或修改信息。在操作型系统中不再使用的历史数据对分析型系统来说仍然很重要，这一点之后要提到的<code>缓慢变化维度</code>问题中会有更详细的解释。</p>
+
+<p>下面表格是对OLTP和OLAP主要差别的总结：</p>
+
+<table><thead>
+<tr>
+<th></th>
+<th>操作型系统</th>
+<th>分析型系统</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>目的</td>
+<td>执行业务过程</td>
+<td>度量业务过程</td>
+</tr>
+<tr>
+<td>主要交互类型</td>
+<td>插入、更新、查询、删除</td>
+<td>查询</td>
+</tr>
+<tr>
+<td>交互范围</td>
+<td>单个事务</td>
+<td>聚合事务</td>
+</tr>
+<tr>
+<td>时间关注</td>
+<td>当前的</td>
+<td>当前的和历史的</td>
+</tr>
+<tr>
+<td>设计优化</td>
+<td>更新并发性</td>
+<td>高性能查询</td>
+</tr>
+<tr>
+<td>设计原则</td>
+<td>基于第三范式（3NF）的实体-关系（ER）设计</td>
+<td>维度设计（星型模型）</td>
+</tr>
+</tbody></table>
+
+<h2 id="星型模式">星型模式</h2>
+
+<p>针对关系型数据库的维度设计被称为星型模式。相关的维度组合成维度表中的列，事实则存储在事实表的各个列中。星型模式的这个称谓来自于其表现形式：当与置于中心位置的事实表连线时，整个模式看起来像星状物，如图：</p>
+
+<p><img src="https://camo.githubusercontent.com/b62f85699da533d25434de94ce3e556d9d5d84b4/68747470733a2f2f707974686f6e686f737465642e6f72672f63756265732f5f696d616765732f736368656d615f737461722e706e67" alt="star schema"></p>
+
+<p>在星型模型基础上，将维度表做规范化设计，又衍生出了雪花模型，如图：</p>
+
+<p><img src="https://camo.githubusercontent.com/a2782e4fc831b7b8e1948233458112d6c9954798/68747470733a2f2f707974686f6e686f737465642e6f72672f63756265732f5f696d616765732f736368656d615f736e6f77666c616b652e706e67" alt="flake schema"></p>
+
+<p>下面拿一个简单的订单系统举例，来看一下维度和事实表的设计：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># 地址维度表(adderss_dimension)
++---------+--------------+------+-----+---------+----------------+
+| Field   | Type         | Null | Key | Default | Extra          |
++---------+--------------+------+-----+---------+----------------+
+| id      | int(11)      | NO   | PRI | NULL    | auto_increment |
+| country | varchar(255) | YES  | MUL | NULL    |                |
+| state   | varchar(255) | YES  | MUL | NULL    |                |
+| city    | varchar(255) | YES  | MUL | NULL    |                |
++---------+--------------+------+-----+---------+----------------+
+
+# 发货方式维度表(shipping_method_dimension)：
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| id    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(255) | YES  | MUL | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+
+# 订单来源维度表（source_dimension）:
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| id    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(255) | YES  | MUL | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+
+# 日期维度表(date_dimension)：
++-------------------------------+--------------+------+-----+---------+----------------+
+| Field                         | Type         | Null | Key | Default | Extra          |
++-------------------------------+--------------+------+-----+---------+----------------+
+| id                            | int(11)      | NO   | PRI | NULL    | auto_increment |
+| date                          | varchar(255) | YES  | MUL | NULL    |                |
+| full_date_description         | text         | YES  |     | NULL    |                |
+| calendar_week                 | varchar(255) | YES  | MUL | NULL    |                |
+| calendar_week_number_in_year  | int(11)      | YES  | MUL | NULL    |                |
+| calendar_month_name           | varchar(255) | YES  | MUL | NULL    |                |
+| calendar_month_number_in_year | int(11)      | YES  | MUL | NULL    |                |
+| calendar_year_month           | varchar(255) | YES  | MUL | NULL    |                |
+| calendar_quarter              | varchar(255) | YES  | MUL | NULL    |                |
+| calendar_year_quarter         | varchar(255) | YES  | MUL | NULL    |                |
+| calendar_year                 | varchar(255) | YES  | MUL | NULL    |                |
+| sql_date_stamp                | date         | YES  | MUL | NULL    |                |
++-------------------------------+--------------+------+-----+---------+----------------+
+
+# 订单事实表(order_facts)：
++--------------------+--------------+------+-----+---------+----------------+
+| Field              | Type         | Null | Key | Default | Extra          |
++--------------------+--------------+------+-----+---------+----------------+
+| id                 | int(11)      | NO   | PRI | NULL    | auto_increment |
+| date_id            | int(11)      | YES  | MUL | NULL    |                |
+| shipping_method_id | int(11)      | YES  | MUL | NULL    |                |
+| customer_id        | int(11)      | YES  | MUL | NULL    |                |
+| payment_method_id  | int(11)      | YES  | MUL | NULL    |                |
+| zip_id             | int(11)      | YES  | MUL | NULL    |                |
+| address_id         | int(11)      | YES  | MUL | NULL    |                |
+| source_id          | int(11)      | YES  | MUL | NULL    |                |
+| tax                | decimal(8,2) | YES  |     | 0.00    |                |
+| shipping_cost      | decimal(8,2) | YES  |     | 0.00    |                |
+| total              | decimal(8,2) | YES  |     | 0.00    |                |
+| sub_total          | decimal(8,2) | YES  |     | 0.00    |                |
+| refund_amount      | decimal(8,2) | YES  |     | 0.00    |                |
+| coupon_discount    | decimal(8,2) | YES  |     | 0.00    |                |
+| gross_profit       | decimal(8,2) | YES  |     | 0.00    |                |
++--------------------+--------------+------+-----+---------+----------------+
+</code></pre></div>
+<p>最终的星型结构是这样：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">                                                            
+ +---------------+                                 +------+ 
+ |        address+----------+      +---------------+date  | 
+ +---------------+        +-v------v--+            +------+ 
+                          |order facts|                     
+ +---------------+        +-^------^--+            +------+ 
+ |shipping method+----------+      +---------------+source| 
+ +---------------+                                 +------+ 
+                                                            
+</code></pre></div>
+<p>这里比较特殊的是时间维度表，时间维度在星型模型里是一个通用维度，粒度只精确到天，这也是由分析型系统对实时性要求不高的特性决定的。其中地址也有做类似处理，在ETL过程中将街道等细节信息去掉，只精确到了城市级别。</p>
+
+<h2 id="查询">查询</h2>
+
+<p>数据库结构已经设计完毕，我们来做一些简单的查询，比如，想知道2013年销量最好的前10个城市是什么？</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="n">address_dimension</span><span class="p">.</span><span class="n">country</span><span class="p">,</span> <span class="n">address_dimension</span><span class="p">.</span><span class="k">state</span><span class="p">,</span> <span class="n">address_dimension</span><span class="p">.</span><span class="n">city</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="n">total</span><span class="p">)</span> <span class="k">as</span> <span class="n">sum_total</span><span class="p">,</span> <span class="n">date_dimension</span><span class="p">.</span> <span class="n">calendar_year_month</span>
+<span class="k">FROM</span> <span class="o">`</span><span class="n">order_facts</span><span class="o">`</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="o">`</span><span class="n">date_dimension</span><span class="o">`</span> <span class="k">ON</span> <span class="o">`</span><span class="n">date_dimension</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="o">=</span> <span class="o">`</span><span class="n">order_facts</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">date_id</span><span class="o">`</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="o">`</span><span class="n">address_dimension</span><span class="o">`</span> <span class="k">ON</span> <span class="o">`</span><span class="n">address_dimension</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="o">=</span> <span class="o">`</span><span class="n">order_facts</span><span class="o">`</span><span class="p">.</span> <span class="o">`</span><span class="n">address_id</span><span class="o">`</span>
+<span class="k">WHERE</span> <span class="n">calendar_year_month</span> <span class="o">=</span> <span class="s1">&#39;2013-11&#39;</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">country</span><span class="p">,</span> <span class="k">state</span><span class="p">,</span> <span class="n">city</span><span class="p">,</span> <span class="n">calendar_year_month</span>
+<span class="k">ORDER</span> <span class="k">by</span> <span class="n">sum_total</span> <span class="k">DESC</span>
+<span class="k">LIMIT</span> <span class="mi">10</span>
+</code></pre></div>
+<p>结果：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">+---------+------------------+-------------+-------------+---------------------+
+| country | state            | city        | sum_total   | calendar_year_month |
++---------+------------------+-------------+-------------+---------------------+
+| Canada  | Ontario          | Toronto     | 23914512.00 | 2013-11             |
+| Canada  | Quebec           | Montreal    | 22403280.00 | 2013-11             |
+| Canada  | Alberta          | Calgary     | 13671801.00 | 2013-11             |
+| Canada  | British Columbia | Vancouver   |  9201099.00 | 2013-11             |
+| Canada  | Ontario          | Ottawa      |  8771859.00 | 2013-11             |
+| Canada  | Ontario          | Mississauga |  8627691.00 | 2013-11             |
+| Canada  | Manitoba         | Winnipeg    |  8308380.00 | 2013-11             |
+| Canada  | Alberta          | Edmonton    |  7773006.00 | 2013-11             |
+| Canada  | British Columbia | Richmond    |  6602364.00 | 2013-11             |
+| Canada  | Quebec           | Lachine     |  5624025.00 | 2013-11             |
++---------+------------------+-------------+-------------+---------------------+
+</code></pre></div>
+<p>从上面的SQL可以发现，设计成星型模式之后，几乎所有多维分析报表问题都可以通过上面一种查询方式得到答案。</p>
+
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shopper+ Team Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Shopper+ Team Blog</li>
+          <li><a href="mailto:tech@3cps.ca">tech@3cps.ca</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/shopperplus">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/shopperplus">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
