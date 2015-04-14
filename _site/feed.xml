@@ -6,9 +6,140 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 12 Apr 2015 19:48:01 +0800</pubDate>
-    <lastBuildDate>Sun, 12 Apr 2015 19:48:01 +0800</lastBuildDate>
+    <pubDate>Wed, 15 Apr 2015 01:51:34 +0800</pubDate>
+    <lastBuildDate>Wed, 15 Apr 2015 01:51:34 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>ETL with Ruby</title>
+        <description>&lt;h2 id=&quot;why-etl&quot;&gt;Why ETL&lt;/h2&gt;
+
+&lt;p&gt;前面两篇介绍了数据仓库相关的基本概念和星型模型等常用建模方式。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://shopperplus.github.io/blog/2015/03/28/data-warehouse-concepts-and-overview.html&quot;&gt;Data Warehouse Concepts and Overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://shopperplus.github.io/blog/2015/04/12/data-warehouse-schema-desgin.html&quot;&gt;Data Warehouse Schema Desgin&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这篇主要来谈ETL。星型模型让分析查询变得容易，但存在以下问题：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;一般先有OLTP系统，后有OLAP系统，分析系统只是辅助工具。&lt;/li&gt;
+&lt;li&gt;我们的事务系统不是按星型模型设计的，数据来源是OLTP类型应用。&lt;/li&gt;
+&lt;li&gt;数据源除了OLTP系统的数据，还需要与其他来源数据进行组合。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所以，需要引入一套ETL流程来把OLTP数据转化为星型模型，然后才能方便分析。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt; +------------------+          +-----------+      +-----------+      +---------+ 
+ |OLTP Data         +---------&amp;gt;+           |      |           |      |         | 
+ +------------------+          |           |      |           |      |         | 
+                               |           +----&amp;gt; |           +----&amp;gt; |         | 
+ +------------------+          | Extract   |      |           |      |         | 
+ |Google Analytics  +---------&amp;gt;+           |      |           |      |         | 
+ +------------------+          |           |      |           |      |Analytics| 
+                               | Transform |      |Star Schema|      |   &amp;amp;&amp;amp;    | 
+ +------------------+          |           |      |           |      |Reporting| 
+ |CRM Data          +---------&amp;gt;+           |      |           |      |         | 
+ +------------------+          | Load      |      |           |      |         | 
+                               |           +----&amp;gt; |           +----&amp;gt; |         | 
+ +------------------+          |           |      |           |      |         | 
+ |Others            +---------&amp;gt;+           |      |           |      |         | 
+ +------------------+          +-----------+      +-----------+      +---------+ 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;那么，ETL是什么？&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Extract data from a source&lt;/li&gt;
+&lt;li&gt;Transform the data for storing it in proper format or structure for querying and analysis purpose&lt;/li&gt;
+&lt;li&gt;Load it into the target&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其实ETL工作我们并不陌生，正像 &lt;a href=&quot;https://github.com/thbar&quot;&gt;thbar&lt;/a&gt; 所说的 &lt;a href=&quot;http://thibautbarrere.com/2015/03/25/rubyists-are-you-doing-etl-unknowingly/&quot;&gt;Rubyists — Are you doing ETL unknowingly?&lt;/a&gt;,下面这些都属于ETL范畴：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Write a script to migrate a legacy database to a new schema.&lt;/li&gt;
+&lt;li&gt;Automate processing of your data to generate a report.&lt;/li&gt;
+&lt;li&gt;Synchronize all or part of the data between 2 systems on a regular basis.&lt;/li&gt;
+&lt;li&gt;Prepare your data for indexing/searching.&lt;/li&gt;
+&lt;li&gt;Aggregate heterogeneous data sources into one consistent database.&lt;/li&gt;
+&lt;li&gt;Clean-up dirty or bogus data.&lt;/li&gt;
+&lt;li&gt;Geocode rows in an app to present them through a map app.&lt;/li&gt;
+&lt;li&gt;Implement a data export process for your users.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;etl-tools&quot;&gt;ETL Tools&lt;/h2&gt;
+
+&lt;p&gt;和 Ruby 相关的ETL开源工具只有以下几个：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;与AR结合紧密的activewarehouse-etl：&lt;a href=&quot;https://github.com/activewarehouse/activewarehouse-etl&quot;&gt;https://github.com/activewarehouse/activewarehouse-etl&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Square出品的轻量级ETL工具：&lt;a href=&quot;https://github.com/square/ETL&quot;&gt;https://github.com/square/ETL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;activewarehouse-etl维护者thbar新作：&lt;a href=&quot;https://github.com/thbar/kiba&quot;&gt;https://github.com/thbar/kiba&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;值得说明一下的是，由于ActiveRecord完全是针对OLTP场景设计的ORM工具，我们用AR来导数据一定会觉得巨慢，即使做了各种优化手段。这不是AR的错，是你没选对工具。ETL工具针对这种场景做了优化，一般都是批量加载数据，速度可以说是有了质的提升。可以参考之前写过的&lt;a href=&quot;http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html&quot;&gt;Fastest way to load data in MySQL&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;如果想了解Activewarehosue ETL，这里有一个专门介绍Activewarehouse ETL的slide也值得一看：&lt;a href=&quot;https://speakerdeck.com/thbar/transforming-data-with-ruby-and-activewarehouse-etl&quot;&gt;https://speakerdeck.com/thbar/transforming-data-with-ruby-and-activewarehouse-etl&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;incremental-update-&amp;amp;-mysql-stream&quot;&gt;Incremental Update &amp;amp; MySQL stream&lt;/h2&gt;
+
+&lt;p&gt;针对大数据场景，Activewarehouse ETL会提供增量更新和流读取的方式，只需要简单配置：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:operational_database&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:table&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;people&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:join&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;addresses on people.address_id = addresses.id&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;people.email, addresses.city, addresses.state, people.created_at&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:conditions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;people.unsubscribed = 0 AND people.date_of_death IS NULL&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;people.created_at&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:new_records_only&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;people.updated_at&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 增量导入&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:mysqlstream&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;                      &lt;span class=&quot;c1&quot;&gt;# 按流的方式&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:city&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:state&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;处理缓慢变化维度&quot;&gt;处理缓慢变化维度&lt;/h2&gt;
+
+&lt;p&gt;维度建模的数据仓库中，有一个概念叫Slowly Changing Dimensions，中文一般翻译成“缓慢变化维”，经常被简写为SCD。缓慢变化维的提出是因为在现实世界中，维度的属性并不是静态的，它会随着时间的流失发生缓慢的变化。这种随时间发生变化的维度我们一般称之为缓慢变化维，并且把处理维度表的历史变化信息的问题称为处理缓慢变化维的问题，有时也简称为处理SCD的问题。常见类型有两种（&lt;a href=&quot;http://en.wikipedia.org/wiki/Slowly_changing_dimension&quot;&gt;Wikipedia&lt;/a&gt; 里面介绍了6种）：&lt;/p&gt;
+
+&lt;h3 id=&quot;类型1-(type-1):-覆盖旧记录。&quot;&gt;类型1 (Type 1): 覆盖旧记录。&lt;/h3&gt;
+
+&lt;p&gt;有些 Dimension 表从业务上讲不需要保存历史记 录或者只需要对原有记录进行修改。比如说 Customer 表中有 Customer 地址的属性,原有的地址输入错误我们需要修改这个属性而 不需要对原有的错误地址进行保存,这个时候 就可以使用 SCD Type 1&lt;/p&gt;
+
+&lt;h3 id=&quot;类型2-(type-2):-增加新记录。&quot;&gt;类型2 (Type 2): 增加新记录。&lt;/h3&gt;
+
+&lt;p&gt;Type 2 是精确 捕获Dimension 表历史变化的一种标准的方法,它通过对数据源表的Change Data Capture (CDC) 机制来捕获数据源的变化,然后在 Dimension 表中插入一个新的记录再使旧的相应的记录时效。&lt;/p&gt;
+
+&lt;p&gt;缓慢变化维度一般设计成这样的结构：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;# customer dimension
++-----------------+------------+------+-----+---------+----------------+
+| id              | int(11)    | NO   | PRI | NULL    | auto_increment |
+| customer_key    | int(11)    | YES  | MUL | NULL    |                |
+| customer_type   | int(11)    | YES  | MUL | 1       |                |
+| effective_start | datetime   | YES  |     | NULL    |                |
+| effective_end   | datetime   | YES  |     | NULL    |                |
+| latest_version  | tinyint(1) | YES  |     | 1       |                |
++-----------------+------------+------+-----+---------+----------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Activewarehouse ETL 对SCD问题也提供了解决方案。&lt;/p&gt;
+
+&lt;h2 id=&quot;案例&quot;&gt;案例&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/hooopo/etltest&quot;&gt;https://github.com/hooopo/etltest&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;上面是一个基于Activewarehouse ETL和Activewarehouse的Rails项目，演示从ETL到分析报表展示功能如何实现。
+￼
+最后，如果你了解了ETL的概念，以后看什么都是ETL了...&lt;/p&gt;
+</description>
+        <pubDate>Wed, 15 Apr 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/04/15/etl-with-ruby.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/04/15/etl-with-ruby.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>Data Warehouse Schema Desgin</title>
@@ -1018,99 +1149,6 @@ T_2=&amp;quot;it is a banana&amp;quot;
         <pubDate>Fri, 14 Nov 2014 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2014/11/14/upload-resources-to-aws-using-asset-sync.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/14/upload-resources-to-aws-using-asset-sync.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>You do not know NewRelic</title>
-        <description>&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/0443c9ac79a6492aad4810c472308b97.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;enabling-garbage-collection-instrumentation&quot;&gt;Enabling garbage collection instrumentation&lt;/h2&gt;
-
-&lt;p&gt;默认情况，Newrelic的Transactions response time overview 页面是没有统计GC信息的。如果想要开启只需要在&lt;code&gt;config/initializers/new_relic_unicorn.rb&lt;/code&gt;添加如下代码(如果不是unicorn只需要最后一句)：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# -*- encoding : utf-8 -*-&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# Ensure the agent is started using Unicorn.&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# This is needed when using Unicorn and preload_app is not set to true.&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# See https://docs.newrelic.com/docs/ruby/no-data-with-unicorn&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;defined?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Unicorn&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;NewRelic&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Agent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;manual_start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;NewRelic&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Agent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;after_fork&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:force_reconnect&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;no&quot;&gt;GC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Profiler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;recording-deployments&quot;&gt;Recording deployments&lt;/h2&gt;
-
-&lt;p&gt;New Relic 支持自定义Event，结合 Capistrano 可以把每次发布的时间点划到图表上，题图上到三条粉丝细线就是deployment时刻。
-同时，还可以把changelog信息一并记录下来，便于追踪各个版本差异产生的原因，如下图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/7ffc389aed2e1443bbcd5ddf2f74d32c.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;实现这样酷的功能只需要两行代码，在&lt;code&gt;deploy.rb&lt;/code&gt;里：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;new_relic/recipes&amp;#39;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;after&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;deploy:updated&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;newrelic:notice_deployment&amp;quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;你不需要发布就可以测试这个功能是否设置正确：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;cap&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;newrelic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;notice_deployment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Snewrelic_desc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;Deploying beta Krakatau release&amp;quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;availability-monitoring&quot;&gt;Availability monitoring&lt;/h2&gt;
-
-&lt;p&gt;默认情况下，Newrelic会在网站响应速度低到一定阀值邮件通知，也可以手动设置 &lt;code&gt;Availability monitoring&lt;/code&gt;，
-需要提供某个页面到URL，如果这个URL一分钟内ping不通就会收到网站 downtime 邮件。&lt;/p&gt;
-
-&lt;h2 id=&quot;instrumentation-redis&quot;&gt;Instrumentation Redis&lt;/h2&gt;
-
-&lt;p&gt;只需Gemfile里添加 &lt;code&gt;newrelic-redis&lt;/code&gt; 这个gem，前提是你用了 &lt;code&gt;redis-rb&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;一定有同学会问，Redis都那么快了还需要监控？&lt;/p&gt;
-
-&lt;p&gt;原因很简单：&lt;/p&gt;
-
-&lt;p&gt;默认情况下Newrelic会把请求时间算在Ruby／View里，这样你发现一个很慢的页面渲染，你无法定位到具体是什么东西那么慢。
-加上 &lt;code&gt;newrelic-redis&lt;/code&gt;之后这部分时间被清晰到记录在Database catalog，并且可以和view其他部分区分开, 细致到每个redis指令执行到时间：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/9532c2a296f8e30b1107f6d93eb1e2fe.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;instrumentation-rack-middleware&quot;&gt;Instrumentation Rack Middleware&lt;/h2&gt;
-
-&lt;p&gt;只需要升级 &lt;code&gt;newrelic_rpm&lt;/code&gt; 到 3.9.0 或以上。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/22bdbf838583e4d6578ccf01c458aad0.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/f9e38c001dd51e040f68223e41ff399c.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;js-error-notification&quot;&gt;JS Error Notification&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/a171111fbe6cf8d6275c5f2d83ca8db9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;就是ExceptionNotify的JS云端版本。当然，这个功能已经有很多人在做了，并不是newrelic首创。但集成到newrelic里却是非常自然，监控异常的同时还可以监控JS错误，何乐而不为呢..&lt;/p&gt;
-
-&lt;h2 id=&quot;newrelic-insights&quot;&gt;NewRelic Insights&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://ruby-china-files.b0.upaiyun.com/photo/2014/74dab3fcea4ddc6d836c4b04c238ab86.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;这是一个beta项目，NewRelic把自己收集的数据再开放给你。通过自定义的NRQL，让你可以按照自己关心的方式自定义Dashboard。有了API，你可以再把这些数据倒回自己倒应用，和自己已有的数据做进一步分析。&lt;/p&gt;
-
-&lt;h2 id=&quot;custom-variable&quot;&gt;Custom Variable&lt;/h2&gt;
-
-&lt;p&gt;Google Analytics 很早就有了，有了这个东西可玩性就提高了一个层次。能做什么就由开发者自己来想像了。&lt;/p&gt;
-
-&lt;h2 id=&quot;newrelic-和-twitter的吞吐量相当，数据库使用的是-mysql（percona）&quot;&gt;NewRelic 和 Twitter的吞吐量相当，数据库使用的是 MySQL（Percona）&lt;/h2&gt;
-
-&lt;p&gt;Renferer: &lt;a href=&quot;http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers&quot;&gt;http://www.slideshare.net/newrelic/how-to-build-a-saas-app-with-twitterlike-throughput-on-just-9-servers&lt;/a&gt;&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;p&gt;相关文档
-* &lt;a href=&quot;https://docs.newrelic.com/docs/ruby/garbage-collection&quot;&gt;https://docs.newrelic.com/docs/ruby/garbage-collection&lt;/a&gt;
-* &lt;a href=&quot;https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent&quot;&gt;https://docs.newrelic.com/docs/ruby/recording-deployments-with-the-ruby-agent&lt;/a&gt;
-* &lt;a href=&quot;http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares&quot;&gt;http://blog.newrelic.com/2014/07/02/ruby-agent-now-automatically-instruments-rack-middlewares&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Sat, 08 Nov 2014 00:00:00 +0800</pubDate>
-        <link>http://shopperplus.github.io/blog/2014/11/08/you-do-not-know-newrelic.html</link>
-        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/08/you-do-not-know-newrelic.html</guid>
         
         
       </item>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>ETL with Ruby</title>
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56538535-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <link rel="stylesheet" href="/blog/css/main.css">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2015/04/15/etl-with-ruby.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Shopper+ Team Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">ETL with Ruby</h1>
+    <p class="post-meta">Apr 15, 2015 • Hooopo</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="why-etl">Why ETL</h2>
+
+<p>前面两篇介绍了数据仓库相关的基本概念和星型模型等常用建模方式。</p>
+
+<ul>
+<li><a href="http://shopperplus.github.io/blog/2015/03/28/data-warehouse-concepts-and-overview.html">Data Warehouse Concepts and Overview</a></li>
+<li><a href="http://shopperplus.github.io/blog/2015/04/12/data-warehouse-schema-desgin.html">Data Warehouse Schema Desgin</a></li>
+</ul>
+
+<p>这篇主要来谈ETL。星型模型让分析查询变得容易，但存在以下问题：</p>
+
+<ul>
+<li>一般先有OLTP系统，后有OLAP系统，分析系统只是辅助工具。</li>
+<li>我们的事务系统不是按星型模型设计的，数据来源是OLTP类型应用。</li>
+<li>数据源除了OLTP系统的数据，还需要与其他来源数据进行组合。</li>
+</ul>
+
+<p>所以，需要引入一套ETL流程来把OLTP数据转化为星型模型，然后才能方便分析。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"> +------------------+          +-----------+      +-----------+      +---------+ 
+ |OLTP Data         +---------&gt;+           |      |           |      |         | 
+ +------------------+          |           |      |           |      |         | 
+                               |           +----&gt; |           +----&gt; |         | 
+ +------------------+          | Extract   |      |           |      |         | 
+ |Google Analytics  +---------&gt;+           |      |           |      |         | 
+ +------------------+          |           |      |           |      |Analytics| 
+                               | Transform |      |Star Schema|      |   &amp;&amp;    | 
+ +------------------+          |           |      |           |      |Reporting| 
+ |CRM Data          +---------&gt;+           |      |           |      |         | 
+ +------------------+          | Load      |      |           |      |         | 
+                               |           +----&gt; |           +----&gt; |         | 
+ +------------------+          |           |      |           |      |         | 
+ |Others            +---------&gt;+           |      |           |      |         | 
+ +------------------+          +-----------+      +-----------+      +---------+ 
+</code></pre></div>
+<p>那么，ETL是什么？</p>
+
+<ul>
+<li>Extract data from a source</li>
+<li>Transform the data for storing it in proper format or structure for querying and analysis purpose</li>
+<li>Load it into the target</li>
+</ul>
+
+<p>其实ETL工作我们并不陌生，正像 <a href="https://github.com/thbar">thbar</a> 所说的 <a href="http://thibautbarrere.com/2015/03/25/rubyists-are-you-doing-etl-unknowingly/">Rubyists — Are you doing ETL unknowingly?</a>,下面这些都属于ETL范畴：</p>
+
+<ul>
+<li>Write a script to migrate a legacy database to a new schema.</li>
+<li>Automate processing of your data to generate a report.</li>
+<li>Synchronize all or part of the data between 2 systems on a regular basis.</li>
+<li>Prepare your data for indexing/searching.</li>
+<li>Aggregate heterogeneous data sources into one consistent database.</li>
+<li>Clean-up dirty or bogus data.</li>
+<li>Geocode rows in an app to present them through a map app.</li>
+<li>Implement a data export process for your users.</li>
+</ul>
+
+<h2 id="etl-tools">ETL Tools</h2>
+
+<p>和 Ruby 相关的ETL开源工具只有以下几个：</p>
+
+<ul>
+<li>与AR结合紧密的activewarehouse-etl：<a href="https://github.com/activewarehouse/activewarehouse-etl">https://github.com/activewarehouse/activewarehouse-etl</a></li>
+<li>Square出品的轻量级ETL工具：<a href="https://github.com/square/ETL">https://github.com/square/ETL</a></li>
+<li>activewarehouse-etl维护者thbar新作：<a href="https://github.com/thbar/kiba">https://github.com/thbar/kiba</a></li>
+</ul>
+
+<p>值得说明一下的是，由于ActiveRecord完全是针对OLTP场景设计的ORM工具，我们用AR来导数据一定会觉得巨慢，即使做了各种优化手段。这不是AR的错，是你没选对工具。ETL工具针对这种场景做了优化，一般都是批量加载数据，速度可以说是有了质的提升。可以参考之前写过的<a href="http://shopperplus.github.io/blog/2014/11/08/fastest-way-to-load-data-in-mysql.html">Fastest way to load data in MySQL</a>。</p>
+
+<p>如果想了解Activewarehosue ETL，这里有一个专门介绍Activewarehouse ETL的slide也值得一看：<a href="https://speakerdeck.com/thbar/transforming-data-with-ruby-and-activewarehouse-etl">https://speakerdeck.com/thbar/transforming-data-with-ruby-and-activewarehouse-etl</a></p>
+
+<h2 id="incremental-update-&amp;-mysql-stream">Incremental Update &amp; MySQL stream</h2>
+
+<p>针对大数据场景，Activewarehouse ETL会提供增量更新和流读取的方式，只需要简单配置：</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">source</span> <span class="ss">:in</span><span class="p">,</span> <span class="p">{</span>
+  <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:database</span><span class="p">,</span>
+  <span class="ss">:target</span> <span class="o">=&gt;</span> <span class="ss">:operational_database</span>
+  <span class="ss">:table</span> <span class="o">=&gt;</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
+  <span class="ss">:join</span> <span class="o">=&gt;</span> <span class="s2">&quot;addresses on people.address_id = addresses.id&quot;</span><span class="p">,</span>
+  <span class="ss">:select</span> <span class="o">=&gt;</span> <span class="s2">&quot;people.email, addresses.city, addresses.state, people.created_at&quot;</span>
+  <span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="s2">&quot;people.unsubscribed = 0 AND people.date_of_death IS NULL&quot;</span>
+  <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="s2">&quot;people.created_at&quot;</span><span class="p">,</span>
+  <span class="ss">:new_records_only</span> <span class="o">=&gt;</span> <span class="s2">&quot;people.updated_at&quot;</span><span class="p">,</span> <span class="c1"># 增量导入</span>
+  <span class="ss">:mysqlstream</span> <span class="o">=&gt;</span> <span class="kp">true</span>                      <span class="c1"># 按流的方式</span>
+<span class="p">},</span>
+<span class="o">[</span>
+  <span class="ss">:email</span><span class="p">,</span>
+  <span class="ss">:city</span><span class="p">,</span>
+  <span class="ss">:state</span>
+<span class="o">]</span>
+</code></pre></div>
+<h2 id="处理缓慢变化维度">处理缓慢变化维度</h2>
+
+<p>维度建模的数据仓库中，有一个概念叫Slowly Changing Dimensions，中文一般翻译成“缓慢变化维”，经常被简写为SCD。缓慢变化维的提出是因为在现实世界中，维度的属性并不是静态的，它会随着时间的流失发生缓慢的变化。这种随时间发生变化的维度我们一般称之为缓慢变化维，并且把处理维度表的历史变化信息的问题称为处理缓慢变化维的问题，有时也简称为处理SCD的问题。常见类型有两种（<a href="http://en.wikipedia.org/wiki/Slowly_changing_dimension">Wikipedia</a> 里面介绍了6种）：</p>
+
+<h3 id="类型1-(type-1):-覆盖旧记录。">类型1 (Type 1): 覆盖旧记录。</h3>
+
+<p>有些 Dimension 表从业务上讲不需要保存历史记 录或者只需要对原有记录进行修改。比如说 Customer 表中有 Customer 地址的属性,原有的地址输入错误我们需要修改这个属性而 不需要对原有的错误地址进行保存,这个时候 就可以使用 SCD Type 1</p>
+
+<h3 id="类型2-(type-2):-增加新记录。">类型2 (Type 2): 增加新记录。</h3>
+
+<p>Type 2 是精确 捕获Dimension 表历史变化的一种标准的方法,它通过对数据源表的Change Data Capture (CDC) 机制来捕获数据源的变化,然后在 Dimension 表中插入一个新的记录再使旧的相应的记录时效。</p>
+
+<p>缓慢变化维度一般设计成这样的结构：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># customer dimension
++-----------------+------------+------+-----+---------+----------------+
+| id              | int(11)    | NO   | PRI | NULL    | auto_increment |
+| customer_key    | int(11)    | YES  | MUL | NULL    |                |
+| customer_type   | int(11)    | YES  | MUL | 1       |                |
+| effective_start | datetime   | YES  |     | NULL    |                |
+| effective_end   | datetime   | YES  |     | NULL    |                |
+| latest_version  | tinyint(1) | YES  |     | 1       |                |
++-----------------+------------+------+-----+---------+----------------+
+</code></pre></div>
+<p>Activewarehouse ETL 对SCD问题也提供了解决方案。</p>
+
+<h2 id="案例">案例</h2>
+
+<p><a href="https://github.com/hooopo/etltest">https://github.com/hooopo/etltest</a></p>
+
+<p>上面是一个基于Activewarehouse ETL和Activewarehouse的Rails项目，演示从ETL到分析报表展示功能如何实现。
+￼
+最后，如果你了解了ETL的概念，以后看什么都是ETL了...</p>
+
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shopper+ Team Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Shopper+ Team Blog</li>
+          <li><a href="mailto:tech@3cps.ca">tech@3cps.ca</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/shopperplus">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/shopperplus">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
