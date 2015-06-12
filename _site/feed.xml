@@ -6,9 +6,95 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 15 Apr 2015 01:51:34 +0800</pubDate>
-    <lastBuildDate>Wed, 15 Apr 2015 01:51:34 +0800</lastBuildDate>
+    <pubDate>Fri, 12 Jun 2015 13:52:04 +0800</pubDate>
+    <lastBuildDate>Fri, 12 Jun 2015 13:52:04 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>中间表一定要加唯一索引</title>
+        <description>&lt;p&gt;我们系统大量使用了&lt;code&gt;has_and_belongs_to_many&lt;/code&gt;这样的关联方式做关联。但却没有为中间表加惟一索引。导致重复数据的产生。比如printer model和产品关联表：&lt;/p&gt;
+
+&lt;h3 id=&quot;identify-duplicate-data&quot;&gt;Identify Duplicate Data&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;SELECT product_id, printer_model_id FROM printer_models_products GROUP BY product_id,printer_model_id HAVING count(*) &amp;gt; 1;
++------------+------------------+
+| product_id | printer_model_id |
++------------+------------------+
+|     303994 |          3008631 |
+|     303994 |          3008632 |
+|     303994 |          3008637 |
+|     303994 |          3008640 |
+|     303994 |          3008641 |
+|     303994 |          3008642 |
+|     303995 |          3008631 |
+|     303995 |          3008632 |
+|     303995 |          3008637 |
+|     303995 |          3008640 |
+|     303995 |          3008641 |
+|     303995 |          3008642 |
+|     304010 |          1000983 |
+|     304010 |          1000984 |
+|     308482 |          1000983 |
+|     308482 |          1000984 |
+|     318461 |          3008631 |
+|     318461 |          3008632 |
+|     318461 |          3008637 |
+|     318461 |          3008640 |
+|     318461 |          3008641 |
+|     318461 |          3008642 |
+|     318462 |          3008631 |
+|     318462 |          3008632 |
+|     318462 |          3008637 |
+|     318462 |          3008640 |
+|     318462 |          3008641 |
+|     318462 |          3008642 |
++------------+------------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;进一步验证：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;select * from printer_models_products where product_id = 303994 and printer_model_id = 3008631;
++------------+------------------+
+| product_id | printer_model_id |
++------------+------------------+
+|     303994 |          3008631 |
+|     303994 |          3008631 |
++------------+------------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;is-it-a-big-deal?&quot;&gt;Is It A Big Deal?&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;printer_model = PrinterModel.find 3008631
+printer_model.products.uniq.size
+  Product Load (0.9ms)  SELECT `products`.* FROM `products` INNER JOIN `printer_models_products` ON `products`.`id` = `printer_models_products`.`product_id` WHERE `printer_models_products`.`printer_model_id` = 3008631
+=&amp;gt; 13
+[12] pry(main)&amp;gt; printer_model.products.size
+=&amp;gt; 17
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;也就是说，如果中间表里存在重复数据，会导致查询结果有重复数据，想要得到正确的结果必须做去重操作（distinct或查询之后再uniq），无论用何种方式都给代码编写和执行效率带来了麻烦。
+所以，最直接的办法是从源头限制重复数据，给中间表加惟一索引。但是，对于已经重复的脏数据，如何去修复：&lt;/p&gt;
+
+&lt;h3 id=&quot;how-to-fix&quot;&gt;How To Fix&lt;/h3&gt;
+
+&lt;p&gt;以products_suppliers这个表为例：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;增加id列，设为primary_key&lt;/li&gt;
+&lt;li&gt;删除重复数据：&lt;code&gt;DELETE f FROM products_suppliers AS f JOIN products_suppliers AS g ON f.product_id = g.product_id AND f.supplier_id = g.supplier_id AND f.id &amp;gt; g.id;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;添加惟一索引（只有上面删除重复成功才能添加惟一索引）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AddIdInProductsSuppliers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;add_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:products_suppliers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:primary_key&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;remove_index&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:products_suppliers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:index_products_suppliers_product&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;remove_index&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:products_suppliers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:index_products_suppliers_supplier&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 删除重复记录&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connection&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;DELETE f FROM products_suppliers AS f JOIN products_suppliers AS g ON f.product_id = g.product_id AND f.supplier_id = g.supplier_id AND f.id &amp;gt; g.id;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;add_index&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:products_suppliers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:product_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:supplier_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:unique&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        <pubDate>Fri, 12 Jun 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/06/12/zhong-jian-biao-ding-yao-jia-wei-suo-yin.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/06/12/zhong-jian-biao-ding-yao-jia-wei-suo-yin.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>ETL with Ruby</title>
@@ -1108,47 +1194,6 @@ T_2=&amp;quot;it is a banana&amp;quot;
         <pubDate>Sun, 23 Nov 2014 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2014/11/23/trie-shu-de-ying-yong.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/23/trie-shu-de-ying-yong.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Upload resources to AWS using asset sync </title>
-        <description>&lt;h3 id=&quot;目的&quot;&gt;目的&lt;/h3&gt;
-
-&lt;p&gt;网站的规模逐渐变大，页面加载速度逐渐变慢，其中图片加载的时间是主要的问题。选择把js css 图片这些文件放到aws有一下几个原因：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;减少本服务器的负载.&lt;/li&gt;
-&lt;li&gt;我们网站拥有多个域名，即使是同一个产品，在不同子站显示，图片都要重新加载一遍。一旦统一使用aws，不同子站都是请求同一图片地址，浏览器可以做缓存.&lt;/li&gt;
-&lt;li&gt;避免重复繁琐的图片上传管理操作，直接通过代码管理.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;使用asset-sync&quot;&gt;使用&lt;a href=&quot;https://github.com/rumblelabs/asset_sync&quot;&gt;asset sync&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;使用的时候进行简单的配置即可，其中遇到一个问题，插件在dev &amp;amp; staging都可以正确的运行，在production时遇到错误提示&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2014&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;T04&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;17&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;44&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;818010&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#788] ERROR -- : uninitialized constant AssetSync (NameError)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;大致的原因：&lt;/p&gt;
-
-&lt;p&gt;由于js css 与图片是能够正确上传到s3的，所以说明插件在 precomplice之后有正确的运行，但是启动unicorn的时候报错，可能是启动的时候不会加载 asset group 的插件, initializar 文件夹内的代码还会加载, 导致AssetSync gem 没有初始化，但是代码中却没有对这个进行判断。&lt;/p&gt;
-
-&lt;p&gt;修改如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;defined?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;AssetSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;使用后发现的问题，暂时搁置&quot;&gt;使用后发现的问题，暂时搁置&lt;/h3&gt;
-
-&lt;p&gt;1、无法使用gzip。使用的s3服务器中没有cloudfront，导致无法识别HTTP HEAD中Content-Encoding:gzip的请求，导致使用只能请求到非gz后的 js 与 css 文件，网站整体的pagespeed反而下降了。&lt;/p&gt;
-
-&lt;p&gt;2、工作流程导致无法运用。前端工程师不使用rails server进行代码的编写，例如图片的url需要写成asset_host:XXXX,导致使用asset_host指向s3后，他们无法在本地进行开发工作。&lt;/p&gt;
-
-&lt;p&gt;3、代码中历史遗留的问题。旧代码中保留了不少直接使用public的图片，而public的图片不能被上传到s3中，不能直接使用asset sync，需要进行大量的修改。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 14 Nov 2014 00:00:00 +0800</pubDate>
-        <link>http://shopperplus.github.io/blog/2014/11/14/upload-resources-to-aws-using-asset-sync.html</link>
-        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/11/14/upload-resources-to-aws-using-asset-sync.html</guid>
         
         
       </item>
