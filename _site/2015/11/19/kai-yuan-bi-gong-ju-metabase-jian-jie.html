@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>开源 BI 工具 Metabase 简介</title>
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56538535-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <link rel="stylesheet" href="/blog/css/main.css">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2015/11/19/kai-yuan-bi-gong-ju-metabase-jian-jie.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Shopper+ Team Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">开源 BI 工具 Metabase 简介</h1>
+    <p class="post-meta">Nov 19, 2015 • Hooopo</p>
+  </header>
+
+  <article class="post-content">
+    <blockquote>
+<p>Metabase is the easy, open source way for everyone in your company to ask questions and learn from data.</p>
+</blockquote>
+
+<p>这是 <a href="http://www.metabase.com/">Metabase</a> 官网上的介绍。BI 工具其实非常多，但却没有一种适合所有场景，各种产品的定位也各不相同。个人觉得 Metabase 相对于其他 BI 产品具有以下特性：</p>
+
+<h2 id="不懂-sql-也可以很快掌握业务数据">不懂 SQL  也可以很快掌握业务数据</h2>
+
+<p>一般来说，BI 产品的用户都是业务人员（大部分不懂 SQL ），Metabase 把数据分析常用的查询通过通过一个易于操作的界面来操作，这样，不懂 SQL 的业务人员也可以快速掌握业务数据。 下面举个简单的例子来看一下，如果销售人员想知道每月的订单数量该如何操作：</p>
+
+<p><img src="https://camo.githubusercontent.com/6025405b0dd84becd1f80851f6f2914d7c7bb595/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d323762363033623861393133373563342e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="不懂 SQL  也可以很快掌握业务数据"></p>
+
+<p>只需要点几下，就可以得出一个直观的可视化结果，当然，除了折线图之外，还可以选择饼图、柱状图、表格等。对于查询的结果，可以导出到 CSV。</p>
+
+<p>看到这里，一定会有同学发现，这种单表查询统计太简单，真实情况的业务分析可能需要 JOIN 几张表或使用一些 SQL function 才能得到结果。然而，对于熟悉 SQL 的业务或开发人员，也可以通过 SQL 来获得业务数据，如图：</p>
+
+<p><img src="https://camo.githubusercontent.com/9bbef2d64b360b2ee29c49a87ada01f821300548/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d373938663331393938656135353461312e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="使用 SQL 获得复杂的业务数据"></p>
+
+<h2 id="业务数据与团队共享">业务数据与团队共享</h2>
+
+<p>上面这些业务数据都可以保存并且分享给团队里其他成员。除此之外，团队中开发人员也可以把复杂的查询写好，把结果共享给业务人员。这是团队共享业务数据的应用场景。</p>
+
+<p><img src="https://camo.githubusercontent.com/da90d2536fef4fba1950acd2b4561db42c0a5f33/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d393363646231303032626434623963372e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="团队共享业务数据"></p>
+
+<h2 id="开源、部署方便">开源、部署方便</h2>
+
+<p>Metabase 支持多种数据源，包括MySQL、Postgresql 和 H2，看 Roadmap 即将支持的是 Redshift。</p>
+
+<p>部署 Metabase 同样非常简单，在 Mac 上下载之后点击即用，其他平台也只需运行一个 jar 包而已。同时支持的部署环境是：</p>
+
+<ul>
+<li>Heroku</li>
+<li>Amazon Web Service</li>
+<li>Docker</li>
+</ul>
+
+<h2 id="与-chartio-的对比">与 ChartIO 的对比</h2>
+
+<p><img src="https://camo.githubusercontent.com/b5c3239256c59a3b0c16b002cdc0782eef5870e2/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d326433393433613234623264356665392e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="ChartIO"></p>
+
+<p><a href="https://chartio.com">ChartIO</a> 支持各种数据源，通过拖拽方式来获取业务数据，并生成图表，从这方面讲，ChartIO 和 Metabase 的定位是相同的。不过 ChartIO是一个 收费的 SaaS 服务，而 Metabase 是开源免费的软件程序，他们之间的关系有点像 Github 和 Gitlab，不过从目前的状况看，ChartIO 成熟度要优于 Metbase 很多。</p>
+
+<h2 id="与-etl-结合">与 ETL 结合</h2>
+
+<p>虽说 Metabase 可以让不懂 SQL 的业务人员轻松分析业务数据。但由于 OLTP 数据库的结构本身是不利于业务分析的，更不要说数据量大的情况，OLTP 数据库 JOIN 几张表之后的查询效率更让人难以接受。</p>
+
+<p>一个拟补的方案是，开发人员只需要做一些简单的 <a href="http://shopperplus.github.io/blog/2015/04/15/etl-with-ruby.html">ETL</a> 操作，把 OLTP 库先转化为适合分析的<a href="http://shopperplus.github.io/blog/2015/04/12/data-warehouse-schema-desgin.html">星型模型</a>。</p>
+
+<p>对于业务分析方面还没有任何基础的公司来说，Metabase 也许是一个不错的开始。</p>
+
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shopper+ Team Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Shopper+ Team Blog</li>
+          <li><a href="mailto:tech@3cps.ca">tech@3cps.ca</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/shopperplus">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/shopperplus">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

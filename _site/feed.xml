@@ -6,9 +6,68 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 24 Sep 2015 02:52:19 +0800</pubDate>
-    <lastBuildDate>Thu, 24 Sep 2015 02:52:19 +0800</lastBuildDate>
+    <pubDate>Thu, 19 Nov 2015 18:56:06 +0800</pubDate>
+    <lastBuildDate>Thu, 19 Nov 2015 18:56:06 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>开源 BI 工具 Metabase 简介</title>
+        <description>&lt;blockquote&gt;
+&lt;p&gt;Metabase is the easy, open source way for everyone in your company to ask questions and learn from data.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这是 &lt;a href=&quot;http://www.metabase.com/&quot;&gt;Metabase&lt;/a&gt; 官网上的介绍。BI 工具其实非常多，但却没有一种适合所有场景，各种产品的定位也各不相同。个人觉得 Metabase 相对于其他 BI 产品具有以下特性：&lt;/p&gt;
+
+&lt;h2 id=&quot;不懂-sql-也可以很快掌握业务数据&quot;&gt;不懂 SQL  也可以很快掌握业务数据&lt;/h2&gt;
+
+&lt;p&gt;一般来说，BI 产品的用户都是业务人员（大部分不懂 SQL ），Metabase 把数据分析常用的查询通过通过一个易于操作的界面来操作，这样，不懂 SQL 的业务人员也可以快速掌握业务数据。 下面举个简单的例子来看一下，如果销售人员想知道每月的订单数量该如何操作：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/6025405b0dd84becd1f80851f6f2914d7c7bb595/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d323762363033623861393133373563342e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;不懂 SQL  也可以很快掌握业务数据&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;只需要点几下，就可以得出一个直观的可视化结果，当然，除了折线图之外，还可以选择饼图、柱状图、表格等。对于查询的结果，可以导出到 CSV。&lt;/p&gt;
+
+&lt;p&gt;看到这里，一定会有同学发现，这种单表查询统计太简单，真实情况的业务分析可能需要 JOIN 几张表或使用一些 SQL function 才能得到结果。然而，对于熟悉 SQL 的业务或开发人员，也可以通过 SQL 来获得业务数据，如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/9bbef2d64b360b2ee29c49a87ada01f821300548/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d373938663331393938656135353461312e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;使用 SQL 获得复杂的业务数据&quot;&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;业务数据与团队共享&quot;&gt;业务数据与团队共享&lt;/h2&gt;
+
+&lt;p&gt;上面这些业务数据都可以保存并且分享给团队里其他成员。除此之外，团队中开发人员也可以把复杂的查询写好，把结果共享给业务人员。这是团队共享业务数据的应用场景。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/da90d2536fef4fba1950acd2b4561db42c0a5f33/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d393363646231303032626434623963372e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;团队共享业务数据&quot;&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;开源、部署方便&quot;&gt;开源、部署方便&lt;/h2&gt;
+
+&lt;p&gt;Metabase 支持多种数据源，包括MySQL、Postgresql 和 H2，看 Roadmap 即将支持的是 Redshift。&lt;/p&gt;
+
+&lt;p&gt;部署 Metabase 同样非常简单，在 Mac 上下载之后点击即用，其他平台也只需运行一个 jar 包而已。同时支持的部署环境是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Heroku&lt;/li&gt;
+&lt;li&gt;Amazon Web Service&lt;/li&gt;
+&lt;li&gt;Docker&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;与-chartio-的对比&quot;&gt;与 ChartIO 的对比&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/b5c3239256c59a3b0c16b002cdc0782eef5870e2/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d326433393433613234623264356665392e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;ChartIO&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://chartio.com&quot;&gt;ChartIO&lt;/a&gt; 支持各种数据源，通过拖拽方式来获取业务数据，并生成图表，从这方面讲，ChartIO 和 Metabase 的定位是相同的。不过 ChartIO是一个 收费的 SaaS 服务，而 Metabase 是开源免费的软件程序，他们之间的关系有点像 Github 和 Gitlab，不过从目前的状况看，ChartIO 成熟度要优于 Metbase 很多。&lt;/p&gt;
+
+&lt;h2 id=&quot;与-etl-结合&quot;&gt;与 ETL 结合&lt;/h2&gt;
+
+&lt;p&gt;虽说 Metabase 可以让不懂 SQL 的业务人员轻松分析业务数据。但由于 OLTP 数据库的结构本身是不利于业务分析的，更不要说数据量大的情况，OLTP 数据库 JOIN 几张表之后的查询效率更让人难以接受。&lt;/p&gt;
+
+&lt;p&gt;一个拟补的方案是，开发人员只需要做一些简单的 &lt;a href=&quot;http://shopperplus.github.io/blog/2015/04/15/etl-with-ruby.html&quot;&gt;ETL&lt;/a&gt; 操作，把 OLTP 库先转化为适合分析的&lt;a href=&quot;http://shopperplus.github.io/blog/2015/04/12/data-warehouse-schema-desgin.html&quot;&gt;星型模型&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;对于业务分析方面还没有任何基础的公司来说，Metabase 也许是一个不错的开始。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 19 Nov 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/11/19/kai-yuan-bi-gong-ju-metabase-jian-jie.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/11/19/kai-yuan-bi-gong-ju-metabase-jian-jie.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>Use MySQL stream for large datasets</title>
@@ -1038,144 +1097,6 @@ end
         <pubDate>Thu, 01 Jan 2015 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2015/01/01/activerecord-object-instantiate-and-clone.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/01/01/activerecord-object-instantiate-and-clone.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>How search and index works?</title>
-        <description>&lt;p&gt;这篇文章主要目的是简单介绍搜索引擎的检索过程，并通过简单的Ruby代码实现。当然，由于本人能力有限，对搜索也是一知半解，注定话题不会太深，也不会太广...这不是 Solr 配置详解这种过于务实的话题，也不是某个搜索排序算法的深入研究的高深话题。&lt;/p&gt;
-
-&lt;h2 id=&quot;tokenize-(分词)&quot;&gt;Tokenize (分词)&lt;/h2&gt;
-
-&lt;p&gt;Tokenize 的过程是把Query或待索引的文本拆成最小的单元，也就是分词。包括以下过程：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Preprocess text
-
-&lt;ul&gt;
-&lt;li&gt;Synonym substitution&lt;/li&gt;
-&lt;li&gt;Remove illegal expressions&lt;/li&gt;
-&lt;li&gt;Remove stopwords.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;Splitting and preparations for tokenizing
-
-&lt;ul&gt;
-&lt;li&gt;Split the text into words.&lt;/li&gt;
-&lt;li&gt;Truncate the amount of tokens.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;Creating tokens / strings
-
-&lt;ul&gt;
-&lt;li&gt;Downcase each token.&lt;/li&gt;
-&lt;li&gt;Stemming each token.
-*&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Synonym Rings&lt;/strong&gt; (同义词环)
-同义词环（如图），把一组定义为等价关系的词汇连接起来，以提供搜索之用。事实上，这些词通常不是真正的同义词。例如，你在检查搜索日志，并和用户对话之后，你将发现不同的人在寻找同样的东西时，会输入不同的术语。某人要找 food processor（食物搅拌机），可能输入 &lt;code&gt;blender&lt;/code&gt; (搅拌机)，或下图中任何一个术语（或者常见的错误拼法）。不同类型网站，有着各自领域的同义词。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/fd218a73442258bb08528d3f02e7e47c0e57c110/687474703a2f2f7365616e636f6e6e6f6c6c792e63612f7765622f303539363532373334392f696d616765732f696e666f335f303930322e6a7067&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Stopwords&lt;/strong&gt; （停词）正如字面意思，停词。有些高频词，例如“a”，对用户查询的意义不大，同时在索引中又占据比较多的资源，最重要的是这些词还会影响匹配文档的相关度，所以，干脆在分词的时候就把它去掉。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Automatic Stemming&lt;/strong&gt; (自动词干)功能，是搜索引擎的一个实用功能，把一个术语扩展，包含其他共享相同词干的术语。如果词干搜索机制很强，可能会把 &lt;code&gt;computer&lt;/code&gt; 这个搜索术语视为和 &lt;code&gt;computers&lt;/code&gt;、&lt;code&gt;computation&lt;/code&gt;、&lt;code&gt;computing&lt;/code&gt; 甚至 &lt;code&gt;comput&lt;/code&gt; 这些术语共享相同的词干 &lt;code&gt;comput&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/4e33f7f06e36361d59382ba60eb926564396b81d/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f617765736f6d655f73637265656e73686f742f363839303733343f4157534163636573734b657949643d305237464d57374158525643594d41505450523226457870697265733d31343139373632303333265369676e61747572653d7547716759664e66736a636f6d396e4e69465766787174394c3130253344&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;其他过程很容易理解了，整个Tokenize用Ruby代码的简单表示：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tokenize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/&amp;amp;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;and&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;                      &lt;span class=&quot;c1&quot;&gt;# Synonym substitution&lt;/span&gt;
-       &lt;span class=&quot;nb&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/[^\w\s]+/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;                  &lt;span class=&quot;c1&quot;&gt;# Remove illegal expressions&lt;/span&gt;
-       &lt;span class=&quot;nb&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\b(a|an|is)\b/i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;            &lt;span class=&quot;c1&quot;&gt;# Remove stopwords&lt;/span&gt;
-       &lt;span class=&quot;nb&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\s+/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;c1&quot;&gt;# Split the text into words&lt;/span&gt;
-         &lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;downcase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/(.*?)s\Z/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;\1&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Downcase each token&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;tokenize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;How search &amp;amp; index works?&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [&amp;quot;how&amp;quot;, &amp;quot;search&amp;quot;, &amp;quot;and&amp;quot;, &amp;quot;index&amp;quot;, &amp;quot;work&amp;quot;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;其中Stemming过程过于简陋，但相关算法其实已经非常成熟了，比如Porter、Hunspell等算法。其中Ruby实现有：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html&quot;&gt;http://locknet.ro/archive/2009-10-29-ann-ruby-stemmer.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/aurelian/ruby-stemmer&quot;&gt;https://github.com/aurelian/ruby-stemmer&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/romanbsd/fast-stemmer&quot;&gt;https://github.com/romanbsd/fast-stemmer&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;inverted-index-(倒排索引)&quot;&gt;Inverted Index (倒排索引)&lt;/h2&gt;
-
-&lt;p&gt;倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。&lt;/p&gt;
-
-&lt;p&gt;以英文为例，下面是要被索引的文本：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;T_0=&amp;quot;it is what it is&amp;quot;
-T_1=&amp;quot;what is it&amp;quot;
-T_2=&amp;quot;it is a banana&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;正向索引&lt;/strong&gt;：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;docs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;it is what it is&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;what is it&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;it is a banana&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;倒排索引&lt;/strong&gt;：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt; &amp;quot;a&amp;quot;:      {2}
- &amp;quot;banana&amp;quot;: {2}
- &amp;quot;is&amp;quot;:     {0, 1, 2}
- &amp;quot;it&amp;quot;:     {0, 1, 2}
- &amp;quot;what&amp;quot;:   {0, 1}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;检索的条件&amp;quot;what&amp;quot;, &amp;quot;is&amp;quot; 和 &amp;quot;it&amp;quot; 将对应这个集合：&lt;code&gt;{0,1}&lt;/code&gt; &amp;amp; &lt;code&gt;{0,1,2}&lt;/code&gt; &amp;amp; &lt;code&gt;{0,1,2}&lt;/code&gt; = &lt;code&gt;{0,1}&lt;/code&gt;。即：0号和1号文档包含 what is it这三个关键词。&lt;/p&gt;
-
-&lt;p&gt;接着上面的Tokenize，用Ruby简单实现倒排索引过程， 其中对Query 分词和对文档分词使用的是同一方式（有时候两者会有微小差异）：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;set&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;pry&amp;#39;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;docs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;it is what it is&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;what is it&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;it is a banana&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tokenize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/&amp;amp;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;and&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-       &lt;span class=&quot;nb&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/[^\w\s]+/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-       &lt;span class=&quot;nb&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\b(a|an|is)\b/i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-       &lt;span class=&quot;nb&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\s+/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-         &lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;downcase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/(.*?)s\Z/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;\1&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;docs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;tokenize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;has_key?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Set&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;tokenize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Set&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;index_store&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;init_index_store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Docs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;it&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;Set: {1, 2, 3}&amp;gt;, &amp;quot;what&amp;quot;=&amp;gt;#&amp;lt;Set: {1, 2}&amp;gt;, &amp;quot;banana&amp;quot;=&amp;gt;#&amp;lt;Set: {3}&amp;gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;what is it?&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index_store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Set: {1, 2}&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;至此，一个最简单是search engine就实现了，当然，我们还没涉及到排序，搜索过程使用的是最简单的 集合布尔模型。下面会涉及 &lt;code&gt;TF-IDF&lt;/code&gt; 相关度排序内容。&lt;/p&gt;
-
-&lt;h2 id=&quot;sort-by-relevance-(按相关度排序)&quot;&gt;Sort By  Relevance (按相关度排序)&lt;/h2&gt;
-
-&lt;p&gt;TODO&lt;/p&gt;
-</description>
-        <pubDate>Sun, 28 Dec 2014 00:00:00 +0800</pubDate>
-        <link>http://shopperplus.github.io/blog/2014/12/28/how-search-and-index-works.html</link>
-        <guid isPermaLink="true">http://shopperplus.github.io/blog/2014/12/28/how-search-and-index-works.html</guid>
         
         
       </item>
