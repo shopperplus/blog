@@ -6,9 +6,73 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 19 Nov 2015 18:56:06 +0800</pubDate>
-    <lastBuildDate>Thu, 19 Nov 2015 18:56:06 +0800</lastBuildDate>
+    <pubDate>Thu, 19 Nov 2015 19:01:36 +0800</pubDate>
+    <lastBuildDate>Thu, 19 Nov 2015 19:01:36 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Shopify 的产品类目设计</title>
+        <description>&lt;p&gt;Shopify 虽然是一个非常大的电商平台，但他们的目标客户都是中小商家，也就是说Shopify 上面的店铺一般都很小，产品种类不多。相对来说，Shopify 的店铺产品信息架构设计的比较轻，但某些方面又不失灵活性。&lt;/p&gt;
+
+&lt;p&gt;总体来讲，Shopify 的产品结构是这样的：Collection &amp;gt; Product &amp;gt; Variant，即：&lt;strong&gt;类目&lt;/strong&gt;、&lt;strong&gt;产品&lt;/strong&gt;、&lt;strong&gt;变种&lt;/strong&gt;三层结构。&lt;/p&gt;
+
+&lt;h2 id=&quot;product-type&quot;&gt;Product Type&lt;/h2&gt;
+
+&lt;p&gt;Product Type 和Product 是一对多关系，一个产品只能有一个类型，一个类型可以包含多种产品。特点是简单粗暴，让使用者容易理解。但其实这种设计带来的问题也很明显，对于像西红柿应该放到水果还是蔬菜类型下这种问题很难解决。而现实中，无论如何精心的规划产品类型，都会出现一个产品既属于 A 又属于 B 的情况。更何况，对客户来说，也分的不是那么清楚。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/51088797797276f816d1e1ddfb68570e8d1cb649/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d626534373133323835313662663439642e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;Set Product Type For Product&quot;&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;custom-collection&quot;&gt;Custom Collection&lt;/h2&gt;
+
+&lt;p&gt;为了解决一个产品只能有一种类型带来的困境，于是出现了 Collection 这种东西。 Shopify 这种无层级的 Collection 与其说是类目，不如称为分面（Facet）。实现上，Collection 和 Product 是通过一个中间表关联，产品和类目为多对多关系，中间表存有位置等信息为了排序。&lt;/p&gt;
+
+&lt;p&gt;其中，Collection 又分为 Custom Collection 和 Smart Collection。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/4418c2b2503c559a17d3cd1a0e97fd23b965da3f/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d303163326462663436356561353434352e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;custom_collection-product&quot;&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A &lt;strong&gt;custom collection&lt;/strong&gt; is a grouping of products that a shop owner can create to make their shops easier to browse. A shop owner creates a custom collection and then selects the products that will go into it.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;按 Shopify 的文档的解释，Custom Collection 就是店家自己组合的一堆产品，当然这些产品可能有着某些共同的特征（也可能没有）。下面是设置 Custom Collection 的方法：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/cccddd1fc713444f86d9dc41391b0c68ac1b4df5/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d383638396362636539653333323964612e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;Create Custom Collection&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/cd72d66c85a93bc5024bb0271fb8d3d9e94dd46b/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d393766396433613936323936383039362e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;Set Collections For Product&quot;&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;smart-collection&quot;&gt;Smart Collection&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/da354232dc9c15e1f9564f5c2ded9f1e23a4242d/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d353839646437346138316634343637302e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;smart_collection-product&quot;&gt;
+Shopify 文档对 Smart Collection 的解释是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A &lt;strong&gt;smart collection&lt;/strong&gt; is a grouping of products defined by simple rules set by shop owners. A shop owner creates a smart collection and then sets the rules that determine which products go in them. Shopify automatically changes the contents of smart collections based on their rules.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其实 Smart Collection 是根据产品自身属性的过滤后的一组结果。Smart 的地方是，这些产品在条件改变（例如，价格变化）之后，后自动变更自己所属的 Collection，当然，Smart Collection 的 Rule 修改时也同样。&lt;/p&gt;
+
+&lt;p&gt;顺便说一下，因为要保留产品在 Collection 里的排序信息，Smart Collection 里的产品并不是直接通过搜索条件拉出来的，这个特性的复杂度还是很高的。&lt;/p&gt;
+
+&lt;p&gt;下面是 Smart Collection 的设置方式（其实就是搜索条件）：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://camo.githubusercontent.com/f023cffe63e763f047318a5972c724ec7f316569/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d343539616131626166373362653235382e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;Create Smart Collection&quot;&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;tag&quot;&gt;Tag&lt;/h2&gt;
+
+&lt;p&gt;Tag 这种松散、扁平的结构可以用来拟补 Collection 和 Product Type 这种太过于正式的组织方式，可能更多侧重于 SEO 效果，对于管理组织上帮助不是很大。
+&lt;img src=&quot;https://camo.githubusercontent.com/b22cd01346a1fb33fdc02bf880b26335c8d5895a/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d373831323961393966316634316534642e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;Set Tags For Product&quot;&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;variant&quot;&gt;Variant&lt;/h2&gt;
+
+&lt;p&gt;SPU 和 SKU 的关系可能了解过电商的都清楚，这里就不多解释了。
+&lt;img src=&quot;https://camo.githubusercontent.com/d3e3079601efa821d7356ff35e7844bde641ec70/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d376237386463363566663765316539622e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430&quot; alt=&quot;Create Variants&quot;&gt;&lt;/p&gt;
+</description>
+        <pubDate>Thu, 19 Nov 2015 00:00:00 +0800</pubDate>
+        <link>http://shopperplus.github.io/blog/2015/11/19/shopify-de-chan-pin-lei-mu-she-ji.html</link>
+        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/11/19/shopify-de-chan-pin-lei-mu-she-ji.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>开源 BI 工具 Metabase 简介</title>
@@ -974,129 +1038,6 @@ end
         <pubDate>Sat, 10 Jan 2015 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2015/01/10/crc32-hash-usage-in-mysql.html</link>
         <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/01/10/crc32-hash-usage-in-mysql.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>ActiveRecord Object Instantiate and Clone</title>
-        <description>&lt;h2 id=&quot;initialize&quot;&gt;initialize&lt;/h2&gt;
-
-&lt;p&gt;最常用的就是使用&lt;code&gt;new&lt;/code&gt;方法初始化一个&lt;code&gt;AR&lt;/code&gt;对象，比如 &lt;code&gt;User.new(:name =&amp;gt; &amp;quot;user name&amp;quot;)&lt;/code&gt;. &lt;code&gt;new&lt;/code&gt; 方法通过 &lt;code&gt;initialize&lt;/code&gt; 方法构造出一个新对象。大家几乎天天在用这个方法，不多说了。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L276-L297&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;
-  &lt;span class=&quot;vi&quot;&gt;@attributes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_default_attributes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dup&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;init_internals&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;initialize_internals_callback&lt;/span&gt;
-
-  &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;define_attribute_methods&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# +options+ argument is only needed to make protected_attributes gem easier to hook.&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# Remove it when we drop support to this gem.&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;init_attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;block_given?&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;_run_initialize_callbacks&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;allocate-+-init_with&quot;&gt;allocate + init_with&lt;/h2&gt;
-
-&lt;p&gt;&lt;code&gt;new&lt;/code&gt; 方法构造出来的对象在你未save之前都是 &lt;code&gt;new_record&lt;/code&gt;，即：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new_record?&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; true&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在一些场景，我们已经有了对象&lt;code&gt;id&lt;/code&gt;和Raw Attributes，我们想要初始化一个AR对象。最经典的场景就是从缓存读出Raw Attributes之后。这时，使用 &lt;code&gt;new&lt;/code&gt; 方法就不合适。还好，Rails 给我们提供了一个后门：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L309-L322&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;allocate&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;init_with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;attributes&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;new_record&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;我们知道，一个对象由类定义和属性组成，已知类定义之后，我们只要把属性填充给实例对象就完成了初始化过程。其实，这也绕过了使用&lt;code&gt;new&lt;/code&gt;方法来构造对象所需的内部复杂工序。&lt;/p&gt;
-
-&lt;h2 id=&quot;instancate&quot;&gt;instancate&lt;/h2&gt;
-
-&lt;p&gt;除此之外，如果你的attributes数据是从&lt;code&gt;DB&lt;/code&gt;获取来的，你可以使用更高级的&lt;code&gt;instancate&lt;/code&gt;方法，它对来源数据进行一次类型转换，然后再调用上述的 &lt;code&gt;allocate&lt;/code&gt; + &lt;code&gt;init_with&lt;/code&gt;。&lt;code&gt;find_by_sql&lt;/code&gt; 和&lt;code&gt;STI&lt;/code&gt;就是直接依赖 &lt;code&gt;instancate&lt;/code&gt; 来初始化AR 对象。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# https://github.com/rails/rails/blob/298ec6de55e3adb7d012ba6a9db8b4dd5fd95779/activerecord/lib/active_record/persistence.rb#L56-L70&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;instantiate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;column_types&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discriminate_class_for_record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes_builder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;build_from_database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;column_types&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;allocate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;init_with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;attributes&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;new_record&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;initialize_dup&quot;&gt;initialize_dup&lt;/h2&gt;
-
-&lt;p&gt;如果我们已经有了一个存在的AR记录，想再初始化一个的话，使用&lt;code&gt;clone&lt;/code&gt;或&lt;code&gt;dup&lt;/code&gt;也是可行的。关于&lt;code&gt;clone&lt;/code&gt;和&lt;code&gt;dup&lt;/code&gt;区别，我觉得下面这段代码描述是最清晰的：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;clone&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;allocate&lt;/span&gt;
-
-    &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;copy_instance_variables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;copy_singleton_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;initialize_clone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;freeze&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;frozen?&lt;/span&gt;
-
-    &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;dup&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;dup&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;allocate&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;dup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;copy_instance_variables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;dup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;initialize_dup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;dup&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize_clone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;initialize_copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize_dup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;initialize_copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize_copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# some internal stuff (don&amp;#39;t worry)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;当然，&lt;code&gt;clone&lt;/code&gt;和&lt;code&gt;dup&lt;/code&gt;的区别这里不是重点，想说一下 &lt;code&gt;initialize_dup&lt;/code&gt; 钩子。 &lt;code&gt;initialize_dup&lt;/code&gt; 是AR内置的，我们在调用 &lt;code&gt;user.dup&lt;/code&gt; 时，底层调用的其实是它。注意，&lt;code&gt;user.dup&lt;/code&gt; 放回对象把id重置为空了，就是说这是一个 shallow copy.&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# https://github.com/rails/rails/blob/f916aa247bddba0c58c50822886bc29e8556df76/activerecord/lib/active_record/core.rb#L325-L364&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize_dup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# :nodoc:&lt;/span&gt;
-  &lt;span class=&quot;vi&quot;&gt;@attributes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@attributes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dup&lt;/span&gt;
-  &lt;span class=&quot;vi&quot;&gt;@attributes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;primary_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;_run_initialize_callbacks&lt;/span&gt;
-
-  &lt;span class=&quot;vi&quot;&gt;@aggregation_cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
-  &lt;span class=&quot;vi&quot;&gt;@association_cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
-
-  &lt;span class=&quot;vi&quot;&gt;@new_record&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
-  &lt;span class=&quot;vi&quot;&gt;@destroyed&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;question&quot;&gt;Question&lt;/h2&gt;
-
-&lt;p&gt;那么问题来了:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;为什么AR要自己实现一个 &lt;code&gt;initialize_dup&lt;/code&gt;，直接dup不行么？&lt;/li&gt;
-&lt;li&gt;我们在缓存的时候是直接把 AR 对象塞进去（即：&lt;code&gt;Rails.cache.write user.id, user&lt;/code&gt;），还是自己序列化反序列化？&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;links&quot;&gt;Links&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://thekaiway.com/2013/07/26/assemble-ar-object/&quot;&gt;http://thekaiway.com/2013/07/26/assemble-ar-object/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/&quot;&gt;http://thekaiway.com/2013/09/08/read-write-activerecord-attribute/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.jonathanleighton.com/articles/2011/initialize_clone-initialize_dup-and-initialize_copy-in-ruby/&quot;&gt;http://www.jonathanleighton.com/articles/2011/initialize_clone-initialize_dup-and-initialize_copy-in-ruby/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 01 Jan 2015 00:00:00 +0800</pubDate>
-        <link>http://shopperplus.github.io/blog/2015/01/01/activerecord-object-instantiate-and-clone.html</link>
-        <guid isPermaLink="true">http://shopperplus.github.io/blog/2015/01/01/activerecord-object-instantiate-and-clone.html</guid>
         
         
       </item>

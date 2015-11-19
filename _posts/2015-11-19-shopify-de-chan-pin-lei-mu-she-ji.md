@@ -1,0 +1,53 @@
+---
+layout: post
+title: "Shopify 的产品类目设计"
+author: Hooopo
+---
+
+Shopify 虽然是一个非常大的电商平台，但他们的目标客户都是中小商家，也就是说Shopify 上面的店铺一般都很小，产品种类不多。相对来说，Shopify 的店铺产品信息架构设计的比较轻，但某些方面又不失灵活性。
+
+总体来讲，Shopify 的产品结构是这样的：Collection > Product > Variant，即：**类目**、**产品**、**变种**三层结构。
+
+## Product Type
+
+Product Type 和Product 是一对多关系，一个产品只能有一个类型，一个类型可以包含多种产品。特点是简单粗暴，让使用者容易理解。但其实这种设计带来的问题也很明显，对于像西红柿应该放到水果还是蔬菜类型下这种问题很难解决。而现实中，无论如何精心的规划产品类型，都会出现一个产品既属于 A 又属于 B 的情况。更何况，对客户来说，也分的不是那么清楚。
+
+![Set Product Type For Product](https://camo.githubusercontent.com/51088797797276f816d1e1ddfb68570e8d1cb649/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d626534373133323835313662663439642e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
+
+
+## Custom Collection
+为了解决一个产品只能有一种类型带来的困境，于是出现了 Collection 这种东西。 Shopify 这种无层级的 Collection 与其说是类目，不如称为分面（Facet）。实现上，Collection 和 Product 是通过一个中间表关联，产品和类目为多对多关系，中间表存有位置等信息为了排序。
+
+其中，Collection 又分为 Custom Collection 和 Smart Collection。
+
+![custom_collection-product](https://camo.githubusercontent.com/4418c2b2503c559a17d3cd1a0e97fd23b965da3f/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d303163326462663436356561353434352e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
+> A **custom collection** is a grouping of products that a shop owner can create to make their shops easier to browse. A shop owner creates a custom collection and then selects the products that will go into it.
+
+按 Shopify 的文档的解释，Custom Collection 就是店家自己组合的一堆产品，当然这些产品可能有着某些共同的特征（也可能没有）。下面是设置 Custom Collection 的方法：
+
+![Create Custom Collection](https://camo.githubusercontent.com/cccddd1fc713444f86d9dc41391b0c68ac1b4df5/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d383638396362636539653333323964612e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
+
+![Set Collections For Product](https://camo.githubusercontent.com/cd72d66c85a93bc5024bb0271fb8d3d9e94dd46b/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d393766396433613936323936383039362e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
+
+## Smart Collection
+![smart_collection-product](https://camo.githubusercontent.com/da354232dc9c15e1f9564f5c2ded9f1e23a4242d/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d353839646437346138316634343637302e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
+Shopify 文档对 Smart Collection 的解释是：
+
+> A **smart collection** is a grouping of products defined by simple rules set by shop owners. A shop owner creates a smart collection and then sets the rules that determine which products go in them. Shopify automatically changes the contents of smart collections based on their rules.
+
+其实 Smart Collection 是根据产品自身属性的过滤后的一组结果。Smart 的地方是，这些产品在条件改变（例如，价格变化）之后，后自动变更自己所属的 Collection，当然，Smart Collection 的 Rule 修改时也同样。
+
+顺便说一下，因为要保留产品在 Collection 里的排序信息，Smart Collection 里的产品并不是直接通过搜索条件拉出来的，这个特性的复杂度还是很高的。
+
+下面是 Smart Collection 的设置方式（其实就是搜索条件）：
+
+![Create Smart Collection](https://camo.githubusercontent.com/f023cffe63e763f047318a5972c724ec7f316569/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d343539616131626166373362653235382e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
+
+## Tag
+Tag 这种松散、扁平的结构可以用来拟补 Collection 和 Product Type 这种太过于正式的组织方式，可能更多侧重于 SEO 效果，对于管理组织上帮助不是很大。
+![Set Tags For Product](https://camo.githubusercontent.com/b22cd01346a1fb33fdc02bf880b26335c8d5895a/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d373831323961393966316634316534642e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
+
+## Variant
+
+SPU 和 SKU 的关系可能了解过电商的都清楚，这里就不多解释了。
+![Create Variants](https://camo.githubusercontent.com/d3e3079601efa821d7356ff35e7844bde641ec70/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f3530352d376237386463363566663765316539622e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430)
