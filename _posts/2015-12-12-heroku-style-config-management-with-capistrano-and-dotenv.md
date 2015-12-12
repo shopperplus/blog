@@ -133,3 +133,7 @@ after 'config:unset', "deploy:symlink:linked_files"
 * bundle exec cap production config:unset[FOO]
 
 注：上面需要capistrano 3 + dotenv，Envyable和Figaro目前无法使用Heroku style.
+
+# Multi Server && Apps
+
+对于单台服务器的应用，capistrano-twelvefactor + dotenv 足以应付，同时，由于capistrano支持集群部署，单个应用多服务器其实也是可以搞定的。但有时候不同应用之间其实也需要共享配置文件的，比如，S3配置变化了，依赖这个帐号的所有应用都应该得到同步。另外的一个问题是，对于多服务器场景，配置存储在.env会出现服务器之间配置不同步现象。如果要解决上述问题，可能引入[etcd](https://github.com/coreos/etcd)或 [zookeeper](https://zookeeper.apache.org/)是一个不错的选择。

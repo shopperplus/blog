@@ -6,8 +6,8 @@
 </description>
     <link>http://shopperplus.github.io/blog/</link>
     <atom:link href="http://shopperplus.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 12 Dec 2015 09:27:17 +0800</pubDate>
-    <lastBuildDate>Sat, 12 Dec 2015 09:27:17 +0800</lastBuildDate>
+    <pubDate>Sat, 12 Dec 2015 10:10:21 +0800</pubDate>
+    <lastBuildDate>Sat, 12 Dec 2015 10:10:21 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -124,6 +124,10 @@ Unsetting GITHUB_USERNAME and restarting myapp... &lt;span class=&quot;k&quot;&g
 &lt;/ul&gt;
 
 &lt;p&gt;注：上面需要capistrano 3 + dotenv，Envyable和Figaro目前无法使用Heroku style.&lt;/p&gt;
+
+&lt;h1 id=&quot;multi-server-&amp;amp;&amp;amp;-apps&quot;&gt;Multi Server &amp;amp;&amp;amp; Apps&lt;/h1&gt;
+
+&lt;p&gt;对于单台服务器的应用，capistrano-twelvefactor + dotenv 足以应付，同时，由于capistrano支持集群部署，单个应用多服务器其实也是可以搞定的。但有时候不同应用之间其实也需要共享配置文件的，比如，S3配置变化了，依赖这个帐号的所有应用都应该得到同步。另外的一个问题是，对于多服务器场景，配置存储在.env会出现服务器之间配置不同步现象。如果要解决上述问题，可能引入&lt;a href=&quot;https://github.com/coreos/etcd&quot;&gt;etcd&lt;/a&gt;或 &lt;a href=&quot;https://zookeeper.apache.org/&quot;&gt;zookeeper&lt;/a&gt;是一个不错的选择。&lt;/p&gt;
 </description>
         <pubDate>Sat, 12 Dec 2015 00:00:00 +0800</pubDate>
         <link>http://shopperplus.github.io/blog/2015/12/12/heroku-style-config-management-with-capistrano-and-dotenv.html</link>
