@@ -4,7 +4,7 @@ How To Blog
 * bundle install
 * thor jekyll:new The title of the new post
 * edit in editor
-* jekyll serve
+* bundle exec jekyll serve
 * open browser to preview
 * git add . -A
 * git commit -m "xx"
