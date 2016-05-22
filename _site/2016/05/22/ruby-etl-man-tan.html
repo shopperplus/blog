@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Ruby ETL 漫谈</title>
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56538535-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <link rel="stylesheet" href="/blog/css/main.css">
+    <link rel="canonical" href="http://shopperplus.github.io/blog/2016/05/22/ruby-etl-man-tan.html">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Shopper+ Team Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Ruby ETL 漫谈</h1>
+    <p class="post-meta">May 22, 2016 • Hooopo</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="activewarehouse-etl"><a href="https://github.com/activewarehouse/activewarehouse-etl">activewarehouse-etl</a></h2>
+
+<p>ActiveWarehouse ETL 应该是最早的Ruby ETL工具，并且十分强大，支持各种应用场景，但缺点是年久失修，没有再维护。ActiveWarehosue ETl目标是解决全部ETL相关的需求，是一个重量型工具，一般新的ETL工具的功能很少是他没有的，但其内部结构十分复杂，并且依赖ActiveRecord。另外一个缺点是，其支持的Source和Destination太过老旧，比如，对Postgresql不友好。</p>
+
+<h2 id="kiba"><a href="https://github.com/thbar/kiba">kiba</a></h2>
+
+<p>Kiba 是 ActiveWarehouse ETL 的维护者新开发的一个Gem，与 ActiveWarehouse ETL恰恰相反，Kiba 是一个轻量级的ETL工具。目前非常活跃，文档丰富，并且确实很轻，几百行代码勾勒出ETL的基本结构。但缺点呢，也很明显，它空无一物，什么都没提供，就是说，如果你的项目想用 Kiba 来解决实际ELT问题还差很远，需要自己去实现很多功能，如果不是很熟悉，要踩的坑还很多。另外，Kiba和Sidekiq一样，提供Kiba Pro，收费版，据说功能很多，支持以下特性：</p>
+
+<ul>
+<li>multi-threading (and later, multi-machines) - commonly requested</li>
+<li>built-in sources/transforms/destinations for common tasks
+lookups</li>
+<li>upserts / bulk load modules</li>
+<li>connectors optimized for parallelism (HTTP pagination extraction)</li>
+<li>connectors for the cloud (RedShift, ...)</li>
+<li>built-in helpers for common operations (debugging, limiting, caching...)</li>
+<li>premium support</li>
+</ul>
+
+<h2 id="etl"><a href="https://github.com/square/ETL">ETL</a></h2>
+
+<p>ETL 是 Square 公司开源的一个轻量级的 ETL gem，与 ActiveWarehouse ETL 不同的是，Square ETL直接操作SQL，不依赖ActiveRecord。但可能只是解决Square公司的特定问题，目前只支持的是MySQL Source和Destination，并且Source和Destination必须在同一个Server上。另一个致命的缺点是不支持增量更新：</p>
+
+<ul>
+<li><a href="https://github.com/square/ETL/issues/11">https://github.com/square/ETL/issues/11</a></li>
+<li><a href="https://github.com/square/ETL/issues/13">https://github.com/square/ETL/issues/13</a></li>
+</ul>
+
+<h2 id="embulk"><a href="https://github.com/embulk/embulk">embulk</a></h2>
+
+<p><img src="https://ruby-china-files.b0.upaiyun.com/photo/2016/3fdd6d582cd883fa3e7725ccf6b757d3.png" alt=""></p>
+
+<p>Embulk 的特点是其丰富的插件和并行处理能力。但其依赖JRuby和Java让Ruby开发者上手很难，并且其体系相当复杂，如果不是数据量巨大就不用考虑了。</p>
+
+<h2 id="kiba-plus"><a href="https://github.com/hooopo/kiba-plus">kiba-plus</a></h2>
+
+<p>Kiba Plus是一个基于Kiba的增强，包含常用的Source和Destination实现，例如MySQL、Postgresql、CSV等。它具有以下优点：</p>
+
+<ul>
+<li>支持Postgresql：其实支持Postgresql也就意味着很容易支持基于Pg的其他数据库，比如Greenplum、CitusData、Redshift等。题外话，MySQL和Pg在OLTP领域可以说不相上下，但在OLAP领域MySQL已经被Pg甩出一条街了，支持Pg意义重大。</li>
+<li>Fast Load &amp;&amp; Insert：由于不依赖ActiveRecord和Sequel之类ORM工具，直接使用mysql2和pg gem操作SQL，能够利用更多数据库自身特性，比如streaming和mysql load infile or pg copy来更快的读取和插入。</li>
+<li>Incremental Insert：增量更新是ETL中不可缺少的部分，如果没有增量更新，即使再快的插入速度和再强的并行处理能力，随着数据量增长，也不可能每次把所以数据都重新插入一遍。</li>
+</ul>
+
+<p>一个从MySQL导入到Pg的例子:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;kiba/plus&#39;</span>
+
+<span class="no">SOURCE_URL</span> <span class="o">=</span> <span class="s1">&#39;mysql://root@localhost/shopperplus&#39;</span>
+
+<span class="no">DEST_URL</span>   <span class="o">=</span> <span class="s1">&#39;postgresql://hooopo@localhost:5432/crm2_dev&#39;</span>
+
+<span class="n">source</span> <span class="no">Kiba</span><span class="o">::</span><span class="no">Plus</span><span class="o">::</span><span class="no">Source</span><span class="o">::</span><span class="no">Mysql</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:connect_url</span> <span class="o">=&gt;</span> <span class="no">SOURCE_URL</span><span class="p">,</span>
+                           <span class="ss">:query</span> <span class="o">=&gt;</span> <span class="sx">%Q{SELECT id, email, &#39;hooopo&#39; AS first_name, &#39;Wang&#39; AS last_name FROM customers}</span>
+                         <span class="p">}</span>
+
+<span class="n">destination</span> <span class="no">Kiba</span><span class="o">::</span><span class="no">Plus</span><span class="o">::</span><span class="no">Destination</span><span class="o">::</span><span class="no">PgBulk2</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:connect_url</span> <span class="o">=&gt;</span> <span class="no">DEST_URL</span><span class="p">,</span>
+                                <span class="ss">:table_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;customers&quot;</span><span class="p">,</span>
+                                <span class="ss">:truncate</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span>
+                                <span class="ss">:columns</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:id</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:first_name</span><span class="p">,</span> <span class="ss">:last_name</span><span class="o">]</span><span class="p">,</span>
+                                <span class="ss">:incremental</span> <span class="o">=&gt;</span> <span class="kp">false</span>
+                              <span class="p">}</span>
+
+<span class="n">post_process</span> <span class="k">do</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="no">PG</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="no">DEST_URL</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) AS num FROM customers&quot;</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="s2">&quot;Insert total: </span><span class="si">#{</span><span class="n">result</span><span class="o">.</span><span class="n">first</span><span class="o">[</span><span class="s1">&#39;num&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>执行：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">bundle exec kiba customer_mysql_to_pg.etl
+</code></pre></div>
+<p>输出：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># I, [2016-05-16T01:53:36.832565 #87909]  INFO -- : TRUNCATE TABLE customers;
+# I, [2016-05-16T01:53:36.841770 #87909]  INFO -- : COPY customers (id, email, first_name, last_name) FROM STDIN WITH DELIMITER &#39;,&#39; NULL &#39;\N&#39; CSV
+# Insert total: 428972
+</code></pre></div>
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'shopperplus'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shopper+ Team Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Shopper+ Team Blog</li>
+          <li><a href="mailto:tech@3cps.ca">tech@3cps.ca</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/shopperplus">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/shopperplus">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">shopperplus</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
